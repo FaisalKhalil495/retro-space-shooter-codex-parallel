@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0f1c">
+  <title>Glacier Coast — Ember Drift demo</title>
+  <link rel="icon" href="../../icons/icon-192.png">
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; position: fixed; inset: 0; overflow: hidden; background: #0b0f1c; color: #efe3cf; font-family: ui-monospace, Menlo, monospace; touch-action: none; overscroll-behavior: none; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
+    #screen { position: fixed; inset: 0; display: block; touch-action: none; }
+    .overlay { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: max(16px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left)); background: #0b0f1c99; }
+    [hidden] { display: none !important; }
+    .card { width: min(420px, 66vw); padding: 22px; text-align: center; background: #141a2ef2; border: 1px solid #34406a; border-radius: 12px; }
+    .eyebrow { margin: 0 0 10px; font-size: 11px; color: #c98f4a; letter-spacing: .12em; }
+    h1 { margin: 0 0 12px; font-size: clamp(20px, 4.8vh, 30px); color: #f2cf8a; }
+    p { margin: 10px 0; font-size: 13px; line-height: 1.6; }
+    button, a { font: inherit; }
+    #action { min-height: 44px; margin-top: 10px; padding: 10px 28px; border: 1px solid #f2cf8a; border-radius: 7px; color: #0b0f1c; background: #e3a857; font-weight: bold; cursor: pointer; touch-action: manipulation; }
+    #pause { position: fixed; width: 38px; height: 38px; padding: 0; border: 1px solid #34406a; border-radius: 8px; color: #efe3cf; background: #1b2238dd; font-size: 18px; cursor: pointer; }
+    #pause::before, #pause::after { content: ''; position: absolute; top: 10px; width: 5px; height: 16px; background: #efe3cf; }
+    #pause::before { left: 10px; } #pause::after { right: 10px; }
+    .back { display: inline-block; margin-top: 15px; color: #9fb0d0; font-size: 12px; padding: 8px; }
+    #rotate { z-index: 5; background: #0b0f1c; text-align: center; }
+    #rotate h1 { font-size: 20px; }
+    @media (max-height: 340px) { .card { padding: 12px; } p { margin: 6px 0; } }
+  </style>
+</head>
+<body>
+  <canvas id="screen" aria-label="Glacier Coast scenery and Ember Drift touch controls"></canvas>
+  <button id="pause" type="button" aria-label="Pause demo" hidden></button>
+  <div id="panel" class="overlay">
+    <section class="card" aria-labelledby="heading">
+      <p class="eyebrow">EMBER DRIFT · SCENERY PREVIEW</p>
+      <h1 id="heading">GLACIER COAST</h1>
+      <p id="message">A 30-second flight over the frozen coast.<br>Steer with your left thumb. Hold Fire on the right.</p>
+      <button id="action" type="button">Start flight</button><br>
+      <a class="back" href="../../">Back to Ember Drift</a>
+    </section>
+  </div>
+  <div id="rotate" class="overlay" hidden>
+    <section><h1>Turn your phone sideways</h1><p>Glacier Coast is played in landscape.</p></section>
+  </div>
+  <script type="module" src="main.js?demo=1"></script>
+</body>
+</html>

@@ -14,7 +14,10 @@ stage — and, one day, a system for building more games.
 - At the end of every stage also add a retrospective (section 7) and move
   anything reusable into section 8 ("Recipe for future games").
 
-Last updated: v0.28.0, after the owner's questions about the music and real apps.
+Latest decision: after the v0.29.0 Level 4 concept review, the owner selected
+**B — Glacier Coast** and approved a separate 30-second scenery demo. That demo
+is complete and awaits phone review. The main game is still v0.29.0; the full
+level and boss have not been approved for implementation.
 
 ---
 
@@ -435,6 +438,23 @@ fewer rounds are needed.
   bats, sand galleons, kite gliders, harpoon guns, windmills), chosen by
   the owner from four sets.
 - Story chosen: you defend the worlds; the enemies are the invaders.
+- Level 4 concept review after v0.29.0: three distinct daylight surface
+  directions were shown together, then as larger individual pictures. The
+  owner selected **B — Glacier Coast** (snow-covered coast, blue ice cliffs,
+  teal sea, olive-and-cream enemy armor). Preserve that choice; A and C are
+  comparison alternatives. Enemy rules and the proposed Breakwater boss still
+  need an implementation plan and review. The owner approved the short scenery
+  demo, now in `demos/glacier-coast/`. It reuses the actual game ship, movement,
+  firing, and controls in a separate page, with no campaign registration or
+  save writes. Coast, cliffs, and snow are prepainted at double detail and
+  scroll at different speeds. Pause, orientation handling, and replay are
+  included; no new enemies, boss, or music are included. Validation: 31 demo
+  checks, 49 existing smoke checks, and 35 seeded playthrough checks passed.
+  Lesson: review scenery in motion at the real game scale before expanding
+  the level, and verify save preservation explicitly. The scenery test samples
+  only the coast so an animated HUD cannot hide a frozen background. An optional
+  single-file HTML export makes this review portable without adding a build
+  dependency to the game. Await the owner's phone review before moving on.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

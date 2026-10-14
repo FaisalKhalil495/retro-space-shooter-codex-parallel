@@ -506,6 +506,18 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
    level). Its own new enemies and its own boss (not a walking machine:
    that's the Siege Crawler). Plan, looks and boss to be agreed with the
    owner when we reach it.
+   - **Visual direction selected after the v0.29.0 concept review:**
+     **B — Glacier Coast**. Daylight snow-covered coastal shelves, distant
+     blue ice cliffs, dark teal sea, and olive-and-cream invader machines.
+     Reference: `docs/concepts/level-4-b-glacier-coast.png`. This is the
+     chosen look; the planet's name, enemy behavior, and boss mechanics still
+     need review. **Breakwater**, a vessel sliding on broad runners, remains
+     a boss proposal. The owner approved a **separate 30-second scenery demo**,
+     now at `demos/glacier-coast/`: existing ship, controls, and firing over
+     prepainted coastal scenery, with pause and replay. It adds no enemies,
+     boss, music, save changes, or campaign entry. Levels 1–3 remain unchanged.
+     Await the owner's demo review before planning the next implementation
+     stage. The playable full Level 4 is not built yet.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -733,6 +745,11 @@ and 5 shown as coming soon. Menus approved from a picture sheet.)
 
 Approved by the owner. Keep the status column up to date.
 
+**Level 4 update:** concept direction **B — Glacier Coast** is selected.
+The approved first scenery-demo stage is complete and documented in
+`demos/glacier-coast/README.md`. The full level awaits the owner's demo review
+and a separately approved next stage.
+
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**
 (3D, 3E) → **Android app** on Google Play (stage A) → iPhone app (optional)
 → **levels 6–9** as free updates. Why: five levels and five bosses make a
@@ -757,6 +774,15 @@ it over. The owner tests on Android; ideally the friend checks iPhone each stage
 
 ## Code map
 
+- `demos/glacier-coast/` — separate 30-second scenery review, served directly
+  like the main game. Reuses `Game`, `Controls`, the original ship, sound
+  effects, and safe-area layout; defines its own scene without changing
+  `LEVELS`. Its `coast.js` paints layered sky, ice cliffs, sea, and continuous
+  foreground snow once, then scrolls the pictures at different speeds.
+  `tools/coast-demo-test.mjs` checks both phone sizes, real thumbs, the
+  30-second clock, pause, replay, ground boundary, and untouched saves.
+  `tools/export-coast-demo.mjs <output.html>` optionally exports a single-file
+  review copy; it is not a build step for the main game or the served demo.
 - `LESSONS.md` — the owner's preferences, lessons learned, stage
   retrospectives and a reusable recipe for future games.
 - `index.html` — the page: canvas, the "turn sideways" screen, CSS.
