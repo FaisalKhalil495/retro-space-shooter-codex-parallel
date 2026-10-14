@@ -1,0 +1,101 @@
+{
+  "kind": "Enemy and boss visual review sources",
+  "generation_tool": "OpenAI ImageGen (host-native)",
+  "generation_date_utc": "2026-10-14",
+  "approval_status": "Glacier Coast location approved; enemy and boss designs awaiting user review",
+  "reference_image": "demos/glacier-coast/assets/glacier-world.png",
+  "reference_sha256": "867b6266f8fe432ef83489596be5d532a4f25e5846879b4c5a4eb0bc28d55f14",
+  "exact_prompts": "requests.json",
+  "transforms": "None; copied original generated PNG bytes without cropping, resampling or repainting",
+  "rights_note": "Generated at the user\u2019s request using the project\u2019s approved generated setting. No third-party asset library or separately billed provider used. This record is provenance, not legal clearance or a canonical game-dev package validation.",
+  "assets": [
+    {
+      "name": "Shelf Skiff",
+      "file": "shelf-skiff.png",
+      "sha256": "0f5453df5b619b1e1b7fe0cfaa17efaf5b469f9bddf675b1348e517558cae6e2",
+      "bytes": 2809339,
+      "format": "PNG",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "prompt_record": "requests.json#shelf-skiff",
+      "static_inspection": "PNG decodes and verifies successfully",
+      "visual_inspection": "One low gunboat, two broad skis, exposed left-facing guns, olive-and-cream hull; no tracks or walking feet.",
+      "common_visual_checks": [
+        "Approved daylight glacier coast setting",
+        "Muted olive and cream armor with dark mechanical undersides",
+        "Full subject within frame",
+        "No hero, player bullets, labels, or UI"
+      ],
+      "runtime_status": "Concept source only; not converted to sprites or registered in the game"
+    },
+    {
+      "name": "Anchor Gun",
+      "file": "anchor-gun.png",
+      "sha256": "c991366fa4f285912980d2c64e4af22c241e207f0422474ff5fb164bc32fe5cb",
+      "bytes": 2909706,
+      "format": "PNG",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "prompt_record": "requests.json#anchor-gun",
+      "static_inspection": "PNG decodes and verifies successfully",
+      "visual_inspection": "One exposed left-facing cannon with opened armor on a low rock perch and broad anchor braces.",
+      "common_visual_checks": [
+        "Approved daylight glacier coast setting",
+        "Muted olive and cream armor with dark mechanical undersides",
+        "Full subject within frame",
+        "No hero, player bullets, labels, or UI"
+      ],
+      "runtime_status": "Concept source only; not converted to sprites or registered in the game"
+    },
+    {
+      "name": "Twin Darts",
+      "file": "twin-darts.png",
+      "sha256": "3ade8a1ecde84c5405aabb38001cd2d34fe2b21cc2a18795e189313306c8dbb3",
+      "bytes": 2859492,
+      "format": "PNG",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "prompt_record": "requests.json#twin-darts",
+      "static_inspection": "PNG decodes and verifies successfully",
+      "visual_inspection": "Exactly two separate diamond-shaped drones in clear air lanes; open and closed gun shutters; no overlap.",
+      "common_visual_checks": [
+        "Approved daylight glacier coast setting",
+        "Muted olive and cream armor with dark mechanical undersides",
+        "Full subject within frame",
+        "No hero, player bullets, labels, or UI"
+      ],
+      "runtime_status": "Concept source only; not converted to sprites or registered in the game"
+    },
+    {
+      "name": "Breakwater \u2014 boss",
+      "file": "breakwater.png",
+      "sha256": "dead6d456eb89c5b8d68a598eb79a4f78d59a116ba692ff8b7e45491a6b5a801",
+      "bytes": 2925247,
+      "format": "PNG",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "prompt_record": "requests.json#breakwater",
+      "static_inspection": "PNG decodes and verifies successfully",
+      "visual_inspection": "One long low naval boss with a wedge bow, open forward weapon chamber, three visible runner sections, and rear exhausts; no walking legs, tank tracks, or saw ring.",
+      "common_visual_checks": [
+        "Approved daylight glacier coast setting",
+        "Muted olive and cream armor with dark mechanical undersides",
+        "Full subject within frame",
+        "No hero, player bullets, labels, or UI"
+      ],
+      "runtime_status": "Concept source only; not converted to sprites or registered in the game"
+    }
+  ]
+}

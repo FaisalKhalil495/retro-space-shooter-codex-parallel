@@ -2,6 +2,8 @@
 
 **Revision 2** replaces the first demo's simple ice blocks with a detailed
 glacier valley and fjord. Look for **COAST DEMO 2** below the controls.
+The user approved this location. Enemy and boss concepts are the next review
+in [the visual proposal](../../docs/concepts/level-4-enemies/review.md).
 
 Open `demos/glacier-coast/` on the same static server as the game. The demo is
 separate from the campaign and reuses the actual ship, movement, firing, touch

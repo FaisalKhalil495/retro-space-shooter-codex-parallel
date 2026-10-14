@@ -1,6 +1,6 @@
 # Ember Drift — Level 4 concept review
 
-**Status: B — Glacier Coast selected. The approved 30-second scenery demo is complete; the full level remains unimplemented.**
+**Status: B — Glacier Coast location approved after demo revision 2. Enemy and boss pictures are the next review; the full level remains unimplemented.**
 
 Prepared only for `FaisalKhalil495/retro-space-shooter-codex-parallel`.
 `retro-space-shooter` and `retro-space-shooter-codex` are outside the scope of
@@ -165,12 +165,13 @@ orientation. See [demo instructions](../../demos/glacier-coast/README.md).
 requested more detail. The coast now depicts a glacier descending through
 layered mountains into a fjord, with exposed rock, crevasses, irregular shelves,
 floating ice, reflections, and moving water shimmer. It pans slowly across this
-world while the snowy foreground moves faster. This revision awaits review.
+world while the snowy foreground moves faster. The user approved this location.
 
 All 35 demo checks, 49 existing smoke checks, and 35 seeded playthrough checks
-passed. The working demo awaits the user's phone review before planning enemy
-waves and the Breakwater fight. A direction choice does not approve every
-proposed name, attack, number, or future development stage.
+passed. The user then requested pictures of the enemies, including the boss.
+See [enemy and boss visual review](level-4-enemies/review.md). Enemy waves and
+the Breakwater fight remain unimplemented. Location approval does not approve
+every proposed name, attack, number, or future development stage.
 
 Any eventual boss must retain the established entrance, name card, roar,
 unique music, three phases, five warned attacks, moving weak point, speech

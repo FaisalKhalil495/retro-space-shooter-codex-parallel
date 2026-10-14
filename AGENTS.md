@@ -46,6 +46,12 @@ shimmer. Preserve the exact existing hero, engine flame, and bullet artwork
 and firing behavior; do not redraw or substitute them. The pixel comparison
 in `tools/coast-demo-test.mjs` checks this explicitly.
 
+The user approved revision 2's location and requested pictures of the enemies,
+including the boss. The current authorized stage is visual concepts for Shelf
+Skiff, Anchor Gun, Twin Darts, and Breakwater. Save them under
+`docs/concepts/level-4-enemies/` and show them for review. This request does not
+approve their final designs, mechanics, tuning, or campaign implementation.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already
@@ -121,8 +127,9 @@ boss. The planet's final name, enemy behavior, and boss rules are not settled.
 **Completed first stage:** a separate 30-second scrolling coast scenery demo
 using the existing ship and controls. It has pause, replay, a solid snow floor,
 and no campaign registration or save writes. Revision 2 replaces the simple
-cliffs with a glacier valley and fjord. Await the user's scenery review before
-proposing enemy waves or the boss. See `demos/glacier-coast/README.md`.
+cliffs with a glacier valley and fjord, and the user approved this location.
+The next review covers the enemy and boss concept pictures in
+`docs/concepts/level-4-enemies/review.md`. See `demos/glacier-coast/README.md`.
 
 ## Validation and handover
 

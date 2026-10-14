@@ -522,8 +522,12 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      floating ice, teal fjord water with shimmer, and detailed foreground snow.
      The hero, engine flame, and bullets must match the previous game exactly;
      their original code is reused, with pixel and firing comparisons passing.
-     Await the owner's demo review before planning the next implementation
-     stage. The playable full Level 4 is not built yet.
+     **Location approved:** the owner approved revision 2 and requested enemy
+     pictures, including the boss. The next visual review is Shelf Skiff,
+     Anchor Gun, Twin Darts, and Breakwater; see
+     `docs/concepts/level-4-enemies/review.md`. These are design proposals, not
+     approved enemies or final game sprites. The playable full Level 4 is not
+     built yet; implementation still needs a separately approved stage.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -753,8 +757,9 @@ Approved by the owner. Keep the status column up to date.
 
 **Level 4 update:** concept direction **B — Glacier Coast** is selected.
 The approved scenery-demo revision 2 is complete and documented in
-`demos/glacier-coast/README.md`. The full level awaits the owner's demo review
-and a separately approved next stage.
+`demos/glacier-coast/README.md`. The owner approved this location and requested
+enemy and boss concept pictures. Those designs are the next review; the full
+level still requires a separately approved implementation stage.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**
 (3D, 3E) → **Android app** on Google Play (stage A) → iPhone app (optional)

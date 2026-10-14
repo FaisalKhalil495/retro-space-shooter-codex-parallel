@@ -18,9 +18,10 @@ Latest decision: after the v0.29.0 Level 4 concept review, the owner selected
 **B — Glacier Coast** and approved a separate 30-second scenery demo. That demo
 was revised after the owner rejected the simple ice blocks. Revision 2 adds
 a detailed glacier valley, fractured shelves, and visible fjord water. The
-hero and bullets must look exactly like the previous game. It awaits phone
-review. The main game is still v0.29.0; the full
-level and boss have not been approved for implementation.
+hero and bullets must look exactly like the previous game. The owner approved
+revision 2's location and requested pictures of the enemies, including the
+boss. Those visual proposals are the current review stage. The main game is
+still v0.29.0; the full level and boss have not been approved for implementation.
 
 ---
 
@@ -474,6 +475,14 @@ fewer rounds are needed.
   sprite preservation directly rather than relying only on code inheritance.
   This remains a scenery review; campaign files, enemies, bosses, audio,
   saving, and full-level approval are unchanged.
+- After seeing coast demo revision 2, the owner said it was much better and
+  explicitly approved the location. They requested enemy and boss pictures
+  next. Preserve the approved glacier world and original hero/bullets while
+  reviewing the proposed Shelf Skiff, Anchor Gun, Twin Darts, and Breakwater
+  as a coherent olive-and-cream invader set. Concept images and generation
+  records live in `docs/concepts/level-4-enemies/`. Location approval advances
+  the art review; it does not settle enemy mechanics or authorize the full
+  level. No gameplay, demo, controls, audio, or saving changes in this stage.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a
