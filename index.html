@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0f1c">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Ember Drift">
+  <title>Ember Drift</title>
+  <meta name="description" content="A retro space shooter for your phone. Defend the worlds. Play it free in your browser.">
+  <!-- Home screen: the game's own icon, opening full screen like an app. -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <!-- What a shared link shows (WhatsApp, Messages, social apps). -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ember Drift">
+  <meta property="og:description" content="A retro space shooter for your phone. Defend the worlds.">
+  <meta property="og:url" content="https://faisalkhalil495.github.io/retro-space-shooter/">
+  <meta property="og:image" content="https://faisalkhalil495.github.io/retro-space-shooter/icons/preview.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <style>
+    :root {
+      --void: #0b0f1c;
+      --space: #141a2e;
+      --space-mid: #232c4a;
+      --amber: #e3a857;
+      --amber-light: #f2cf8a;
+      --amber-soft: #c98f4a;
+      --red: #a8544a;
+      --red-dark: #7a3a36;
+      --cream: #efe3cf;
+      --dim: #9c9584;
+      --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Roboto Mono", monospace;
+    }
+    * { box-sizing: border-box; margin: 0; }
+    html, body {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      background: var(--void);
+      color: var(--cream);
+      font-family: var(--mono);
+      touch-action: none;
+      overscroll-behavior: none;
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    canvas#screen {
+      position: fixed;
+      left: 0;
+      top: 0;
+      display: block;
+      touch-action: none;
+    }
+    .overlay {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: max(16px, env(safe-area-inset-top)) max(24px, env(safe-area-inset-right))
+               max(16px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
+      text-align: center;
+      background: rgba(11, 15, 28, 0.72);
+      touch-action: none;
+      cursor: pointer;
+    }
+    .overlay[hidden] { display: none; }
+    .big {
+      font-size: clamp(16px, 4.6vh, 22px);
+      color: var(--amber-light);
+      letter-spacing: 0.08em;
+    }
+    .small { font-size: 11px; color: var(--dim); }
+    #rotate { background: var(--void); z-index: 10; cursor: default; }
+    .phone {
+      width: 44px;
+      height: 76px;
+      border: 4px solid var(--amber-soft);
+      border-radius: 9px;
+      animation: turn 2.2s ease-in-out infinite;
+    }
+    @keyframes turn {
+      0%, 25% { transform: rotate(0deg); }
+      55%, 100% { transform: rotate(-90deg); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="screen"></canvas>
+
+  <div id="rotate" class="overlay" hidden>
+    <div class="phone"></div>
+    <p class="big">Turn your phone sideways</p>
+    <p class="small">Ember Drift is played in landscape</p>
+  </div>
+
+  <script type="module" src="js/main.js?v=0.29.0"></script>
+</body>
+</html>

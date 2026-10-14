@@ -1,0 +1,620 @@
+# Ember Drift — what we've learned (owner preferences + lessons)
+
+This file is the project's memory of **how** we work and **why** things ended
+up the way they are. `CLAUDE.md` is the rule book (the *what*: settled
+decisions and numbers). This file is the *why*: the owner's tastes, what was
+tried, what was rejected, and the lessons that should shape every future
+stage — and, one day, a system for building more games.
+
+**When to use it**
+- Read it (with `CLAUDE.md`) before planning any stage.
+- Update it with **every release** (the owner asked for this in v0.14.2):
+  new preferences go in sections 1–3, new lessons in section 4, progress in
+  section 7.
+- At the end of every stage also add a retrospective (section 7) and move
+  anything reusable into section 8 ("Recipe for future games").
+
+Last updated: v0.28.0, after the owner's questions about the music and real apps.
+
+---
+
+## 1. How the owner likes to work
+
+- **Phone only.** No computer. Every instruction and test step must be
+  tappable on a phone. Give direct links, including shortcut links
+  (e.g. `?start=boss` to jump to the boss) — the owner asked for these.
+- **Plain English, short, concrete.** Numbers help: "about 4 per run",
+  "1 in 4 big rocks", "25% of the level". Tables comparing *now vs. new*
+  were well received and the owner explicitly asked for them.
+- **Plan first, then build.** The owner usually says "analyse the current
+  state, then plan". Show what exists today (with numbers), then the plan,
+  then ask "Do you approve?". Don't build before approval.
+- **One decision at a time.** When a plan has a real choice in it, ask one
+  clear question (with a recommendation) rather than a list of options.
+- **The owner edits plans by reply.** Expect short corrections like
+  "Don't show STAGE BROKEN" or "Keep the time 25%" — apply exactly that,
+  restate the revised plan briefly, and carry on.
+- **Ask when it's ambiguous.** "Keep the time the same. 25%" could mean
+  several things — asking once (with options) avoided building the wrong
+  thing. Don't guess on numbers the owner has opinions about.
+- **"Review the new update" after almost every release.** The owner asks
+  for a code review after nearly every change, and those reviews found real
+  bugs every time. Lesson: **review every release before handing it over**
+  (see section 5), so the owner gets the fixed version first.
+- **Claude merges.** Standing permission: open the pull request and merge it,
+  then tell the owner it's live and saved, with phone test steps (what to
+  tap, what success looks like, what failure looks like).
+- **Phones cache old versions.** Once the owner tested an old copy (v0.4.2)
+  and sent a screenshot of it. Always remind them to check the version label
+  in the corner, and how to reload (⋮ → circular arrow in Chrome).
+- **Plays and reports what feels wrong in the world.** Most Stage 3
+  changes came from the owner describing a scene ("tanks jumping on
+  towers", "enemies coming from behind, too low to shoot"). Turn each one
+  into a general rule for the whole level (and future levels), not a
+  one-off patch — then check every similar enemy against it.
+- **Expects the docs to stay current.** Asked whether this file was being
+  updated with every release (it wasn't, for a few releases). Update both
+  `CLAUDE.md` and this file in the same release as the change.
+- **Watches the budget.** After v0.24.0 the owner said their weekly usage
+  was running low and asked to make the game presentable to show people
+  (menus, saving, "coming soon" for levels 4–5) before building more
+  levels. Plan in a few big releases, keep pictures and messages tight.
+- **Prefers plain over arcade conventions.** "Enter your initials" puzzled
+  the owner ("What is this?"); high scores take a first name instead (up
+  to 8 letters). Explain any genre convention, or skip it.
+- **Asks "have you added X?" after big pushes.** After several releases
+  in a row the owner lost track of what was in ("Have you added the
+  music?"). Answer with a short table of what plays/happens where, plus
+  why they might not notice it (phones stay silent until the first tap;
+  the Options volume; the iPhone silent switch). Each release message
+  should end with a one-line "what's new" list the owner can scan.
+- **Thinking about real apps.** After v0.28.0 the owner asked how to turn
+  the game into an Android or iPhone app. App stores are still out of
+  scope (CLAUDE.md); the answer laid out both paths (Android: a $25
+  account, a Google-approved web-game wrapper, offline play for the app
+  only, a privacy policy, Google's closed test with testers before going
+  public, a signing key that must never go on GitHub; iPhone: $99 a year,
+  a Mac or a paid cloud build service, Apple's manual review) and
+  recommended finishing more levels first, then Android. Waiting on the
+  owner's decision whether to add it to the plan.
+- **Wants to understand the systems.** Questions like "how often do power-ups
+  appear?" or "what are we supposed to get in the boss fight?" deserve a
+  real audit of the code, with numbers — that's how the supply-pod bug
+  (weapons never arriving) was found.
+
+## 2. Gameplay taste (learned the hard way)
+
+**Difficulty**
+- Wants it **hard**. "Classic" was "far too easy"; Rockjaw had to become a
+  modern console-style boss ("God of War-like", menacing, many tricks).
+- But hard must be **fair** and **survivable**: after the hard rework the
+  owner asked for a health bar and power-ups; after "came very close twice"
+  asked for help that adapts to need. Pattern: *raise the threat, then add
+  smart help*, never just make things easier.
+- Help should be **earned or needed**, not random: smart supply pods that
+  read your state, a bonus for breaking each boss stage, more drops when
+  badly hurt, no wasted Repairs at full health.
+
+**What the owner wants more of**
+- **Things that shoot back.** Asked twice for more shooters ("more enemies
+  that fire bullets", "more of these [gunships]").
+- **Dangerous environment.** Rock fragments should actually hurt in levels —
+  but not in a way that feels cheap (they were toned down once when they
+  felt unfair at the boss).
+- **Longer levels** (~3 minutes before the boss) with **no calm breaks**.
+- **Bosses with personality**: talking, taunting, swearing, reacting to
+  pain — in **comic-book speech bubbles**, not as screen titles or narrator
+  captions. But **never while you're dodging**: bubbles during attacks were
+  "distracting" (v0.10.4). Talk only in pauses (entrance, stage breaks,
+  after a kill) and keep bubbles out of the space between ship and boss.
+- **Rewards for progress**: e.g. a bonus every time a boss stage breaks.
+- **A gamble / mystery**: loot hidden in big rocks with **no visual tell** —
+  "I need to guess which rock" makes it interesting.
+- **Real, useful loot** — actual power-ups and ammo, not abstract currencies.
+
+**What the owner rejected or disliked**
+- **v0.5.0 asteroid rework → "level 1 feels boring", reverted.** It added
+  many systems at once (streakers, boulders, treasure rocks with glints,
+  meteor showers, an "Ember Crystal" currency + "Ember Surge", named level
+  sections). Lessons: don't stack many new systems in one release; avoid
+  abstract meta-currencies; don't slow the action down with "sections".
+- **Glints / tells on loot rocks** — rejected twice ("I don't want glints").
+- **Banners** like "STAGE BROKEN!" — rejected. Keep rewards quiet (a small
+  floating "+1000") and let the action speak.
+- **Blood everywhere** — "distracting". Replaced by explosions; blood only
+  for living creatures, and lightly except for the boss.
+- **Things that don't make physical sense**: pods firing from behind
+  ("their asses are facing me, not their guns"). Enemies should behave
+  plausibly — guns fire where they point.
+- **Wasted rewards**: a Repair at full health, ammo for a full weapon,
+  a pod that swaps away the weapon you're saving. Every drop should be useful
+  at the moment you get it.
+
+**Worlds must make sense (Stage 3, Rust Moon)**
+- **Every object belongs to its setting.** "What the hell are rocks doing
+  on this planet?" — asteroids belong to level 1's space belt. On a planet
+  the same loot gamble came back as supply drones carrying crates.
+- **Ground units stay on the ground.** Tanks must never climb towers; they
+  dig under them instead.
+- **Flyers never pass through towers** (v0.14.3): everything that flies
+  lifts over rock; a diving pod crashes into it.
+- **An enemy only fires when you could shoot back** — no turrets behind
+  taller towers, no tanks shooting from cover, no shots from behind you.
+- **Turrets are never hidden**: always perched at least as high as every
+  tower on screen, so a straight shot reaches them.
+- **Pickups are never stuck among the towers**: cargo pods fly above the
+  tallest possible tower; drops always appear above rock.
+- **Ambushes from behind come only while the towers are short**, and fly
+  above them — a threat you can't fight back against is just unfair.
+- **Wants a story that holds together** (after v0.16.0). Asked "am I
+  invading their world or are they invading?" and liked: **you defend
+  the worlds; the enemies are the invaders**, ending at their homeworld.
+  Check every new level's looks and boss against that story.
+- **Likes choosing from many options.** Asked to see more Frostring looks
+  ("generate more options"): eight sets, shown as two detailed pictures
+  plus one overview of all eight, worked well.
+- **Every level must look like its own world** (v0.16.0). Level 2 reused
+  level 1's enemies unchanged; the owner wanted them to look different.
+  A recolour wasn't enough ("change the shapes as well"), and a first
+  reshape in the same style was rejected; out of four complete themed
+  sets shown side by side the owner chose the **"Dust Pirates"** (patched desert
+  raiders with canvas sails). Personality and a story beat a tidy look.
+- **Every enemy must fight** (v0.15.0). Harmless loot carriers (the
+  supply drones) were "no fun — they don't fire, they just come towards
+  me". Loot belongs on enemies that shoot back (now the Rust Raiders), so
+  earning it is part of the fight.
+- **No idle enemies.** A crawler that popped up between towers and did
+  nothing looked broken. Every enemy on screen should be doing something
+  threatening, or be out of sight.
+- **Hard targets must still die quickly once open**: turrets felt "very
+  hard to kill" until their open window and hit area grew (1.2 s to kill).
+
+**Numbers the owner has set (and cares about)**
+- Level 1 ≈ 3 minutes before the boss, in three parts.
+- Spread Shot and Rapid Fire should each be running **about 25%** of the
+  level — the owner wants *more pickups* but not *more uptime*.
+- Big rocks hold loot 35% of the time; small rocks never.
+- Gunships doubled; groups hover in lanes and fire in turn.
+- (Full list: `CLAUDE.md` → Decisions.)
+
+## 3. Look, sound and presentation
+
+- Modern retro **pixel art**, muted warm palette (deep blues, ambers, dusty
+  reds). **No neon, no glow.** Original art and sound only (no Nokia assets).
+- **Explosions** are the main "juice": flash → fireball cooling cream →
+  amber → red → smoke; bigger enemies add a shockwave ring and wreckage.
+- **Colour language must stay consistent**: amber "A" = ammo everywhere;
+  white light = survival pod; a pod's light always shows what it gives.
+- **Nothing may hide a threat**: effects, smoke and speech bubbles are drawn
+  *under* bullets, rocks, enemies and pickups.
+- **Double detail** (v0.20.0 on): pictures have twice the pixels each way
+  but the game grid, sizes and hit areas never change. The owner chose it
+  after seeing the *same moment* three ways (today / sharper scene only /
+  everything redrawn) and then the current boss before-and-after: show
+  real game moments, not separate sprites, when the question is "how will
+  the game look".
+- Swearing is welcome in boss lines and death quips (adult game).
+- **Sound effects** are synthesised in code (warm, filtered, 16-bit
+  feel). **Music must sound like a serious action game, never a toy**
+  (v0.29.0): the owner rejected the warm-retro themes ("childish") and
+  three heavier style samples, then approved six pieces written fresh,
+  each in its own genre that fits its world (dark synth, desert metal,
+  cold movie tension, monster metal, industrial march, epic orchestral
+  in 7/8). Distorted guitars, real-sounding drums, orchestra (strings,
+  brass, choir), stereo reverb and minor keys did it; square-wave leads,
+  bright chimes and a thin mono mix are what sounded like a toy.
+- **The title is the game's face.** The owner rejected the plain title
+  lettering and a "simple" ship picture, and asked for an iconic,
+  stylised logo ("like Star Fox") with the ship built in. Six complete
+  start-screen designs, each with its own hand-drawn lettering, settled it
+  (the owner called them all beautiful, picked the squadron badge). The
+  ship as a small 3D model drawn as pixel art gives a dramatic angle for
+  any poster; the logo is painted once, never per frame.
+- **Screens are split by job**: the opening screen is only the badge and
+  "tap to continue" (no buttons); the main menu is a vertical column of
+  buttons with a small badge beside it.
+
+## 4. Things that went wrong, and the lesson from each
+
+| What happened | Lesson |
+|---|---|
+| v0.5.0 rework rejected as boring | Change one system at a time; let the owner feel each change before adding the next. Cheap reverts (each merge is a save point) made recovery easy — keep it that way. |
+| Boss supply pods almost never gave weapons | Priority chains starve later items when an earlier condition is almost always true (shield lasts 10 s, pods come every 20 s). Simulate real timings, not just the rule on paper. |
+| Tests missed the supply-pod bug | The test shortcut (`?start=boss`) handed the player a laser, hiding the bug. Test the real path the player takes, not only shortcuts. |
+| Bonus items vanished off-screen | Test extremes: the boss at the screen edge, the player dying at the same moment, the last life. Several bugs only appeared there. |
+| A fix's test passed on the old code too | Prove a new check would have **failed before the fix** (temporarily revert, run, restore). |
+| Pod light promised a Laser but gave Repair | Anything that *shows* a reward must use the same function that *decides* it. Decide rewards at pickup time ("decide when grabbed") so they're never stale. |
+| Fireballs hid bullets | Draw order is a fairness rule, not just a looks rule. |
+| Speech bubble hid behind the boss | Big bosses leave no "free" space; placements need fallbacks and must not jump frame to frame. |
+| The level test sometimes raced the live game | A test hook that "pauses" the game must actually stop the live loop (`window.__ember.frozen`). |
+| Owner played an old cached version | Version label on screen + reload instructions in every hand-over. |
+| Ambiguous request ("25%") | Ask with concrete options instead of guessing. |
+| Speech bubbles distracted mid-fight | Anything that asks to be read must happen when the player isn't busy dodging. Flavour goes in pauses, never on top of the action. |
+| A quick self-review missed bugs a deeper one found (v0.10.4) | Self-review every release at the **deeper** level, not the quick one. |
+| A new check couldn't fail (the test player never dies, so no kill line) | When adding a check, also break the code on purpose and confirm the check fails. |
+| Turrets got stuck at the left edge once their spire scrolled away (3B-1) | Don't make one object follow another that can be removed; give each its own movement and only *read* shared facts (like the spire's height). |
+| Adding a floor nearly changed level 1 (dust puffs and bouncing shards at the screen's bottom edge) | When a new level adds a shared rule, check what it does on the old levels too; guard it so levels without that feature behave exactly as before. |
+| Floor turrets sat 1 pixel too low for the ship's gun to ever hit them (v0.12.0 review) | For every enemy that can't move, check the ship can actually line up a shot on it from somewhere it's allowed to fly. Now an automatic check. |
+| A test kept a reference to the ship from before a level reset, so it could never fail | Tests must re-read game objects after anything that rebuilds them (reset, respawn, next level). Breaking the code on purpose caught it. |
+| The Siege Crawler's open core was almost unhittable: shots clipped the armour a pixel in front of it (v0.13.0, before release) | **Time the boss fight on autopilot and compare with the last boss.** A fight 10x longer than expected meant a bug, not a balance problem. A weak point's hit area must reach the edge a shot arrives from. |
+| A check on the flak gap passed on broken code only by luck (the gap's position is random) | When a rule depends on random positions, pin the worst case in the test instead of hoping the dice land on it. |
+| The boss's knock-back assumed you were always in front of it | Knock-backs, pushes and "away from" moves must work from every side, including behind a boss — and must fully clear it, not just nudge. |
+| v0.13.0 review: the cannon couldn't aim low and close, leaving a safe spot right where you shoot the core | For every boss, look for **safe pockets** (low in front, behind, on top) and check at least one attack reaches each. A boss's weak spot must never also be a safe spot. |
+| Boss drawing used the game's dice for its wobble | Drawing must never use the game's random numbers, or tests stop being repeatable. |
+| Whole-level review (v0.13.2): enemies hid inside spires, drops landed in rock, a shut turret could be rammed to death, rockets chased junk | When a new obstacle arrives (spires), check **every** moving thing against it — walkers, drops, homing weapons — not just the player and bullets. Armour rules must cover every way of doing damage, ramming included. |
+| A check passed on the old code by chance (the boss sometimes wandered into the ship anyway) | Test the decision itself (where it's heading), not just an outcome that luck can also produce. |
+| The owner: "what the hell are rocks doing on this planet?" — level 1's asteroids had been copied onto Rust Moon (v0.12–0.13) | **Every object must make sense in its setting.** When reusing a system on a new level, re-dress it for that world (rocks → supply drones carrying crates) and keep what the owner liked about it (the loot gamble). |
+| Ground tanks climbed towers (my v0.13.2 fix for them hiding inside rock) — the owner: "they're supposed to sit on the land" | A fix must keep the enemy true to what it is. Ground units stay on the ground (dig under obstacles); and an enemy only fires when you could shoot back. Check a fix's side effects on the threat level too (shell count dropped 18 → 8 until movement was rebalanced). |
+| Turrets felt "very hard to kill": a 0.9 s window, a 5-px target, 4 hits | Measure **time-to-kill for a player arriving at a random moment**, not just perfect play (3.1 s → 1.2 s after the fix). Small armoured targets need generous windows and hit areas. |
+| 6 of 15 turrets sat behind taller towers; half the cargo pods flew low among the towers | Test the **whole level as played**, not just each enemy alone: simulate the timeline and check every target can be shot and every pickup reached. Turn layout rules into code (a pattern that enforces them), not just careful level data. |
+| v0.14.1 review: v0.14.0's "turrets never hidden" rule depended on where the ship was, so a turret could still end up hidden once the ship moved; and "no spire taller than 74 px" was only a promise in the level data | "Never hidden" and "always reachable" rules must cover **where the ship can go next**, not just where it is now — make them depend on the world, not the ship. Enforce limits in code (`addSpire` clamps to `MAX_SPIRE`), not by careful data. |
+| Ambushers from behind came in low among the towers, where neither side could shoot (v0.14.2) | A random lane must be chosen **against the world at that moment** (the tallest tower on screen), and timed events must suit the layout around them (ambushes now wait for short towers). |
+| v0.14.3: the dust skimmer's "spire ahead" check looked behind it — it flies left, so "ahead" is the lower x | For anything moving right-to-left, double-check "ahead" and "behind" in the code. The whole-level check (no flyer ever inside rock) caught it; a one-enemy test wouldn't have. |
+| v0.14.3 review: lifting every flyer to the same "clear of the tower" height stacked two gunships of a group exactly on top of each other when you flew low | A rule that moves many things to the same place (a safe height, an edge, a lane) can make them **pile up**. After such a rule, check that enemies don't end up hidden behind one another (the whole-level overlap audit found it). |
+| Supply drones that never fired were "no fun" (v0.14.0 → v0.15.0) | When re-dressing a system for a new world, keep the *fun* as well as the reward: an enemy that can't hurt you except by bumping is filler. Check every new enemy against "does it fight back?" |
+| A fair-play rule (crawlers don't fire from cover) left 3 of 9 crawlers never firing and 9 of 16 pop-ups pointless | When a rule **stops** an enemy from acting, measure how often it now does nothing at all, and fix *where it appears*, not just what it may do. |
+| A scripted edit that cut out "everything from the drone up to the dust skimmer" also deleted the cliff turret sitting between them (caught at once by a test crash, fixed before release) | After any scripted edit, read the diff's summary first: a far bigger change than expected means something else was caught in it. |
+| Raiders in a convoy each picked their own speed, so one could catch up and merge with the one ahead once both were lifted over a tower | Ships in a formation share one speed, or their spacing isn't guaranteed. Random per-ship variation belongs in looks or timing, not in spacing. |
+| A whole-level check failed about 1 run in 12 (v0.15.0 testing): ambush lanes were picked at the warning, but a taller tower could scroll in before the pods arrived | **A test that fails "sometimes" is a real bug until proven otherwise.** Loop the test to catch the failure, find the cause, then write a check that reproduces it every time. Anything decided early (at a warning) must be re-checked when it happens. |
+| Two rounds of enemy redesigns were rejected (a recolour, then new shapes in one style) before the owner chose from four different sets | For anything visual and subjective, **show several clearly different directions at once, in one picture**, with a recommendation, instead of one design at a time. Draft them in a scratch tool first (cheap to iterate), self-critique and redraw the weak ones before showing. |
+| v0.17.0 (before release): enemies looking 48 px either way for ice saw no free height inside a corridor of ice walls and just held still, sitting inside a slab | A look-ahead wider than the stretch your fairness rule covers can find "no way" where there is one. When a wide search fails, fall back to the narrow one the rule guarantees. |
+| v0.17.0: slabs drifted through each other (different speeds), and slid in from above onto slabs that had drifted under them during the warning | When adding a new kind of obstacle, check it against **itself** too, not just against the player and enemies. Things that wait (behind a warning) must keep moving with the world, or the world moves into them. |
+| v0.17.0: a test kept a reference to the level's terrain from before a reset (the same trap as in 3B-1) | In tests, never keep game objects in a variable across a reset; read them fresh each time (`g.terrain`, not a saved `t`). |
+| v0.18.0 (before release): Rime Guards stacked into one ship — a group's lanes squashed together at the top or bottom of the screen, back-to-back groups shared lanes, and the ice-dodging rule (faster) pushed two guards into the same gap | Every enemy type that hovers needs its own **keep-apart rule**, and it must work *alongside* the other rules that move it (ice dodging, edges): separating sideways as well as up/down. Run the whole-level overlap audit for every new type, not just the first one that stacked. |
+| v0.18.0: the "about to thaw" flicker reused the hit-flash picture, so the guard turned into a solid cream blob | Don't reuse one signal for two meanings. A warning needs its own look (here: flicking between the ice shell and the gunship inside). Look at screenshots of every new effect, not just the test results. |
+| v0.19.0 (before release): the Glacier Warden's saw ring surrounds its hub, and at first the ring (and the hub's rim) counted as armour for shots — so no shot could ever reach a plate or the core. Its fight on autopilot timed out with the boss untouched | **Time every new boss on autopilot as soon as it runs**, before polishing anything: a fight that never ends is a bug, not a balance problem (the same lesson as the Siege Crawler's core, again). For a weak point inside other parts, check the whole path a shot takes to it. |
+| v0.19.0: the 4-pixel-tall laser kept clipping a neighbouring plate with its bottom edge instead of reaching the core through the gap it had cut | Decide what a shot hits along its centre line (as the player aims), not its whole height; keep the full height only for bumping into things. |
+| v0.19.0: "blocks per minute" against a player who never dodges showed the first Warden draft was gentler than the Siege Crawler (15 vs 21), and its saw blades never hit anyone (all thrown off to the sides) | Measure a new boss's damage against the last boss with the same autopilot; each level should step up. Every attack should be able to reach a player who doesn't move. |
+| v0.19.0: the owner asked "what is the point of the ice?" — once one plate broke, the core stayed open for good (my own timing had shown the core open 80% of the fight and I tuned health instead of asking why) | **Every boss part needs a reason to exist in play**: if a mechanic can be beaten once and then ignored, it's decoration. When a measurement looks odd (core open 80%), question the design, not just the numbers. Fixed by turning plates (the gap moves away), plates as its ammunition, and refreezing every gap. |
+| v0.19.1 (before release): a refreeze clock that kept counting while nothing was broken refroze the first gap instantly; and with the hub turning, 10-hit plates turned away before breaking, smearing damage over all six (8 s to the first core hit) | Timers for "after X happens" must start when X happens. When a target moves, check its hit points against how long it stays in your sights. |
+| v0.19.2 review: when the Warden's ice ran out, its blizzard still glowed and whined for a fan it couldn't fire | When an attack can come to nothing (no ammunition, no target), make sure its **warning** is skipped too: a warning that's followed by nothing teaches the player to ignore warnings. |
+| v0.19.2 review: a Prism check failed about 1 run in 30 — the Prism bobs, and now and then it sat just above the test ship's fixed line of fire for the whole second | Caught by looping the one check 30 times. A test of "shoot the thing" must aim at it the way a player would (track it), not fire along a fixed line and hope. |
+| v0.20.0 (design): a double-detail version of the old blocky letters looked almost exactly like the old ones — same stroke, same square shapes — so it wouldn't have delivered the "sharper, more modern" look the owner had approved in the mock-up | Check a design against the picture that sold it before building it. Here the fix was smooth letters drawn as lines (our own design), which match what the owner saw. |
+| v0.20.0 (before release): the score's 1-pixel text shadow, fine for blocky letters, smudged the thin smooth letters into dark blobs; a slashed zero read like a row of "no entry" signs | Shadows and details sized for chunky pixels need halving at double detail. Look at the real screen (screenshots), not just the design sheet. |
+| v0.21.0 (testing the tests): one "deliberate break" (painting a rock one pixel wider) didn't break anything — the normal picture grew with it, so the rule still held; and another (a misspelt picture name) crashed the check instead of failing it | A break must violate the rule the check is about, or it proves nothing. And a check should report a bad case as a failure with a reason, not fall over. |
+| v0.21.0: "Frostring rules" failed once in a full run (two Rime Guards overlapping 0.63 s, limit 0.6) — a v0.18.0 behaviour bug, nothing to do with the graphics. Running that one check 30–100 times (several at once) and logging the guards' last second showed three causes: a newcomer pushing into a held spot, a leaving guard held back by the push meant to separate them, and jams against the screen edge between ice. The first two fixes each made a *different* rare case worse; the general rule (the newer guard backs out after 0.3 s) fixed all of them | Never wave a rare failure away as a flake: loop the check, log the moments before it, find the cause. Prefer one general rule ("whoever's newer gives way") over a patch per case, and re-measure the whole distribution after every change, not just the case you fixed. |
+| v0.21.1 review: making gore pieces half-pixel maps (for Rockjaw's finer teeth) silently halved the player's wing wreckage, which still used a one-pixel map | When a shared drawing rule changes, find **every** user of it (grep), not just the one you're redrawing. |
+| v0.21.1 review: painting Rockjaw and the rocks one rectangle per half pixel made the game take about 0.6 s longer to start on a phone-speed processor (measured with the CPU slowed 4x) | Measure start-up after adding art painted by code. Write pixels straight into the picture's data and work out shared parts once; it ended faster than before (0.33 s vs 0.42 s). |
+| v0.21.1 review: explosions and the engine flame showed faint stripes — half-pixel rows fall part-way through a screen pixel at scales like 7.5, leaving seams | At double detail, rows of a filled shape must meet on whole screen pixels (`fillCrisp`). Zoom right into screenshots of effects, not just sprites. |
+| v0.21.1 review: my first Rime Guard fix let a guard that was only making way get thrown out of the level, sometimes still frozen | A rule that removes or changes an enemy must only blame the one causing the problem, and should let it come back once the problem's gone (now: it backs out until clear, then holds again). |
+| v0.21.2 second review: with the processor slowed 4x the game drew about half as many frames as before double detail (64 vs 110 in a busy scene), yet the game's own code was only ~1 ms slower — the cost was the browser *painting*: mostly a full-screen sky gradient I'd added (one setting alone: 68 → 116 frames), plus the sun as 300 rows every frame | Measure frames per second on a slowed processor, not just how long our code takes; switch parts off one at a time to find the cost. Paint anything that never changes once into a picture (sky strip, sun, shot bodies) and copy it. Now level 1 draws faster than before double detail. Kept as `tools/speed-test.mjs`. |
+| v0.22.0 review: several of Rust Moon's hand-drawn sharp sprites came out a little smaller than the normal ones (the drawing shrank inside the same canvas), so shots could hit empty space around them; level 1's sniper had the same slip, unnoticed since v0.21.0 | A sharp picture must fill **exactly** the same outline box as the normal one, not just the same canvas size. Now a test compares the outline boxes, and it caught the old sniper the first time it ran. |
+| v0.22.0: speed checks of the same code differed by up to 10 frames from run to run, enough to look like a slowdown that wasn't there | Average several runs, or run the old version alongside, before deciding a change made the game slower. |
+| v0.22.1 review: the Siege Crawler's new rock spikes and dust waves, built from half-pixel rows every frame, showed faint stripes — the very seams fixed for explosions in v0.21.1, back in new code | A lesson only sticks if a test enforces it. Any shape built from half-pixel rows or columns each frame uses `fillCrisp`; the smoke test now renders the spikes and waves at a 7.51 scale and fails on any stray colour inside them (proven on the striped version: 40 bad pixels). |
+| v0.22.2 (owner): "the game stuttered a little" in the Siege Crawler's stage 2. The simulated phone couldn't show it (its software drawing makes every frame slow), but counting showed stage 2 made 3.5 MB of short-lived garbage a second (phones pause to clear it up) and stomp frames made 1,100 drawing calls: the stomp's spikes were 150 strips each, and every helper call read the screen's DOMMatrix, which creates garbage on each read | When frame timing can't be measured faithfully, measure what doesn't depend on the machine: drawing calls per frame and garbage per second (CDP sampling heap profiler, counting collected objects too). Fixes: read the transform once per batch as plain numbers (`crispOf`), paint repeated shapes once as pictures. Down to 2.0 MB/s and 490 calls. Added a `?fps` meter so the owner can show us stutters on the real phone. |
+| v0.23.0 (sheet): my first drafts of six Frostring enemies drifted from the owner's chosen designs — new shapes, and grey bodies where the originals were amber hazard paint — because I drew them from scratch with shape tools | Double detail means the same design with more detail. Redraw on today's layout, row by row (old row r → new rows 2r and 2r+1), keep the colour balance, then add detail; compare old and new at phone size before showing anyone. |
+| v0.23.2 review: the Glacier Warden's pictures were painted the moment it arrived; at double detail that froze the game for about 2 s on a phone-speed processor (it was already 0.6 s before) — a stutter right as the boss fight starts | Never paint big pictures mid-game. Paint them as the level starts (a boss's `prepare()`), and make the painter fast: test each shape once per spot, only inside a box round it, and read edges from that (2 s → 0.25 s, pixel-identical). Time any painting by code with the processor slowed 4x. |
+| v0.23.2 review: the redrawn saw blade was smaller than the circle that hurts you, and the blizzard's warning streaks had been thinned to half | A redraw can quietly break fairness. Check that every hazard's drawing still covers the area that hurts, and that every warning is at least as easy to see as before. |
+| v0.23.1: redrawing the Glacier Warden risked moving what shots hit: its plates, core and armour are judged from the same shapes the picture is painted from | Keep the hit map in whole game pixels and paint the picture from the same shapes at half-pixel centres; then check old against new on every pixel, plate combination and turn of the hub (4 million checks, no difference) before trusting the fight tests. |
+| v0.23.0: the speed test's new "garbage a second" read 1.5 one run and 3.6 the next for the same code: the scene played live, with different explosions each time | Make a measurement repeatable before trusting it: seed every random number (Math.random too, before the page loads), freeze the game before the start tap, step it by fixed amounts. Now call counts come out identical run to run. |
+| v0.22.1 review: the level test failed one run in thirty, and re-running the same start didn't repeat it: the "repeatable" test used real random dice, and the background kept rolling them while the test had the game frozen | A test with randomness must print its seed and be replayable with it. With a seed, the failing run (28) replayed exactly, and a trace showed the real cause in a minute: the autopilot, not the game. Then 80 seeds in a row passed. |
+| v0.21.2 second review: round shapes sat a quarter pixel off-centre (orbs spilled half a pixel past their box), and the wingman drone's outline had a notch | Small geometry slips show at double detail; check shapes against the box they're meant to fill. |
+| v0.24.0 review: Frostring still had a 50 ms hitch (processor slowed 4x) when an ice wall arrived: several new slabs were painted in the same game step, and the warm-up painted two small slabs, not enough to get the browser's painting code up to speed | Spread painting over several frames (one new slab per game step, drawn at once only if it's needed on screen first), and make a warm-up do the real job at full size a few times. Worst hitch 51 → 28 ms. |
+| v0.24.0 review: the speed test drew about 38 frames in every scene, against 90–128 at v0.23.0, for old and new code alike: this session ran on a slower computer | Frame counts only mean something next to the old version run on the same computer at the same time. The drawing calls and garbage numbers don't depend on the computer. |
+| v0.24.0 review: three hazards that weren't redrawn at all — sniper rounds, icicles and the Siege Crawler's dust wave — were drawn smaller than the area that hurt you (the wave hurt across a box above its slope) | When checking fairness, check every hazard in the game, not only the ones just redrawn. Make the hurt area follow the drawing (the wave now hurts only under its slope) or the drawing cover the hurt area. |
+| v0.24.0 review: "anything still blurry?" was a one-off script I'd have had to remember to run | Turn a good one-off audit into a permanent test: the level test now draws every 8th step at double detail and fails, naming the line of code, if any picture is drawn without its sharp version. |
+| v0.25.0: building menus as a picture sheet first and then as real code would have meant drawing everything twice | Build the menu screens as the real module from the start and render the picture sheet from it: the owner saw exactly what they got, and changes (names instead of initials) were made once. |
+| v0.25.0: the first menu draft had sub-lines spilling past their buttons and help text running into the next column — invisible until rendered | Render every screen at its real size and look before showing anyone; text in our 6-pixel letters needs counting (characters x 6 game pixels). |
+| v0.25.0: the Game Over buttons waited 1 s after opening (so a finger still holding Fire can't hit one) — and also after coming back from saving a score, where nothing was being held, so taps were silently ignored | A safety delay belongs to the moment it protects, not to every opening of the screen. The menus check plays every path with real taps, which is how this showed. |
+| v0.26.0: the new music couldn't be listened to here, only measured | Measure what you can't hear: an analyser on the music bus gave each song's loudness (themes about 0.024, bosses 0.029), so the themes sit just under the boss music. The owner's ears decide the rest. |
+| v0.26.0: the "every letter exists" check failed on note names like 'F#5' in the music | A check that scans all source text needs to know which text is never shown; say why where it skips a file. |
+| v0.26.0: the link preview said "THREE WORLDS. THREE BOSSES. MORE COMING SOON" — the owner: "What the hell is this?" They don't want players told up front how many levels exist | Never advertise how much of the game is unfinished; say it at the end of the last level only. The level list now hides the coming-soon slots (they look locked) until level 3 is finished. |
+| v0.26.0: the owner disliked the title lettering and wanted something iconic, "like Star Fox", with the ship built in | For the one image people see first, show several complete designs as real start screens (with the buttons in place) and let the owner pick; style can be borrowed, never a real logo. A small 3D model of the ship, drawn as pixel art, gave any angle cheaply. The owner liked all six and picked the squadron badge. |
+| v0.26.0–v0.27.0: the owner rejected a poster of the plain in-game sprite ("simply showed my ship") and then the title lettering ("I hate the font") | For presentation pictures, a scaled-up sprite isn't enough: give the hero image its own art (a detailed model, a dramatic angle, a designed logo). Ask what "iconic" means to them by showing options, not by describing them. |
+| v0.28.0: the owner asked whether the music was in, two releases after it shipped | People don't read changelogs closely. Say plainly how to notice each new thing (and what could hide it, like silent-until-tap audio), and keep a scannable "what's new" at the end of every release message. |
+| LESSONS.md fell several releases behind | Update the lessons in the same release as the change, every time. |
+| v0.29.0: "Music sucks. It's not a baby toy" — and three style samples (rock / synthwave / space opera, one shared tune) were rejected too | One tune in three costumes still sounds like one piece. Write each piece fresh in a genre that fits its world, let them sound different from each other, and send recordings to judge by ear (measured for loudness and phone-speaker balance first, since I can't hear them). |
+| v0.29.0: the heavy instruments that made the music good took 4–12 minutes to record one minute of music on a server: a phone could never play them live | Write music as code but ship recordings made from that code (a rule change the owner approved): quality without a cost while playing. Keep the loop seamless by folding the reverb tail onto the loop start, and line up the loop from the file's own opening hit, not from what the decoder reports. |
+
+## 5. Our working process (what works)
+
+1. **Read** `CLAUDE.md` and this file.
+2. **Analyse the current state** with real numbers from the code.
+3. **Plan** in plain English with a now-vs-new comparison; one question;
+   wait for approval.
+4. **Build** in small, focused changes on the work branch.
+5. **Test**: lint, the simulated-phone smoke test (Android + iPhone sizes,
+   fake camera cutout), the autopilot level test, and screenshots of
+   anything visual. Add a check for every new rule.
+6. **Self-review before hand-over** (new from Stage 2's lessons): run a
+   code review on the change, verify each finding, fix the real ones, and
+   only then release. The owner shouldn't have to ask.
+7. **Release**: bump the version (`tools/set-version.sh`), update
+   `CLAUDE.md`, pull request, merge, fast-forward the branch.
+8. **Hand over**: what changed (plain English), phone test steps with
+   links, what success and failure look like, and that it's saved.
+9. **End of stage**: full code review of the whole game, clean-up release,
+   mark the stage done, and update this file.
+
+## 6. Technical notes worth keeping
+
+- **No engine, no build step**: plain JavaScript modules + HTML canvas,
+  served as-is by GitHub Pages. Every import carries `?v=X.Y.Z` so phones
+  fetch fresh files after each release.
+- **Fixed game resolution** (208×144 "game pixels") scaled to the phone,
+  with a fixed physics step (1/120 s) for steady behaviour on any phone.
+- **Controls**: floating d-pad on the left half, big Fire/Special on the
+  right, oversized touch areas, safe-area insets for the iPhone camera
+  cutout, vibration on Android and sound feedback on iPhone.
+- **Everything drawn in code**: sprites as text grids, rocks/boss painted by
+  code, synthesised sound and music — tiny and instant to load.
+- **Enemy types are plain objects with optional hooks** (update, draw,
+  onDeath, hitTest, aimPoint, onScreen, contactDamage…). New enemies and
+  bosses plug in without touching the core loop. Supply pods and stage
+  bonuses live in the game core, so every boss gets them.
+- **Tests**: Playwright drives a real Chromium on simulated phones; an
+  invincible autopilot plays the whole level at high speed (and checks
+  every picture it draws is sharp). The lint
+  config is kept outside the repo (in the session scratchpad) — consider
+  adding one to the repo so it's always available.
+- **Ground (`js/terrain.js`)**: a level with `floor: N` gets a solid floor
+  strip and rock spires (`spires` pattern). Everything on the ground
+  scrolls at `GROUND_SPEED`; `terrain.solid()` stops shots on rock. Levels
+  with `floor: 0` behave exactly as before. The Ember Mines' tunnels will
+  build on this.
+- **Boss toolkit** (from building the second boss): a boss is a plain enemy
+  type with modes (enter → intro → taunt → fight ↔ transition → dying),
+  a moveset per stage that never repeats the last attack, attacks as small
+  functions that return true when done, and a warning flag for each
+  attack that the tests can read. Shared help lives in Game (supply pods,
+  stage bonuses, talking rules, player hitbox). Measuring each boss on
+  autopilot (fight length, how long the weak point is open) keeps
+  difficulty steps honest.
+- **Terrain-aware enemies** (v0.14.3): a type marked `flies: true` is
+  lifted over rock by the game core (`Game.keepAboveRock`, 10 px clear);
+  `liftsOver(e)` and `onLift(e, d)` let a type opt out for a moment or
+  shift its own planned path. `terrain.tallestOnScreen()` and
+  `turretPerch()` let patterns choose lanes and perches that suit the
+  towers on screen right now.
+- **Double detail without touching game logic** (v0.20.0): every picture
+  keeps its normal-size canvas (so all measuring code is unchanged) and
+  carries a sharp version as `.hi`; one wrapper on the screen's drawing
+  context (`useDetail`) draws the sharp one in its place, including part-
+  of-picture draws (wreckage). Pictures painted by code use
+  `detailCanvas(w, h)`, which paints in game pixels at double resolution.
+  No game rule, speed or hit area had to change, and every old test still
+  applied.
+- **Per-level difficulty**: `shotSpeed` on a level scales every enemy shot
+  (Rust Moon 1.1). An enemy whose gun isn't at its front-middle gives a
+  `muzzle(e)` so the warning blink shows in the right place.
+
+## 7. Stage retrospectives
+
+### Stage 1 — First Flight (v0.1.0)
+Built the foundation: ship, starfield, the full console-style control
+layout, safe areas, "turn sideways" prompt, three basic enemies, lives,
+score, game over, auto-pause. The owner approved the controls quickly
+("controls are fine") — the up-front care on touch controls paid off.
+
+### Stage 2 — The Outer Belt (v0.2.0 → v0.10.3)
+The longest stage by far: about 20 releases, almost all driven by the
+owner playing on the phone and reporting how it felt.
+- v0.2–0.3: level 1 + Rockjaw built, then made **Hard** ("far too easy"),
+  boss rebuilt as a 3-phase, 8-attack console-style boss; gore and
+  swearing added.
+- v0.4.x: health bar + automatic power-ups ("much more difficult now"),
+  smart supply pods at the boss, gentler rock fragments.
+- v0.5.0: big asteroid rework — **rejected and reverted**.
+- v0.6.x: longer level (~3 min), Sniper and Spinner, more shooters,
+  dangerous level rocks, gunships doubled.
+- v0.7.x: pods only fire forwards, explosions instead of blood, loot in
+  rocks.
+- v0.8.x: loot only in big rocks (35%, no tells), no wasted Repairs.
+- v0.9.x: boss pods take turns (survival / weapon) — fixed specials never
+  arriving at the boss.
+- v0.10.x: Rockjaw talks in speech bubbles; bonus for breaking each boss
+  stage; full code review and clean-up; Stage 2 done.
+
+**What worked:** short feedback loops (play → report → plan → build →
+play); numbers in plans; reverting quickly when something felt wrong;
+reviewing every release.
+**What to do better in Stage 3:** self-review before hand-over; change
+fewer things per release; test edge cases (screen edges, deaths, last
+life) from the start; carry Stage 2's preferences into the first plan so
+fewer rounds are needed.
+
+### Stage 3 — Levels 2–5 (in progress, v0.11.0 → )
+- 3A, v0.11.0: moving between levels (score, lives and special carry on).
+- 3B-1, v0.12.x: Rust Moon — canyon floor, rock spires, cliff turrets,
+  dust skimmers, mortar crawlers.
+- 3B-2, v0.13.x: the Siege Crawler (3 stages, 7 attacks, stomp → ground
+  spikes); a whole-level review found enemies hiding in rock, drops in
+  rock and rockets chasing junk.
+- v0.14.0: owner fixes — rocks replaced by supply drones, turrets never
+  hidden, cargo pods above the towers.
+- v0.14.1–0.14.2: tanks stay on the ground and dig under towers, only fire
+  when you can shoot back; turrets much quicker to kill.
+- v0.14.3: no flyer passes through a tower; ambushes from behind wait for
+  short towers and fly above them.
+- v0.14.4 (review of v0.14.3): gunships in a group no longer stack into
+  one when lifted over a tower.
+- v0.15.0: supply drones replaced by **Rust Raiders** (armed fighters
+  carrying the same loot gamble); crawlers tunnel under rows of towers and
+  only come up (and only arrive) where they have room to fire.
+- v0.16.0: Rust Moon's own look, the **Dust Pirates** (sail skiffs, dust
+  bats, sand galleons, kite gliders, harpoon guns, windmills), chosen by
+  the owner from four sets.
+- Story chosen: you defend the worlds; the enemies are the invaders.
+- 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
+  (asked for more options after the first four).
+- v0.17.0: the Frostring world: breakable drifting ice slabs (always a
+  way through, never ice through ice, enemies steer round, items never
+  inside), the ringed-planet backdrop, the Harvester look and a 3-minute
+  timeline with the existing enemies. Built fairness rules in from the
+  start (Rust Moon's lessons) and checked the whole level 26 times
+  before the first hand-over.
+- v0.18.0: Frostring's own enemies (Rime Guard, Cryo Layer with frost
+  mines, Prism with shards), from the chosen designs. Every one fights
+  back and every shot is warned; checks for each rule were broken on
+  purpose to prove they catch it. Screenshots and the whole-level audit
+  found two problems (stacking guards, a blob-like flicker) before
+  hand-over.
+- After v0.18.0 the owner said they'd pictured an icy *planet* (a
+  Hoth-style ground battle), not a comet ring. Rather than rework
+  Frostring, they chose to keep it and add the ice planet as a new
+  level 4 after it (9 levels in all). Lesson: when a level's setting
+  could be read two ways ("an icy world"), show a picture of the setting
+  itself early, not just its enemies.
+- v0.19.0: the Glacier Warden. The owner picked from four designs, asked
+  for a mix of two (B's fins + D's claws), saw three mixes side by side
+  and went back to the original B. Showing the mixes quickly was still
+  right: it settled the choice in one round. Timing the fight on
+  autopilot caught a boss that could never be hurt, and comparing
+  damage per minute with the Siege Crawler caught one that was too gentle
+  — both before the owner saw it.
+- v0.19.1: the owner spotted that the Warden's ice plates had no real
+  purpose. Redesigned with their approval: the plates turn, the core is
+  only reachable through a gap facing you, the ice is its ammunition, and
+  every gap refreezes. Tuned on autopilot to the core being open 35–40% of
+  the time and the fight still about 1.2x the Siege Crawler's.
+**So far:** the owner's feedback has been about the world making sense
+(rocks on a planet, tanks on towers, enemies through towers) and about
+fairness (hidden or unreachable enemies) rather than raw difficulty.
+**For 3C/3D:** design each new level's enemies around its terrain from the
+start, and run the whole-level checks (reachable targets, nothing inside
+rock, pickups reachable) before the first hand-over.
+
+### Double detail (done, v0.20.0 → v0.24.0)
+- Step 1 (v0.20.0): foundation, lettering, skies of all three levels,
+  shots, sparks, explosions, HUD, pickups, power-up orbs and the player's
+  ship. Pictures first (letters + two ships), owner picked ship B; then
+  built in one release. New checks were each proven to fail on a
+  deliberately broken copy (wrong-size picture, screen not wrapped, a
+  missing letter, the wrapper drawing at the wrong size).
+
+- Step 2 (v0.21.0): level 1's seven enemies (hand-drawn at double
+  detail), the asteroids and Rockjaw (painted by code in half-pixel
+  steps). The first draft of the sheet had a pod that looked like a smiley
+  face and a weaver that was just a cone — caught by looking at the sheet
+  before sending it. Rockjaw's open-mouth fangs used to point into his
+  jaw; at double detail they point into the mouth as intended.
+
+- Step 3 (v0.22.0): Rust Moon's thirteen sprites (hand-drawn), the spires
+  and canyon floor, and the Siege Crawler (painted by code). The review
+  before release found ten slips, all fixed: half the new sprites were
+  drawn a little smaller than their hit boxes, the cannon's light side
+  flipped when it aimed down, a line setting leaked into other drawing,
+  faint seams in the floor tiles and the hull's panel lines, and leg
+  joints sitting a quarter pixel off. A new outline check then found the
+  same slip in level 1's sniper (half a pixel short) from step 2.
+  The owner's review request (v0.22.1) found more: the stomp's rock spikes
+  and dust waves were striped (the v0.21.1 seam lesson hadn't been applied
+  to these new shapes), crack edges blurred, the floor moved in whole-pixel
+  jumps under smoothly gliding spires, and the level test failed about one
+  run in thirty because its autopilot chased loose items while a slow
+  cargo pod crossed the screen unopened.
+
+- Step 4 (v0.23.0 → v0.23.2): Frostring's twelve sprites (hand-drawn on
+  the old layouts after a first draft drifted from the chosen designs),
+  ice slabs and their cracks, the Rime Guard's shell, and the Glacier
+  Warden painted by code with its hit map checked pixel for pixel. The
+  review found the Warden painted as it arrived (a 2 s freeze on a
+  phone-speed processor), a saw blade drawn smaller than its hurt circle
+  and thinned blizzard warnings; all fixed, and boss pictures are now
+  painted as the level starts (`prepare()`).
+
+- Step 5 (v0.24.0), the wrap-up review: a permanent check that every
+  picture drawn during all three levels is sharp (it found nothing left,
+  and was proven to fail on a deliberately blurry enemy); Rockjaw's pupil
+  moved onto the half-pixel grid (it was smeared); three hazards whose
+  drawing was smaller than the area that hurts (sniper rounds, icicles,
+  the Siege Crawler's dust wave) fixed so you can see what hits you;
+  spinning debris painted once as pictures; new ice slabs painted one per
+  game step after a warm-up (the worst Frostring hitch halved); the Siege
+  Crawler fight down from 686 to 584 drawing calls a frame. Start-up time
+  unchanged (about 2 s on a slowed processor).
+
+- **Looking back on double detail**: it worked because the game's rules
+  never had to change — every picture kept its normal-size version for
+  measuring and carried a sharp one for drawing. The cost was in the
+  small things: seams, quarter-pixel slips, sprites a little smaller than
+  their hit boxes, pictures painted mid-game, and hazards redrawn smaller
+  than they hurt. Each was found once by looking closely and then made a
+  test, so it can't come back. Showing the owner every picture sheet
+  before building kept the designs theirs.
+
+### Making it presentable (v0.25.0 → v0.28.0)
+- The owner, short on weekly budget, asked to make the three finished
+  levels feel like a complete game to show people before building more.
+  Plan: 3 releases (menus and saving; music and polish; final review),
+  one decision at a time, pictures before building.
+- Built: an opening screen (the squadron badge with the ship), a vertical
+  main menu, level select for practice, high scores with first names on
+  our own keyboard, options (volumes, vibration, blood), a pause button
+  and menu, game over with Continue and a boss checkpoint, a "to be
+  continued" ending, level and title music, fades, a home-screen app
+  icon and a link preview. Smoke test plays every menu with real taps.
+- What the owner corrected: initials ("what is this?") became first
+  names; the link preview must not count levels; the first title
+  lettering was disliked, and six real start-screen designs (with the
+  buttons in place) settled it at once.
+- Reusable: see "Making a game presentable" in section 8.
+- v0.29.0, the music redo: the owner found the music childish. Six new
+  pieces (three levels, three bosses) written as code, approved by ear
+  from recordings, then shipped as recordings (about 1 MB each) because
+  they're too heavy to play live. The menus play The Outer Belt's.
+
+### Carry into Stage 3 (checklist for the plan)
+- Each boss: 3+ phases, 5+ attacks, entrance + name card, roar, music,
+  real movement, **speech bubbles in first person**, a **stage bonus** per
+  broken stage, **alternating supply pods**, weak point / armour rule.
+- Ask before giving a boss blood: Siege Crawler, Glacier Warden and Drill
+  Worm read as machines → explosions by default.
+- Plenty of shooters, every shot with a warning blink, guns fire where they
+  point, nothing from off-screen without warning.
+- Loot that's useful when you get it; mystery loot without tells is liked.
+- No banners; quiet rewards; nothing drawn over bullets.
+- Each level steps up in difficulty from the last; ~3 minutes, no calm
+  breaks.
+- One new system per release where possible.
+
+## 8. Recipe for future games (reusable)
+
+**Making a game presentable** (the order that worked here): opening
+screen with a strong logo (tap to continue) → main menu (continue / new
+game / levels / scores / options / help) → saving on the phone (progress,
+scores, options; never trust what's stored, check it on loading) → pause
+button + auto-pause → game over with continue → an ending that says
+what's next only once the player gets there → music for every screen →
+fades → home-screen icon and full-screen manifest → link-preview picture.
+Draw menus with the game's own art so they match; find buttons by name in
+tests, not by position.
+
+**Music for an action game**: ask the genre per level and boss early, and
+send recordings, not descriptions. Write the music as code (instruments
+plus songs bar by bar) and record it to MP3 with a tool (headless
+browser's offline audio + ffmpeg): rich sound, nothing to compute while
+playing, still entirely your own. MP3 plays in Chrome, Chromium tests and
+Safari (AAC doesn't decode in Chromium). Loop it in the game with the
+buffer's loop points; fold the reverb tail onto the loop start; find the
+first hit in the decoded audio to cancel any decoder delay.
+
+
+The parts of this project that would carry over to any new game:
+
+**Kick-off questions that worked** (asked one at a time at the start):
+name; genre and inspiration; who plays and on what phones; difficulty;
+number of levels/bosses; art style and palette; sound style; content
+rating (blood, swearing); controls layout; saving progress and scores;
+what's out of scope.
+
+**Documents to create on day one**
+- `CLAUDE.md` — the rule book: settled decisions, stage plan with status,
+  code map, the owner's working rules.
+- `LESSONS.md` — this file: preferences, lessons, retrospectives.
+
+**Default tech recipe for a phone browser game**: plain JS + canvas, no
+build step, GitHub Pages hosting from `main`, versioned imports, a fixed
+low game resolution scaled up, a version label on screen, Playwright smoke
+test on Android and iPhone sizes, an autopilot playthrough test, and
+`?start=` shortcut links for testing.
+
+**Default way of working**: work in stages; plan →
+approve → build → self-review → release → phone test → feedback; one
+decision at a time; Claude merges with standing permission; full review +
+retrospective at the end of every stage.
+
+**Visual choices** (art, looks, themes): draft several clearly different
+complete sets in a scratch tool, critique and fix the weak ones, then show
+them side by side in one picture (with the current look for comparison)
+and a recommendation. One design at a time leads to rounds of rejections.
