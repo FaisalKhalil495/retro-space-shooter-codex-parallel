@@ -516,6 +516,12 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      now at `demos/glacier-coast/`: existing ship, controls, and firing over
      prepainted coastal scenery, with pause and replay. It adds no enemies,
      boss, music, save changes, or campaign entry. Levels 1–3 remain unchanged.
+     **Demo revision 2:** the owner rejected the simplified block-like coast
+     and requested a detailed world with glaciers, ice, and water. The demo
+     now uses an original daylight glacier-valley painting, fractured shelves,
+     floating ice, teal fjord water with shimmer, and detailed foreground snow.
+     The hero, engine flame, and bullets must match the previous game exactly;
+     their original code is reused, with pixel and firing comparisons passing.
      Await the owner's demo review before planning the next implementation
      stage. The playable full Level 4 is not built yet.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
@@ -746,7 +752,7 @@ and 5 shown as coming soon. Menus approved from a picture sheet.)
 Approved by the owner. Keep the status column up to date.
 
 **Level 4 update:** concept direction **B — Glacier Coast** is selected.
-The approved first scenery-demo stage is complete and documented in
+The approved scenery-demo revision 2 is complete and documented in
 `demos/glacier-coast/README.md`. The full level awaits the owner's demo review
 and a separately approved next stage.
 
@@ -777,10 +783,13 @@ it over. The owner tests on Android; ideally the friend checks iPhone each stage
 - `demos/glacier-coast/` — separate 30-second scenery review, served directly
   like the main game. Reuses `Game`, `Controls`, the original ship, sound
   effects, and safe-area layout; defines its own scene without changing
-  `LEVELS`. Its `coast.js` paints layered sky, ice cliffs, sea, and continuous
-  foreground snow once, then scrolls the pictures at different speeds.
+  `LEVELS`. Its `coast.js` resamples `assets/glacier-world.png` once onto the
+  double-detail grid, prepaints water shimmer and continuous foreground snow,
+  and pans the glacier world more slowly than the foreground. The asset's
+  prompt, reference, hash, and generation record are in `assets/provenance.json`.
   `tools/coast-demo-test.mjs` checks both phone sizes, real thumbs, the
-  30-second clock, pause, replay, ground boundary, and untouched saves.
+  30-second clock, pause, replay, ground boundary, untouched saves, exact hero
+  and bullet pixels, and the original firing rate (35 demo checks).
   `tools/export-coast-demo.mjs <output.html>` optionally exports a single-file
   review copy; it is not a build step for the main game or the served demo.
 - `LESSONS.md` — the owner's preferences, lessons learned, stage

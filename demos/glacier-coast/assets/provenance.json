@@ -1,0 +1,17 @@
+{
+  "name": "glacier-coast-world",
+  "revision": 2,
+  "kind": "original generated 2D scenery",
+  "generation_tool": "OpenAI ImageGen",
+  "prompt": "Create an original, richly detailed pixel-art BACKGROUND ASSET for the independent game Ember Drift's Glacier Coast scenery demo. Use the attached glacier-coast concept only as a style and setting reference. Remove ALL ships, enemies, vehicles, guns, buildings, banners, labels, titles, logos and UI. This asset will sit behind the game's existing pixel-art hero and bullets; do not paint a hero or bullets.\n\nMake one uninterrupted LANDSCAPE composition, 3:2 aspect ratio. This is a real-feeling frozen planetary WORLD in clear daylight: a immense glacier flowing down a valley into a cold fjord, layered mountain ranges fading into pale blue mist, jagged snow-covered summits with exposed dark slate rock, complex broad glacial ice shelves meeting visible teal-blue WATER. The glacier must have irregular broken edges, deep blue crevasses, compressed layers, fractured ice ridges, snow drifts on ledges, strong changes of scale and perspective. It must NOT look like repeated rectangular blocks, simple triangles, or floating decorative pillars. Use asymmetric organic landforms and a continuous coastline sweeping from left to right.\n\nComposition tuned for side-scrolling gameplay: upper 35 percent soft winter sky, very small pale sun and thin streaks of high cloud; mountains and the huge distant glacier dominate the middle 35 percent; from 60 percent down show broad recognizable teal fjord water between ice shelves, tiny floating floes, reflected glacier faces, ripples, and foam at the ice edge. The bottom 15 percent contains water and distant shoreline details; do NOT paint a close foreground floor that could hide the player's ship. Keep the central flying space uncluttered enough for dark-edged sprites to read.\n\nArtistically match a polished original 16-bit side-scrolling game with modern fine pixel detail: clearly shaped pixel clusters, hand-authored-looking ice textures, thin cracks, facet shading, clean restrained colors. Muted ice blues, pale cream snow, deep desaturated teal water, dark rock; warm ivory sunlight. No photorealism, no vector shapes, no blurry brushwork, no neon, no glow, no dramatic night sky, no dark blizzard. Beautiful light, geological depth, and convincing water are essential. It should feel like a place stretching far beyond the screen, with much richer detail than a simple demo backdrop. All visual content is original.",
+  "reference_image": "docs/concepts/level-4-b-glacier-coast.png",
+  "source_sha256": "867b6266f8fe432ef83489596be5d532a4f25e5846879b4c5a4eb0bc28d55f14",
+  "intended_use": "Background only for the separate Glacier Coast demo; no hero or bullet artwork.",
+  "validation": [
+    "PNG content and dimensions inspected",
+    "No ships, bullets, enemies, text or UI in the source",
+    "Resampled once onto the existing 2x detail grid; no source image alteration",
+    "Hero and bullet rendering uses the original game modules"
+  ],
+  "rights_note": "Generated for this project through the host ImageGen tool; no third-party asset library or paid provider was used."
+}

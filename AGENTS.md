@@ -39,6 +39,13 @@ approved the separate 30-second scenery demo; it is implemented under
 controls, audio, and saving unchanged. Approval of this demo does not authorize
 building the full level or its enemies and boss.
 
+The user rejected the first demo's simplified ice blocks and authorized a
+more detailed world with glaciers, ice, and visible water. Demo revision 2
+uses original generated landscape art with geological detail and water
+shimmer. Preserve the exact existing hero, engine flame, and bullet artwork
+and firing behavior; do not redraw or substitute them. The pixel comparison
+in `tools/coast-demo-test.mjs` checks this explicitly.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already
@@ -113,8 +120,9 @@ boss. The planet's final name, enemy behavior, and boss rules are not settled.
 
 **Completed first stage:** a separate 30-second scrolling coast scenery demo
 using the existing ship and controls. It has pause, replay, a solid snow floor,
-and no campaign registration or save writes. Await the user's scenery review
-before proposing enemy waves or the boss. See `demos/glacier-coast/README.md`.
+and no campaign registration or save writes. Revision 2 replaces the simple
+cliffs with a glacier valley and fjord. Await the user's scenery review before
+proposing enemy waves or the boss. See `demos/glacier-coast/README.md`.
 
 ## Validation and handover
 

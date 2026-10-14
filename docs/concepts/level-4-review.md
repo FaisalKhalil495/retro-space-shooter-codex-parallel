@@ -152,8 +152,8 @@ orientation. See [demo instructions](../../demos/glacier-coast/README.md).
 - Show snowy foreground ground, distant ice cliffs, sea beyond the playable
   shelf, and a clear daytime sky. Keep the foreground shelf continuous;
   ocean gaps are scenery, not new hazards.
-- Keep the ship, shots, and warning colors easy to see. Simplify the concept
-  picture's fine detail to fit the established double-detail game art.
+- Keep the ship, shots, and warning colors easy to see. Preserve the exact
+  existing hero, engine flame, and bullet artwork and firing behavior.
 - Keep the scene separate from the normal level list and campaign. Add no
   new enemies, boss, pickups, music, or save-data changes in this step.
 - Check it at the Android and iPhone screen sizes and safe areas. Confirm
@@ -161,7 +161,13 @@ orientation. See [demo instructions](../../demos/glacier-coast/README.md).
   no errors. Run the existing smoke and three-level playthrough checks to
   verify the existing game still works.
 
-All 31 demo checks, 49 existing smoke checks, and 35 seeded playthrough checks
+**Revision 2:** the user rejected the first demo's simplified ice blocks and
+requested more detail. The coast now depicts a glacier descending through
+layered mountains into a fjord, with exposed rock, crevasses, irregular shelves,
+floating ice, reflections, and moving water shimmer. It pans slowly across this
+world while the snowy foreground moves faster. This revision awaits review.
+
+All 35 demo checks, 49 existing smoke checks, and 35 seeded playthrough checks
 passed. The working demo awaits the user's phone review before planning enemy
 waves and the Breakwater fight. A direction choice does not approve every
 proposed name, attack, number, or future development stage.

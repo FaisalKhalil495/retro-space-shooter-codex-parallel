@@ -1,157 +1,86 @@
 import { VIEW_W, VIEW_H } from '../../js/config.js?v=0.29.0';
 import { detailCanvas, FINE, grit } from '../../js/detail.js?v=0.29.0';
-import { seeded, fillDisc } from '../../js/util.js?v=0.29.0';
 import { GROUND_SPEED } from '../../js/terrain.js?v=0.29.0';
 
 export const COAST_FLOOR = 14;
-const WIDTH = 832; // More than the entire 30-second foreground journey.
 const FLOOR_Y = VIEW_H - COAST_FLOOR;
+const WIDTH = 832;
+const WORLD_W = 250;
+const WORLD_H = 167;
+const WORLD_Y = -12; // Show the glacier meeting water, not just the high peaks.
 
-// All scenery is painted once at the same double detail as the game. Draw
-// whole strips each frame; never repaint cliffs, snow, or gradients in flight.
+// Only the backdrop is an image asset. The hero, flame and bolts are still
+// drawn by the unchanged Game class with the original game sprites.
+const artwork = new Image();
+export const coastReady = new Promise((resolve, reject) => {
+  artwork.onload = resolve;
+  artwork.onerror = () => reject(new Error('Glacier landscape could not be loaded'));
+});
+artwork.src = globalThis.__coastEmbeddedArt || new URL('assets/glacier-world.png?demo=2', document.baseURI).href;
+
 function paint(w, h, fn) {
   const { canvas, ctx } = detailCanvas(w, h);
   fn(ctx);
   return canvas;
 }
 
-function sky() {
-  return paint(VIEW_W, VIEW_H, (c) => {
-    for (let y = 0; y < VIEW_H; y += FINE) {
-      const k = Math.min(1, y / 90);
-      c.fillStyle = `rgb(${Math.round(145 + 59 * k)}, ${Math.round(174 + 44 * k)}, ${Math.round(191 + 29 * k)})`;
-      c.fillRect(0, y, VIEW_W, FINE);
-    }
-    c.fillStyle = '#ede4c8';
-    fillDisc(c, 158, 29, 8);
-    c.fillStyle = '#f1ead7';
-    fillDisc(c, 156.5, 27.5, 5.5);
+function landscape() {
+  // Resample once to the half-pixel grid, retaining the source aspect ratio.
+  // A slow camera pan explores the world without repeating ice pillars.
+  return paint(WORLD_W, WORLD_H, (c) => {
+    c.imageSmoothingEnabled = true;
+    c.imageSmoothingQuality = 'high';
+    c.drawImage(artwork, 0, 0, WORLD_W, WORLD_H);
   });
 }
 
-function clouds() {
-  const r = seeded(401);
-  return paint(WIDTH, 30, (c) => {
-    for (let x = 8; x < WIDTH - 40; x += 48 + Math.floor(r() * 38)) {
-      const y = 3 + Math.floor(r() * 15);
-      c.fillStyle = '#c6d5d8';
-      c.fillRect(x, y + 4, 26, 2);
-      c.fillStyle = '#dbe1da';
-      fillDisc(c, x + 8, y + 3, 3);
-      fillDisc(c, x + 14, y + 2, 4);
-      fillDisc(c, x + 20, y + 3.5, 2.5);
-      c.fillRect(x + 2, y + 3, 23, 2);
-    }
-  });
-}
-
-function mountains() {
-  const r = seeded(402);
-  return paint(WIDTH, 46, (c) => {
-    for (let x = -16; x < WIDTH; x += 27) {
-      const h = 14 + r() * 29;
-      c.fillStyle = '#8cabbc';
-      c.beginPath();
-      c.moveTo(x - 18, 46);
-      c.lineTo(x + 9, 46 - h);
-      c.lineTo(x + 40, 46);
-      c.fill();
-      c.fillStyle = '#c7d7dc';
-      c.beginPath();
-      c.moveTo(x + 9, 46 - h);
-      c.lineTo(x + 3, 46 - h + 13);
-      c.lineTo(x + 8, 46 - h + 10);
-      c.lineTo(x + 14, 46 - h + 15);
-      c.lineTo(x + 12, 46 - h + 5);
-      c.fill();
-    }
-  });
-}
-
-function sea() {
-  const r = seeded(403);
-  return paint(WIDTH, 43, (c) => {
-    c.fillStyle = '#648690';
-    c.fillRect(0, 0, WIDTH, 43);
-    c.fillStyle = '#526f7c';
-    c.fillRect(0, 12, WIDTH, 31);
-    c.fillStyle = '#3f606d';
-    c.fillRect(0, 29, WIDTH, 14);
-    for (let i = 0; i < 260; i++) {
-      const x = Math.floor(r() * WIDTH);
-      const y = Math.floor(r() * 43);
-      c.fillStyle = i % 4 ? '#86a1aa' : '#bccdd0';
-      c.fillRect(x, y, 1 + Math.floor(r() * 7), FINE);
-    }
-  });
-}
-
-function cliffs(seed, h, near) {
-  const r = seeded(seed);
-  return paint(WIDTH, h, (c) => {
-    // Groups of vertical glacier faces, separated by views over the sea.
-    for (let x = 0; x < WIDTH - 55; x += 60 + Math.floor(r() * 49)) {
-      const width = 34 + Math.floor(r() * 36);
-      const top = 4 + Math.floor(r() * (h * .3));
-      const ridges = Array.from({ length: width + 1 }, () => Math.floor(r() * 3));
-      for (let xx = 0; xx < width; xx += FINE) {
-        const edge = Math.min(xx, width - xx);
-        const y0 = top + Math.max(0, 4 - edge) + ridges[Math.floor(xx / 3)];
-        const foot = h - Math.max(0, 3 - edge) - (Math.floor(xx) % 9 === 0 ? 1 : 0);
-        c.fillStyle = xx > width - 7 ? (near ? '#627f99' : '#819fb1') : (near ? '#8eafc1' : '#a5c0cc');
-        c.fillRect(x + xx, y0 + 3, FINE, foot - y0 - 3);
-        c.fillStyle = '#e8e5dc';
-        c.fillRect(x + xx, y0, FINE, 2);
-        c.fillStyle = '#c6d5db';
-        c.fillRect(x + xx, y0 + 2, FINE, 1.5 + ridges[Math.floor(xx / 4)]);
-        for (let yy = y0 + 5; yy < foot; yy += FINE) {
-          const fold = Math.sin((xx + yy * .15) * 1.7);
-          const g = grit(Math.round((x + xx) * 2), Math.round(yy * 2), seed);
-          if (fold > .55 || g < .045) {
-            c.fillStyle = near ? '#b2cbd5' : '#c0d4dc';
-            c.fillRect(x + xx, yy, FINE, FINE);
-          } else if (fold < -.82) {
-            c.fillStyle = near ? '#7899af' : '#93b0c1';
-            c.fillRect(x + xx, yy, FINE, FINE);
-          }
-        }
-      }
-      // Broken snow ledges and stepped blue facets instead of rectangular
-      // pillars; sparse dark cracks read as ice rather than architecture.
-      for (let xx = 7; xx < width - 5; xx += 12) {
-        c.fillStyle = near ? '#607f99' : '#819fb4';
-        const yy = top + 6 + Math.floor(r() * 5);
-        c.fillRect(x + xx, yy, FINE, Math.max(2, h - yy - 3));
-        c.fillStyle = '#dbe1de';
-        c.fillRect(x + xx - 2, top + 1, 4, 2);
-      }
-    }
-  });
-}
-
-function snow() {
-  return paint(WIDTH, COAST_FLOOR, (c) => {
-    c.fillStyle = '#dcded7';
-    c.fillRect(0, 0, WIDTH, COAST_FLOOR);
-    c.fillStyle = '#f0e9d9';
-    c.fillRect(0, 0, WIDTH, 2);
-    // Stones and wind-carved shadows stay below the solid ground line.
-    for (let x = 0; x < WIDTH; x += FINE) {
-      for (let y = 3; y < COAST_FLOOR; y += FINE) {
-        const g = grit(x * 2, y * 2, 404);
-        if (g < .08) {
-          c.fillStyle = y > 9 ? '#a5b7c0' : '#c2ccd0';
+function waterFrames(world) {
+  const { data, width } = world.hi.getContext('2d').getImageData(0, 0, WORLD_W * 2, WORLD_H * 2);
+  // Shimmer is clipped to actual dark teal water in the painting; pale ice
+  // stays still. These eight transparent frames are also painted just once.
+  return Array.from({ length: 8 }, (_, frame) => paint(WORLD_W, WORLD_H, (c) => {
+    for (let y = 87; y < FLOOR_Y - WORLD_Y; y += FINE) {
+      for (let x = 0; x < WORLD_W; x += FINE) {
+        const i = (Math.round(y * 2) * width + Math.round(x * 2)) * 4;
+        const r = data[i], g = data[i + 1], b = data[i + 2];
+        const water = g > r * 1.16 && b > r * 1.12 && b < g * 1.3 && g > 45 && g < 160;
+        const ripple = Math.sin(x * .4 + y * 2 + frame * Math.PI / 4);
+        if (water && ripple > .92 && grit(x * 2, y * 2, 604) > .58) {
+          c.fillStyle = 'rgba(193, 220, 224, .23)';
           c.fillRect(x, y, FINE, FINE);
         }
       }
     }
-    for (let x = 20; x < WIDTH; x += 58) {
-      c.fillStyle = '#9cafba';
-      c.fillRect(x, 9, 12, 1);
-      c.fillStyle = '#667e8b';
-      c.fillRect(x + 8, 7.5, 2.5, 2);
-      c.fillStyle = '#efe8d8';
-      c.fillRect(x + 8, 7, 2, FINE);
+  }));
+}
+
+function shore() {
+  return paint(WIDTH, COAST_FLOOR, (c) => {
+    // Continuous snowy floor: wind-carved snow above a blue cut ice edge.
+    for (let x = 0; x < WIDTH; x += FINE) {
+      const drift = 5 + Math.sin(x / 18) * 1.3 + Math.sin(x / 6) * .7;
+      const seam = 8 + Math.sin(x / 27) + Math.sin(x / 8) * .5;
+      for (let y = 0; y < COAST_FLOOR; y += FINE) {
+        const grain = grit(x * 2, y * 2, 605);
+        let color = y < 1 ? '#e9eee6' : y < drift ? '#dce8e5' : y < seam ? '#b3cdd6' : '#7ba9be';
+        if (y > drift && grain < .17) color = '#6592ac';
+        else if (y < drift && grain > .85) color = '#edf0e5';
+        else if (y > seam && grain > .82) color = '#a6c9d5';
+        c.fillStyle = color;
+        c.fillRect(x, y, FINE, FINE);
+      }
+    }
+    // Cracks and shallow snow hollows stay below the true collision edge.
+    for (let x = 18; x < WIDTH; x += 35) {
+      const y = 4 + (Math.floor(x / 35) % 3);
+      c.fillStyle = '#92b8c8';
+      c.fillRect(x - 5, y, 9, FINE);
+      c.fillStyle = '#4e819f';
+      for (let row = 8; row < COAST_FLOOR; row += FINE) {
+        c.fillRect(x + Math.floor((row - 8) / 2) * FINE, row, FINE, FINE);
+      }
+      c.fillStyle = '#e9eee6';
+      c.fillRect(x - 4, y - FINE, 7, FINE);
     }
   });
 }
@@ -159,26 +88,32 @@ function snow() {
 export class CoastBackground {
   constructor() {
     this.t = 0;
-    this.sky = sky();
-    this.layers = [
-      { image: clouds(), y: 18, speed: 1 },
-      { image: mountains(), y: 47, speed: 2 },
-      { image: sea(), y: 87, speed: 4 },
-      { image: cliffs(405, 38, false), y: 65, speed: 6 },
-      { image: cliffs(406, 27, true), y: 96, speed: 11 },
-      { image: snow(), y: FLOOR_Y, speed: GROUND_SPEED },
-    ];
+    this.loaded = false;
+    this.layers = [];
+    coastReady.then(() => {
+      const world = landscape();
+      this.world = world;
+      this.water = waterFrames(world);
+      this.layers = [
+        { image: world, y: WORLD_Y, speed: 1.2 },
+        { image: shore(), y: FLOOR_Y, speed: GROUND_SPEED },
+      ];
+      this.loaded = true;
+    }).catch(() => {}); // The page shows a useful load error and offers reload.
   }
 
   update(dt) { this.t += dt; }
 
   draw(ctx, snap) {
-    ctx.drawImage(this.sky, 0, 0);
-    for (const { image, y, speed } of this.layers) {
-      const x = -snap((this.t * speed) % WIDTH);
-      ctx.drawImage(image, x, y);
-      // A second whole image keeps the shore continuous if the demo is replayed.
-      if (x + WIDTH < VIEW_W) ctx.drawImage(image, x + WIDTH, y);
-    }
+    ctx.fillStyle = '#9aafb9';
+    ctx.fillRect(0, 0, VIEW_W, VIEW_H);
+    if (!this.loaded) return;
+    const camera = snap(Math.min(this.t * 1.2, WORLD_W - VIEW_W));
+    ctx.drawImage(this.world, -camera, WORLD_Y);
+    ctx.drawImage(this.water[Math.floor(this.t * 5) % this.water.length], -camera, WORLD_Y);
+    const snow = this.layers[1].image;
+    const x = -snap((this.t * GROUND_SPEED) % WIDTH);
+    ctx.drawImage(snow, x, FLOOR_Y);
+    if (x + WIDTH < VIEW_W) ctx.drawImage(snow, x + WIDTH, FLOOR_Y);
   }
 }

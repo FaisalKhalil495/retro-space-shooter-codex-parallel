@@ -16,7 +16,10 @@ stage — and, one day, a system for building more games.
 
 Latest decision: after the v0.29.0 Level 4 concept review, the owner selected
 **B — Glacier Coast** and approved a separate 30-second scenery demo. That demo
-is complete and awaits phone review. The main game is still v0.29.0; the full
+was revised after the owner rejected the simple ice blocks. Revision 2 adds
+a detailed glacier valley, fractured shelves, and visible fjord water. The
+hero and bullets must look exactly like the previous game. It awaits phone
+review. The main game is still v0.29.0; the full
 level and boss have not been approved for implementation.
 
 ---
@@ -455,6 +458,22 @@ fewer rounds are needed.
   only the coast so an animated HUD cannot hide a frozen background. An optional
   single-file HTML export makes this review portable without adding a build
   dependency to the game. Await the owner's phone review before moving on.
+- Coast demo revision 2: the owner disliked the simplified landscape and
+  asked for a believable world with glaciers, ice, and water. Replaced the
+  repeated blocks with original generated daylight scenery: layered peaks,
+  exposed rock, glacial strata and crevasses, broken shelves, floating ice,
+  reflections, and teal water. A slow camera pan explores the landscape;
+  water shimmer and foreground snow are prepainted. The user also required
+  the exact earlier hero and bullets. Reused the original renderer and added
+  independent pixel comparisons of the hero, flame, and bullets, plus firing
+  emission checks. Validation: 35 demo checks, 49 smoke checks, and 35 seeded
+  playthrough checks passed. The export now embeds the landscape PNG as well
+  as the modules; both phone layouts made no external requests. Prompt and
+  asset provenance are recorded alongside the PNG. Lesson: preserve the
+  concept's depth and organic landforms at actual play scale, and demonstrate
+  sprite preservation directly rather than relying only on code inheritance.
+  This remains a scenery review; campaign files, enemies, bosses, audio,
+  saving, and full-level approval are unchanged.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

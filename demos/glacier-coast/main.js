@@ -8,7 +8,7 @@ import { drawText } from '../../js/font.js?v=0.29.0';
 import { unlockAudio, suspendAudio, setVolumes } from '../../js/audio.js?v=0.29.0';
 import { setVibrate } from '../../js/feedback.js?v=0.29.0';
 import { save } from '../../js/save.js?v=0.29.0';
-import { CoastBackground, COAST_FLOOR } from './coast.js?demo=1';
+import { CoastBackground, COAST_FLOOR, coastReady } from './coast.js?demo=2';
 
 const DURATION = 30;
 const STEP = 1 / 120;
@@ -51,6 +51,20 @@ let layout;
 let dpr = 1;
 let last = performance.now();
 let frozen = false;
+let artworkReady = false;
+
+action.disabled = true;
+action.textContent = 'Loading coast…';
+coastReady.then(() => {
+  artworkReady = game.bg.loaded;
+  action.disabled = !artworkReady;
+  action.textContent = 'Start flight';
+}).catch(() => {
+  message.textContent = 'The coast could not load. Reload this page to try again.';
+  action.textContent = 'Reload coast';
+  action.disabled = false;
+  action.onclick = () => location.reload();
+});
 
 // Read the user's options; never write scores, progression, or settings.
 setVolumes(save.settings.music, save.settings.sound);
@@ -78,7 +92,7 @@ function pause() {
 }
 
 async function start() {
-  if (innerHeight > innerWidth || document.hidden) return;
+  if (!artworkReady || innerHeight > innerWidth || document.hidden) return;
   unlockAudio();
   if (mode !== 'paused') game.reset();
   last = performance.now();
@@ -145,7 +159,7 @@ function render(dt) {
   if (mode === 'playing') controls.draw(ctx, dt);
   ctx.fillStyle = PAL.textDim;
   ctx.font = '10px ui-monospace, Menlo, monospace';
-  ctx.fillText('COAST DEMO 1', layout.leftZone.x + 8, layout.leftZone.y + layout.leftZone.h - 8);
+  ctx.fillText('COAST DEMO 2', layout.leftZone.x + 8, layout.leftZone.y + layout.leftZone.h - 8);
 }
 
 function frame(now) {
@@ -176,4 +190,5 @@ requestAnimationFrame(frame);
 // Same style of test hooks as the existing game; no effect on normal play.
 window.__coast = { game, controls, start, pause, advance,
   get mode() { return mode; }, get layout() { return layout; },
+  get artworkReady() { return artworkReady; },
   set frozen(value) { frozen = value; } };

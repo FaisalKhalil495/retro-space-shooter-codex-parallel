@@ -40,8 +40,49 @@ try {
     page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
     page.on('request', (req) => { if (/\/music\/.*\.mp3/.test(req.url())) musicRequests.push(req.url()); });
     await page.goto(base + 'demos/glacier-coast/' + phone.query);
-    await page.waitForFunction(() => window.__coast);
+    await page.waitForFunction(() => window.__coast?.artworkReady);
     await page.evaluate(() => { window.__coast.frozen = true; });
+    const originalArt = await page.evaluate(async () => {
+      const { Game } = await import('/js/game.js?v=0.29.0');
+      const { useDetail } = await import('/js/detail.js?v=0.29.0');
+      const live = window.__coast.game;
+      // Compare actual demo rendering with the original Game renderer on the
+      // same plain background, so scenery cannot conceal a changed sprite.
+      const make = (prototype) => {
+        const g = Object.assign(Object.create(prototype), live);
+        g.player = { ...live.player, x: 36, y: 64, entering: 0, invuln: 0, cooldown: 0, moveX: 1 };
+        g.bullets = [];
+        g.time = 5;
+        g.bg = { draw(c) { c.fillStyle = '#0b0f1c'; c.fillRect(0, 0, 208, 144); } };
+        g.terrain = Object.assign(Object.create(Object.getPrototypeOf(live.terrain)), live.terrain, { draw() {} });
+        g.drawHud = () => {};
+        return g;
+      };
+      const demo = make(Object.getPrototypeOf(live));
+      const original = make(Game.prototype);
+      // Pin the reference methods so an instance override in the demo cannot
+      // silently become part of the expected original artwork.
+      original.draw = Game.prototype.draw;
+      original.drawPlayer = Game.prototype.drawPlayer;
+      for (let i = 0; i < 72; i++) {
+        demo.updatePlayer(1 / 120, { dx: 0, dy: 0, fire: true });
+        Game.prototype.updatePlayer.call(original, 1 / 120, { dx: 0, dy: 0, fire: true });
+      }
+      const firingMatches = JSON.stringify(demo.bullets) === JSON.stringify(original.bullets) && demo.bullets.length > 2;
+      demo.bullets = original.bullets = [{ x: 76, y: 69, vy: 0 }, { x: 112, y: 69, vy: 0 }];
+      const draw = (g) => {
+        const canvas = document.createElement('canvas'); canvas.width = 416; canvas.height = 288;
+        const ctx = useDetail(canvas.getContext('2d')); ctx.scale(2, 2);
+        g.draw(ctx, (x) => Math.round(x * 2) / 2);
+        return ctx.getImageData(0, 0, 416, 288).data;
+      };
+      const a = draw(demo), b = draw(original);
+      let differences = 0;
+      for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) differences++;
+      return { differences, firingMatches };
+    });
+    check(phone.name + ': hero, flame and bullet pixels exactly match the original game', originalArt.differences === 0);
+    check(phone.name + ': original firing rate and bullet emission unchanged', originalArt.firingMatches);
     const tapButton = async (selector) => {
       const box = await page.locator(selector).boundingBox();
       assert.ok(box, selector + ' visible');
