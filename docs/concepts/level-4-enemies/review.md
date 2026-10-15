@@ -9,6 +9,10 @@ They are not gameplay screenshots or finished sprites. Enemy designs, attack
 rules, counts, health, and difficulty remain open. Nothing has been added to
 the demo or campaign.
 
+The [next proposed stage](next-stage.md) is a separate 30-second combat preview
+using the three regular enemies. It awaits review; the boss fight would follow
+in a separately planned stage.
+
 ## Shelf Skiff
 
 ![Shelf Skiff](shelf-skiff.png)

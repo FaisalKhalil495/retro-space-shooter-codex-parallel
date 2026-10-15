@@ -528,6 +528,10 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      `docs/concepts/level-4-enemies/review.md`. These are design proposals, not
      approved enemies or final game sprites. The playable full Level 4 is not
      built yet; implementation still needs a separately approved stage.
+     The next concrete proposal is a separate 30-second combat preview with
+     the three regular enemy types; see
+     `docs/concepts/level-4-enemies/next-stage.md`. It awaits approval and does
+     not include the Breakwater fight or campaign registration.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
