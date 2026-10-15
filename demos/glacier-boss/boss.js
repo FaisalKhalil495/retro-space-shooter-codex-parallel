@@ -1,10 +1,10 @@
 import { VIEW_W, HUD_H, PAL } from '../../js/config.js?v=0.29.0';
 import { clamp, rectsOverlap } from '../../js/util.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
-import { picture, hullContact, WIDTH, HEIGHT, launcherPort } from './art.js?boss=5';
-import { updateBreakup, drawBreakup } from './wreck.js?boss=5';
-import { escorts } from './escorts.js?boss=5';
-import { drawMortarMark, mortarPoint } from './hazards.js?boss=5';
+import { picture, hullContact, WIDTH, HEIGHT, launcherPort } from './art.js?boss=5.1';
+import { updateBreakup, drawBreakup } from './wreck.js?boss=5.1';
+import { escorts } from './escorts.js?boss=5.1';
+import { drawMortarMark, mortarPoint } from './hazards.js?boss=5.1';
 import { target } from '../glacier-combat/art.js?combat=3';
 export const MOVES=[null,['broadside','torpedoes','flak','clusters'],
   ['ice','darts','broadside','torpedoes','flak','clusters'],

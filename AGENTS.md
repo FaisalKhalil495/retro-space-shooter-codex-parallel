@@ -151,6 +151,15 @@ integration boundaries remain unchanged.
 Revision 5 passes 312 focused plus 220 existing checks (532 total), including
 21 complete no-hit scenarios with both fighters alive and native-defense checks.
 
+The owner requested a Breakwater review and improvements where needed.
+Review fix **5.1** preserves all revision-5 attack tuning and art, moving the
+lance and retained-wreck drawing into the native world/ship draw hook. Both
+layers must follow screen shake and remain beneath the original hero, bullets
+and screen effects. Full-scene pixel tests reproduce the old bugs and verify
+the fixes. Current validation: 320 focused plus 220 existing checks (540 total).
+The preview label and local module queries are 5.1; the campaign stays v0.29.0.
+Review fix 5.1 is complete; await phone feedback before a new stage.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already

@@ -36,12 +36,12 @@ try{
   check(phone.name+': app interruption pauses',await page.evaluate(()=>window.__boss.mode==='paused'));
   await tap('#restart');check(phone.name+': restart clears the whole encounter',await page.evaluate(()=>{const g=window.__boss.game;return g.time===0&&g.bg.t===0&&!g.boss&&g.enemies.length===0&&g.enemyShots.length===0&&g.pickups.length===0&&g.health===5&&g.lives===3&&g.weapons.kind===null&&g.audit.length===0&&g.wreck===null;}));
   const result=await page.evaluate(async()=>{
-   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=5');
-   const {BREAKWATER,beginAttack,clearThreats,MOVES,chooseAttack,REST}=await import('/demos/glacier-boss/boss.js?boss=5');
-   const {HULLS}=await import('/demos/glacier-boss/art.js?boss=5');
-   const {HUNTER_TORPEDO,TORPEDO_ART}=await import('/demos/glacier-boss/torpedo.js?boss=5');
+   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=5.1');
+   const {BREAKWATER,beginAttack,clearThreats,MOVES,chooseAttack,REST}=await import('/demos/glacier-boss/boss.js?boss=5.1');
+   const {HULLS}=await import('/demos/glacier-boss/art.js?boss=5.1');
+   const {HUNTER_TORPEDO,TORPEDO_ART}=await import('/demos/glacier-boss/torpedo.js?boss=5.1');
    const {useDetail}=await import('/js/detail.js?v=0.29.0');
-   const {BREAKUP_SECONDS}=await import('/demos/glacier-boss/wreck.js?boss=5');
+   const {BREAKUP_SECONDS}=await import('/demos/glacier-boss/wreck.js?boss=5.1');
    const {Game}=await import('/js/game.js?v=0.29.0');const {ENEMY_TYPES}=await import('/js/enemies.js?v=0.29.0');const {LEVELS}=await import('/js/levels.js?v=0.29.0');
    const make=()=>{const g=new BossGame();g.runner={update(){}};g.rand=()=>.45;Object.assign(g.player,{x:26,y:115,entering:0,invuln:100});const b=g.spawnEnemy('breakwater',214,0);Object.assign(b,{x:130,mode:'fight',idle:99});return {g,b};};
    const tick=(g,s,input={dx:0,dy:0,fire:false})=>{for(let i=0;i<Math.round(s*120);i++)g.update(1/120,input);};
@@ -243,7 +243,7 @@ try{
     for(let y=-1.4;y<=1.4;y+=.2)for(let x=-1.4;x<=1.4;x+=.2)if(x*x+y*y<1.96)missileContactVisible&&=pixels[(Math.floor((8+y)*4)*64+Math.floor((8+x)*4))*4+3]>0;
    }
    // Revision 4: timing, predictive guidance, roof origins and cached masks.
-   const {LAUNCHER_HULLS,picture,launcherPort}=await import('/demos/glacier-boss/art.js?boss=5');
+   const {LAUNCHER_HULLS,picture,launcherPort}=await import('/demos/glacier-boss/art.js?boss=5.1');
    let longerTracking=true,tighterTurns=true,predictsMovement=true,roofOrigins=true,roofRaises=true,raisedMasks=true,raisedBreakup=true,broadsidePreserved=true;
    for(const phase of [1,2,3]){
     const {g,b}=make();b.phase=phase;
@@ -309,7 +309,7 @@ try{
    expose(emergence.b);emergence.g.damage(emergence.b,170);tick(emergence.g,1);
    const pendingFighterSafe=emergence.g.enemies.filter(e=>e.persistentEscort).length===1&&emerging&&!emerging.dead&&!!emerging.launch;
    // Revision 5: new hazards use native defenses and bounded, locked patterns.
-   const {CLUSTER_ART,CLUSTER_SHELL,LANCE_ART,GLACIER_RUPTURE,CLUSTER_BURST,ruptureRect,drawLances}=await import('/demos/glacier-boss/hazards.js?boss=5');
+   const {CLUSTER_ART,CLUSTER_SHELL,LANCE_ART,GLACIER_RUPTURE,CLUSTER_BURST,ruptureRect,drawLances}=await import('/demos/glacier-boss/hazards.js?boss=5.1');
    let mortarCounts=true,mortarOrigins=true,mortarBounded=true,lanceCounts=true,lanceValues=true,lanceGapsChange=true,ruptureCounts=true,ruptureRetargets=true,committedTargets=true;
    for(const phase of [1,2,3]){
     const {g,b}=make();b.phase=phase;beginAttack(b,g,'clusters');let maxShells=0,maxFragments=0;
@@ -424,7 +424,27 @@ try{
    const noSafePockets=pockets.every(p=>p.hurt>0);
    const art=HULLS.every(a=>Object.values(a).every(p=>p.width===58&&p.height===24&&p.hi.width===116&&p.hi.height===48&&p.mask.some(Boolean)&&p.flash.hi.width===116));
    const masks=HULLS.every((a,index)=>Object.entries(a).every(([state,p])=>{const e={x:0,y:0,phase:index+1,open:state==='open',mode:'fight'};return p.mask.every((v,i)=>Boolean(v)===Boolean(BREAKWATER.hitTest(e,(i%116)/2+.1,Math.floor(i/116)/2+.1,.2,.2)));}));
-   return {mortarFlashVisible,mortarTargetLocked,mortarCounts,mortarOrigins,mortarBounded,lanceCounts,lanceValues,lanceGapsChange,ruptureCounts,ruptureRetargets,committedTargets,threeHitCounter,bombCancelsCluster,coreDamage,coreRespectsProtection,lanceDamage,ruptureDamage,ruptureProtection,ruptureLifetime,oneShieldCharge,fatalRuptureSafe,fatalCoreNoFragments,phaseCancelsCluster,phaseCancelsRuptures,lanceContactVisible,ruptureContactVisible,blastContactVisible,hazardArt,longerTracking,tighterTurns,predictsMovement,roofOrigins,roofRaises,raisedMasks,raisedBreakup,broadsidePreserved,persistentFighters,warnedFighters,fullSlots,bossContinues,phaseTwoKeeps,phaseQuiet,phaseThreeKeeps,missingOnly,respawnKeeps,enteringQuiet,deathClearsFighters,hiddenLaunch,pendingFighterSafe,closed,frontPath,hullBlocks,ordinaryHits,...weapon,p2,p3,blockedStart,noTalkShots,iceMarksSeparate,shellSafe,lateShellSafe,retargetAfterCleanup,bossDartOwnership,killedClear,respawn,knockback:pushes.every(Boolean),nativeDamage,retargeted,eachVolleyLocked,volleyEscape,noBossLaser,salvoSizes,limitedHoming,commitsStraight,earlyShot,shootable,missileExpires,huntsHigh,flushesLow,noImmediateRepeat,escalation,cooldowns,combosRecur,restEscalates,missileArt,newEscapes,iceAfterCommit,normalGunCountersMissile,phaseClearsMissiles,noQueuedLaunchAfterPhase,deathClearsSalvo,missileKillSafe,missileContactVisible,exactBreakup,deathSafe,heldInitially,stagedBreakup,allLaunched,beforeFinish,oneAward,fallingParts,harmlessWreck,persistentWreck,resetWreck,noSafePockets,dodges,art,masks,isolated:LEVELS.length===3&&!ENEMY_TYPES.breakwater,attacks};
+   // Check the complete draw path: drawing a hazard alone cannot reveal an
+   // overlay that bypasses the world's camera or paints over the hero.
+   const renderGame=()=>{const {g}=make();g.enemies=[];g.boss=null;g.bg={draw(){}};g.drawHud=()=>{};g.player.invuln=0;Object.assign(g.player,{x:80,y:60});return g;};
+   const renderPixels=g=>{vc.clearRect(0,0,208,144);g.draw(vc,v=>Math.round(v*2)/2);return vc.getImageData(0,0,832,576).data;};
+   const sameRegion=(a,b,x,y,w,h,dx=0,dy=0)=>{
+    for(let py=y*4;py<(y+h)*4;py++)for(let px=x*4;px<(x+w)*4;px++)for(let k=0;k<4;k++)
+     if(a[(py*832+px)*4+k]!==b[((py+dy*4)*832+px+dx*4)*4+k])return false;
+    return true;
+   };
+   const lanceLayer=renderGame();lanceLayer.fireShot(89,65,Math.PI,144,'icicle',true).iceLance=true;
+   const lanceFrame=renderPixels(lanceLayer);Object.assign(lanceLayer,{shake:4,shakeX:4,shakeY:3});
+   const lancesFollowShake=sameRegion(lanceFrame,renderPixels(lanceLayer),55,40,60,45,4,3);
+   const wreckLayer=renderGame();wreckLayer.wreck={dead:true,wreck:{pieces:[{img:HULLS[0].open,sx:0,sy:9,sw:17,sh:11,x:89,y:65,launched:true,angle:.3}]}};
+   const wreckFrame=renderPixels(wreckLayer);Object.assign(wreckLayer,{shake:4,shakeX:4,shakeY:3});
+   const wreckFollowsShake=sameRegion(wreckFrame,renderPixels(wreckLayer),55,40,60,45,4,3);
+   const heroFrame=renderPixels(renderGame());
+   const heroVisible=frame=>{let checked=0;for(let y=60*4;y<71*4;y++)for(let x=80*4;x<98*4;x++){
+    const i=(y*832+x)*4;if(heroFrame[i+3]===255){checked++;for(let k=0;k<4;k++)if(frame[i+k]!==heroFrame[i+k])return false;}
+   }return checked>100;};
+   const heroAboveLances=heroVisible(lanceFrame),heroAboveWreck=heroVisible(wreckFrame);
+   return {lancesFollowShake,wreckFollowsShake,heroAboveLances,heroAboveWreck,mortarFlashVisible,mortarTargetLocked,mortarCounts,mortarOrigins,mortarBounded,lanceCounts,lanceValues,lanceGapsChange,ruptureCounts,ruptureRetargets,committedTargets,threeHitCounter,bombCancelsCluster,coreDamage,coreRespectsProtection,lanceDamage,ruptureDamage,ruptureProtection,ruptureLifetime,oneShieldCharge,fatalRuptureSafe,fatalCoreNoFragments,phaseCancelsCluster,phaseCancelsRuptures,lanceContactVisible,ruptureContactVisible,blastContactVisible,hazardArt,longerTracking,tighterTurns,predictsMovement,roofOrigins,roofRaises,raisedMasks,raisedBreakup,broadsidePreserved,persistentFighters,warnedFighters,fullSlots,bossContinues,phaseTwoKeeps,phaseQuiet,phaseThreeKeeps,missingOnly,respawnKeeps,enteringQuiet,deathClearsFighters,hiddenLaunch,pendingFighterSafe,closed,frontPath,hullBlocks,ordinaryHits,...weapon,p2,p3,blockedStart,noTalkShots,iceMarksSeparate,shellSafe,lateShellSafe,retargetAfterCleanup,bossDartOwnership,killedClear,respawn,knockback:pushes.every(Boolean),nativeDamage,retargeted,eachVolleyLocked,volleyEscape,noBossLaser,salvoSizes,limitedHoming,commitsStraight,earlyShot,shootable,missileExpires,huntsHigh,flushesLow,noImmediateRepeat,escalation,cooldowns,combosRecur,restEscalates,missileArt,newEscapes,iceAfterCommit,normalGunCountersMissile,phaseClearsMissiles,noQueuedLaunchAfterPhase,deathClearsSalvo,missileKillSafe,missileContactVisible,exactBreakup,deathSafe,heldInitially,stagedBreakup,allLaunched,beforeFinish,oneAward,fallingParts,harmlessWreck,persistentWreck,resetWreck,noSafePockets,dodges,art,masks,isolated:LEVELS.length===3&&!ENEMY_TYPES.breakwater,attacks};
   });
   for(const [key,value]of Object.entries(result))if(key!=='attacks')check(phone.name+': '+key,value,result);
   for(const a of result.attacks){check(phone.name+': '+a.name+' warned and locked',a.warned&&a.locked,a);check(phone.name+': '+a.name+' bounded, grounded and clears',a.maxDarts<=2&&a.maxTorps<=4&&a.maxShots<=20&&a.maxEscortShots<=2&&a.ground&&a.onscreen&&!a.overlap&&a.clean,a);}

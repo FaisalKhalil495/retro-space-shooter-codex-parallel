@@ -4,11 +4,11 @@ import { PAL } from '../../js/config.js?v=0.29.0';
 import { drawText } from '../../js/font.js?v=0.29.0';
 import { CoastBackground, COAST_FLOOR, coastReady } from '../glacier-coast/coast.js?demo=2';
 import { LOCAL_TYPES, spawnLocal } from '../glacier-combat/enemies.js?combat=3';
-import { BREAKWATER, clearThreats, log } from './boss.js?boss=5';
-import { beginBreakup, updateBreakup, drawBreakup } from './wreck.js?boss=5';
-import { HUNTER_TORPEDO } from './torpedo.js?boss=5';
-import { ESCORT, escortAwake } from './escorts.js?boss=5';
-import { CLUSTER_SHELL, CLUSTER_BURST, GLACIER_RUPTURE, drawLances } from './hazards.js?boss=5';
+import { BREAKWATER, clearThreats, log } from './boss.js?boss=5.1';
+import { beginBreakup, updateBreakup, drawBreakup } from './wreck.js?boss=5.1';
+import { HUNTER_TORPEDO } from './torpedo.js?boss=5.1';
+import { ESCORT, escortAwake } from './escorts.js?boss=5.1';
+import { CLUSTER_SHELL, CLUSTER_BURST, GLACIER_RUPTURE, drawLances } from './hazards.js?boss=5.1';
 export { coastReady };
 const SCENE={number:4,name:'BREAKWATER PREVIEW',floor:COAST_FLOOR,background:{sun:false,dust:false},events:[[Number.MAX_SAFE_INTEGER,'end']]};
 export class BossGame extends Game{
@@ -46,6 +46,12 @@ export class BossGame extends Game{
   }}
   startBossDeath(e){super.startBossDeath(e);clearThreats(this);beginBreakup(e,this);e.open=false;log(this,e,'death');}
   update(dt,input){super.update(dt,input);if(this.wreck?.dead){this.wreck.timer+=dt;updateBreakup(this.wreck,dt,this);}}
-  draw(c,snap){super.draw(c,snap);drawLances(this,c,snap);if(this.wreck?.dead){c.save();c.beginPath();c.rect(0,11,208,119);c.clip();drawBreakup(this.wreck,c,snap);c.restore();}}
+  // This native hook runs inside the world's camera, before the original
+  // ship, bullets and screen effects. Post-frame overlays would bypass shake
+  // and paint over the hero during close dodges or the victory fly-out.
+  drawPlayer(c,snap){
+    if(this.wreck?.dead){c.save();c.beginPath();c.rect(0,11,208,119);c.clip();drawBreakup(this.wreck,c,snap);c.restore();}
+    drawLances(this,c,snap);super.drawPlayer(c,snap);
+  }
   drawHud(c){c.fillStyle=PAL.void;c.fillRect(0,0,208,10);super.drawHud(c);if(this.boss)drawText(c,'P'+this.boss.phase,145,2,PAL.amberLight);}
 }

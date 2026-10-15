@@ -36,6 +36,9 @@ underwhelming. Revision 5 is explicitly approved: rear-gun Cluster Mortars,
 faster repeated Ice Lance walls and tall retargeted Glacier Ruptures, preserving
 the accepted broadside, torpedoes and fighters. See
 `docs/concepts/level-4-enemies/boss-heavy-weapons-plan.md`.
+The owner then requested a review and improvements if necessary. Review fix
+5.1 corrects lance/wreck layering and camera alignment, preserving revision-5
+mechanics and difficulty. Full Level 4 and new music remain later stages.
 
 ---
 
@@ -265,6 +268,7 @@ the accepted broadside, torpedoes and fighters. See
 | A fix's test passed on the old code too | Prove a new check would have **failed before the fix** (temporarily revert, run, restore). |
 | Pod light promised a Laser but gave Repair | Anything that *shows* a reward must use the same function that *decides* it. Decide rewards at pickup time ("decide when grabbed") so they're never stale. |
 | Fireballs hid bullets | Draw order is a fairness rule, not just a looks rule. |
+| Breakwater's lance and retained-wreck overlays were painted after the native frame, bypassing screen shake and covering the hero | Check the full scene as well as isolated hazard art. Draw world objects within the native camera and beneath the hero and screen effects; compare actual pixels during shake and overlap. |
 | Speech bubble hid behind the boss | Big bosses leave no "free" space; placements need fallbacks and must not jump frame to frame. |
 | The level test sometimes raced the live game | A test hook that "pauses" the game must actually stop the live loop (`window.__ember.frozen`). |
 | Owner played an old cached version | Version label on screen + reload instructions in every hand-over. |
@@ -701,6 +705,15 @@ fewer rounds are needed.
   requests or browser errors; earlier drawing-call counts stay unchanged.
   The video selects phase-3 attacks with normal health and native touches;
   it is not an earned full fight. Phone review remains next.
+- Breakwater review fix 5.1: the existing 312 focused checks passed, but new
+  full-scene pixel checks reproduced two drawing layers ignoring shake and
+  covering the ship. Move these layers into the native ship-drawing hook before
+  the original ship renders; leave the shared game and all approved attack
+  values untouched. All four new checks failed on the previous implementation
+  and pass after the fix on both phone layouts. Current validation totals 320
+  focused plus 220 existing checks (540). Preserve the ten-part breakup physics,
+  original ship/bullets, earlier levels, audio, controls and saving. The owner
+  reviews BREAKWATER 5.1 before another development stage.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

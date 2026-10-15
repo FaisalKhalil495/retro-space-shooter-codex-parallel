@@ -1,9 +1,15 @@
-# Breakwater — separate boss preview, revision 5
+# Breakwater — separate boss preview, revision 5.1
 
 The owner approved replacing the weak skipping shell and icicle attacks with
 Cluster Mortars, Ice Lances and Glacier Ruptures. See the approved
 [plan](../../docs/concepts/level-4-enemies/boss-heavy-weapons-plan.md).
-Look for **BREAKWATER 5**. The campaign remains v0.29.0 with three levels.
+Look for **BREAKWATER 5.1**. The campaign remains v0.29.0 with three levels.
+
+Review fix 5.1 keeps the approved fight tuning. Ice Lances and retained boss
+wreckage now follow the world's screen shake and draw beneath the original
+hero, bullets and screen effects. Previously these two layers were painted
+after the completed frame, which could obscure the ship and misalign lances
+during a hit. Full-scene pixel checks reproduce both problems on revision 5.
 
 ## Phone review
 
@@ -126,7 +132,7 @@ recorded music. Existing synthesized effects and option settings are reused.
 
 ## Validation and delivery
 
-All **312 focused and 220 existing checks pass (532 total)**: 101 combat,
+All **320 focused and 220 existing checks pass (540 total)**: 101 combat,
 49 smoke, 35 seeded-level (seed 28) and 35 scenery checks. Twenty-one complete
 no-hit scenarios cover seven attack patterns at three boss positions, with
 both persistent fighters alive and two seconds of follow-up escort fire.
@@ -142,6 +148,8 @@ bursts and fatal-burst cancellation; 1/2/3 lance walls, speed/damage/changed
 gaps; 2/3 ruptures, retargeting, one-hit/shield rules, ceiling coverage, lifetime,
 phase cleanup and visible contact pixels. Existing hero/save/audio preservation,
 all launcher masks, exact destruction, loss races and earlier suites remain.
+Full-scene checks also verify that lances and retained wreckage translate with
+the camera and cannot paint over opaque hero pixels.
 
 `tools/boss-benchmark.mjs` compares stationary and reactive samples against the
 unchanged Glacier Warden and samples cached drawing with active hazards and
@@ -152,14 +160,14 @@ physical-phone FPS. The owner's phone review decides.
 
 ```sh
 source /workspace/.cloud-onboarding/retro-space-shooter/environment.sh
-node tools/boss-demo-test.mjs /tmp/ember-boss-v5-checks
-node tools/boss-benchmark.mjs /tmp/ember-boss-v5-benchmark
+node tools/boss-demo-test.mjs /tmp/ember-boss-v5.1-checks
+node tools/boss-benchmark.mjs /tmp/ember-boss-v5.1-benchmark
 node tools/combat-demo-test.mjs /tmp/ember-combat-checks
 node tools/smoke-test.mjs /tmp/ember-smoke
 SEED=28 node tools/level-test.mjs /tmp/ember-levels
 node tools/coast-demo-test.mjs /tmp/ember-coast
 node tools/speed-test.mjs
-node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v5.html
+node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v5.1.html
 ```
 
 Create smoke/level screenshot directories first and run suites sequentially.

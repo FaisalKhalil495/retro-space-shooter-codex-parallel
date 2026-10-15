@@ -638,6 +638,15 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      at both phone sizes with zero external requests or browser errors, and
      earlier-game drawing-call counts stay unchanged. Await phone review
      after this approved revision.
+     **Boss preview review fix 5.1:** requested by the owner after revision 5.
+     Full-scene rendering checks found that Ice Lances and retained wreckage
+     bypassed screen shake and could cover the hero because they were drawn
+     after the native frame. They now use the native ship-drawing hook, inside
+     the world camera and beneath the unchanged hero, bullets and screen effects.
+     Preserve all approved attack values and exact destruction physics. Current
+     validation is 320 focused plus 220 existing checks (540 total), including
+     camera translation and opaque hero-pixel checks. Look for BREAKWATER 5.1;
+     full Level 4 and new music remain separate stages after phone review.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
