@@ -118,6 +118,22 @@ and new boss music remain separate stages.
 Revision 3 passes 214 focused and 220 existing checks (434 total), including
 complete no-hit routes through the new combined patterns at three boss positions.
 
+The owner likes the broadside exactly as it is and explicitly approved
+**revision 4**, recorded in `docs/concepts/level-4-enemies/boss-pursuit-plan.md`.
+Keep broadside shot counts, speed, damage and warning timing unchanged. Hunter
+Torpedoes gain sharper turns, slight movement prediction and 1.2/1.4/1.6 s
+tracking, keeping size, speed, HP and salvo counts. A compact roof launcher
+raises and releases them from its visible tubes, within the 58×24 footprint
+and ten-part breakup. Boss-only Twin Darts persist until killed, with 2 HP,
+separate lanes, at most two alive and replacement only of missing fighters.
+Survivors keep HP across phases and respawns, holding harmless during dialogue
+and respawn. Breakwater keeps attacking; stagger escort fire around dangerous
+patterns and test actual no-hit routes with both alive. This revision is
+authorized: finish delivery and preservation checks, then await phone review.
+Earlier levels, regular combat flights and all player systems stay unchanged.
+Revision 4 passes 256 focused plus 220 existing checks (476 total), including
+no-hit routes with both persistent fighters alive at three boss positions.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already

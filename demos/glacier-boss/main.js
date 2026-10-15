@@ -5,7 +5,7 @@ import { VIEW_W, VIEW_H, PAL } from '../../js/config.js?v=0.29.0';
 import { unlockAudio, suspendAudio, setVolumes } from '../../js/audio.js?v=0.29.0';
 import { setVibrate } from '../../js/feedback.js?v=0.29.0';
 import { save } from '../../js/save.js?v=0.29.0';
-import { BossGame, coastReady } from './scene.js?boss=3';
+import { BossGame, coastReady } from './scene.js?boss=4';
 
 const STEP = 1 / 120;
 const canvas = document.getElementById('screen');
@@ -30,7 +30,7 @@ message.textContent = 'Loading the glacier coast…';
 coastReady.then(() => {
   if (!game.bg.loaded) throw new Error('Landscape painting failed');
   artworkReady = true; action.disabled = false;
-  message.innerHTML = 'Steer left; hold Fire on the right.<br>Shoot the opening cannon. Missiles chase briefly, then fly straight—shoot them down or dodge. Supply pods bring weapons.';
+  message.innerHTML = 'Steer left; hold Fire on the right.<br>Shoot the opening cannon. Roof missiles track your movement—turn sharply or shoot them down. Fighters stay until destroyed. Supply pods bring weapons.';
 }).catch(() => {
   message.textContent = 'The coast could not load. Reload this page to try again.';
   action.disabled = false; action.textContent = 'Reload coast';
@@ -116,7 +116,7 @@ function render(dt) {
   if (mode === 'playing') controls.draw(ctx, dt);
   ctx.fillStyle = PAL.textDim;
   ctx.font = '10px ui-monospace, Menlo, monospace';
-  ctx.fillText('BREAKWATER 3', layout.leftZone.x + 8, layout.leftZone.y + layout.leftZone.h - 8);
+  ctx.fillText('BREAKWATER 4', layout.leftZone.x + 8, layout.leftZone.y + layout.leftZone.h - 8);
 }
 
 function frame(now) {

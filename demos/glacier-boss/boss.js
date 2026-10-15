@@ -1,8 +1,9 @@
 import { VIEW_W, HUD_H, PAL } from '../../js/config.js?v=0.29.0';
 import { clamp, rectsOverlap } from '../../js/util.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
-import { picture, hullContact, WIDTH, HEIGHT, SHELL } from './art.js?boss=3';
-import { updateBreakup, drawBreakup } from './wreck.js?boss=3';
+import { picture, hullContact, WIDTH, HEIGHT, SHELL, launcherPort } from './art.js?boss=4';
+import { updateBreakup, drawBreakup } from './wreck.js?boss=4';
+import { escorts } from './escorts.js?boss=4';
 import { target } from '../glacier-combat/art.js?combat=3';
 export const MOVES=[null,['broadside','torpedoes','flak','skip'],
   ['ice','darts','broadside','torpedoes','flak','skip'],
@@ -12,14 +13,16 @@ const LEFT=[0,104,90,76],INTRO=[0,4,2,2];
 export const log=(g,e,kind,extra={})=>g.audit.push({time:g.time,id:e.id,kind,phase:e.phase,...extra});
 const muzzle=e=>({x:e.x+1,y:e.y+15});
 const localThreat=e=>e.type==='twinDart'||e.type==='skipShell'||e.type==='hunterTorpedo';
-export function clearThreats(g){
-  g.enemyShots=[];g.enemies=g.enemies.filter(e=>{if(!localThreat(e))return true;e.dead=true;return false;});
+export function clearThreats(g,keepFighters=false){
+  g.enemyShots=[];g.enemies=g.enemies.filter(e=>{if(!localThreat(e))return true;
+    if(keepFighters&&e.persistentEscort){e.passive=true;e.mode='wait';e.timer=.6+e.lane*.4;e.charge=0;return true;}
+    e.dead=true;return false;});
 }
-const threats=g=>g.enemyShots.length>0||g.enemies.some(e=>!e.dead&&localThreat(e));
+const threats=g=>g.enemyShots.some(s=>!s.escort)||g.enemies.some(e=>!e.dead&&localThreat(e)&&!e.persistentEscort);
 const move=(e,x,speed,dt)=>{e.x+=clamp(x-e.x,-speed*dt,speed*dt);return Math.abs(e.x-x)<.1;};
 const rushing=a=>a.name==='rush'||a.name==='rushFlak';
 function set(e,mode){e.mode=mode;e.timer=0;}
-function saySafe(g,e,text,style='talk'){clearThreats(g);g.say(e,text,style);}
+function saySafe(g,e,text,style='talk'){clearThreats(g,true);g.say(e,text,style);}
 function markedX(x,e){x=clamp(x,14,190);if(x>e.x-9&&x<e.x+e.w+9)return clamp(e.x-20,14,190);return x;}
 function iceMarks(e,g){
   const first=markedX(g.playerCenter().x,e);
@@ -29,8 +32,8 @@ function iceMarks(e,g){
 // Introduce each phase's new tools first; afterwards respond to position,
 // avoiding the last two attacks and keeping combined attacks three apart.
 export function chooseAttack(e,g){
-  const moves=MOVES[e.phase],recent=e.recent||[],intro=e.introIndex||0;
-  if(intro<INTRO[e.phase])return moves[intro];
+  const moves=MOVES[e.phase].filter(n=>n!=='darts'||escorts(g).length<2),recent=e.recent||[],intro=e.introIndex||0;
+  if(intro<INTRO[e.phase]){const name=MOVES[e.phase][intro];if(moves.includes(name))return name;e.introIndex=intro+1;return chooseAttack(e,g);}
   const options=moves.filter(n=>!recent.slice(-2).includes(n)&&
     (!['pursuit','rushFlak'].includes(n)||!recent.slice(-3).some(v=>['pursuit','rushFlak'].includes(v))));
   const p=g.playerCenter();
@@ -44,12 +47,13 @@ export function chooseAttack(e,g){
   return weighted.at(-1)?.name||moves.find(n=>n!==recent.at(-1));
 }
 export function beginAttack(e,g,name){
+  if(name==='darts'&&escorts(g).length>=2)return false;
   if(!MOVES[e.phase].includes(name)||g.state!=='playing'||!g.bossMayAttack(e)||threats(g))return false;
   const p=g.playerCenter(),m=muzzle(e);
   const a=e.attack={name,t:0,stage:'warn',warn:name==='rushFlak'||name==='flak'?1.15:name==='rush'||name==='skip'?1:[0,.95,.85,.75][e.phase]};
   a.rear=p.x>e.x+e.w/2;a.mx=a.rear?e.x+e.w-2:m.x;a.my=a.rear?e.y+8:m.y;
   a.angle=Math.atan2(p.y-a.my,p.x-a.mx);
-  if(name==='torpedoes'||name==='pursuit'){a.count=name==='pursuit'?2:e.phase+1;a.sent=0;a.warn=[0,1,.85,.7][e.phase];}
+  if(name==='torpedoes'||name==='pursuit'){a.count=name==='pursuit'?2:e.phase+1;a.sent=0;const port=launcherPort(e,0,2);a.mx=port.x;a.my=port.y;a.warn=[0,1,.85,.7][e.phase];}
   if(name==='flak'||name==='rushFlak'){a.gap=clamp(p.y+(p.y>72?-32:32),30,name==='rushFlak'?88:111);a.wallX=e.x-4;}
   if(name==='skip'){
     a.sx=e.x-3;a.tx=clamp(p.x-18,12,188);a.amp=clamp(126-p.y,28,88);
@@ -77,12 +81,10 @@ function ice(e,g,a){
   sfx.shatter();
 }
 function launchTorpedo(e,g,a){
-  const p=g.playerCenter(),cx=a.rear?Math.min(200,e.x+e.w-2):e.x-4,cy=e.y+(a.rear?6:15);
-  let angle=Math.atan2(p.y-cy,p.x-cx);
-  if(!a.rear&&angle>0)angle-=Math.PI*2;
-  angle=a.rear?-Math.PI/2+(a.sent%2?-.15:.1):clamp(angle+(a.sent%2)*.25,-3,-1.8);
-  const t=g.spawnEnemy('hunterTorpedo',cx-3.5,cy-2,{angle,phase:e.phase,hunt:a.name==='pursuit'?.55:.75+e.phase*.05,byBoss:true,owner:e.id});
-  a.sent++;log(g,e,'torpedoLaunch',{attack:a.name,missile:t.id,angle,count:a.sent});sfx.mortar();
+  const port=launcherPort(e,a.sent%2,2),angle=-Math.PI/2;
+  const t=g.spawnEnemy('hunterTorpedo',port.x-3.5,port.y-2,{angle,phase:e.phase,byBoss:true,owner:e.id});
+  e.launchFlash=.10;e.launchTube=a.sent%2;
+  a.sent++;log(g,e,'torpedoLaunch',{attack:a.name,missile:t.id,angle,count:a.sent,x:port.x,y:port.y});sfx.mortar();
 }
 function fire(e,g,a){
   log(g,e,'fire',{attack:a.name,angle:a.angle,mx:a.mx,my:a.my});
@@ -90,7 +92,7 @@ function fire(e,g,a){
   else if(a.name==='flak'||a.name==='rushFlak')flak(e,g,a);
   else if(a.name==='torpedoes'||a.name==='pursuit')launchTorpedo(e,g,a);
   else if(a.name==='skip'){g.spawnEnemy('skipShell',a.sx-3,123,{sx:a.sx,tx:a.tx,amp:a.amp,byBoss:true});sfx.mortar();}
-  else if(a.name==='darts'){launchDart(e,g,0);a.pendingDart=true;sfx.tick();}
+  else if(a.name==='darts'){a.dartLanes=[0,1].filter(lane=>!escorts(g).some(d=>d.lane===lane));launchDart(e,g,a.dartLanes.shift());a.pendingDart=a.dartLanes.length>0;sfx.tick();}
   else if(a.name==='ice')ice(e,g,a);
   a.stage=rushing(a)?'dash':'active';a.t=0;
 }
@@ -101,7 +103,8 @@ function aimAgain(e,g,a){
   log(g,e,'warn',{attack:a.name,duration:a.nextWarn,angle:a.angle,mx:a.mx,my:a.my});sfx.charge(a.nextWarn);
 }
 function launchDart(e,g,lane){
-  g.spawnEnemy('twinDart',e.x+39,e.y+12,{lane,byBoss:true,launch:{sx:e.x+39,sy:e.y+12,tx:e.x+(lane?39:12),ty:e.y-18-lane*25,t:0}});
+  if(lane===undefined||escorts(g).length>=2||escorts(g).some(d=>d.lane===lane))return;
+  g.spawnEnemy('twinDart',e.x+39,e.y+12,{lane,byBoss:true,persistentEscort:true,launch:{sx:e.x+39,sy:e.y+12,tx:lane?176:148,ty:lane?52:80,t:0}});
 }
 function updateAttack(e,a,dt,g){
   a.t+=dt;
@@ -131,7 +134,7 @@ function updateAttack(e,a,dt,g){
         }
       }
     }
-    if(a.pendingDart&&a.t>=.45){launchDart(e,g,1);a.pendingDart=false;}
+    if(a.pendingDart&&a.t>=.45){launchDart(e,g,a.dartLanes.shift());a.pendingDart=false;}
     if(a.name==='broadside'&&a.volleys<5){
       if(a.t>=a.nextWarn){log(g,e,'fire',{attack:a.name,angle:a.angle,mx:a.mx,my:a.my});broadside(e,g,a);a.volleys++;a.t=0;if(a.volleys<5)aimAgain(e,g,a);}
       return;
@@ -146,12 +149,14 @@ export const BREAKWATER={
   boss:true,name:'BREAKWATER',title:'THE COASTBREAKER',hp:250,score:7000,voice:'metal',
   taunt:'I OWN THIS COAST',killLines:['SWEPT ASIDE','UNDER MY BOW','THE COAST IS MINE'],
   stageLines:[null,null,'YOU BROKE MY BOW','I WILL BREAK YOU'],
-  init(e,g){Object.assign(e,{w:WIDTH,h:HEIGHT,x:VIEW_W+6,y:g.terrain.floorY-HEIGHT,mode:'enter',timer:0,phase:1,open:false,attack:null,idle:.8,introIndex:0,recent:[],targetX:110,sprayT:0});},
+  init(e,g){Object.assign(e,{w:WIDTH,h:HEIGHT,x:VIEW_W+6,y:g.terrain.floorY-HEIGHT,mode:'enter',timer:0,phase:1,open:false,attack:null,idle:.8,introIndex:0,recent:[],targetX:110,sprayT:0,launcherLift:0,launchFlash:0});},
   update(e,dt,g){
     e.timer+=dt;e.y=g.terrain.floorY-e.h;e.sprayT-=dt;
     if(e.mode==='dying'){
       e.open=false;updateBreakup(e,dt,g);return;
     }
+    const a=e.attack,raising=a&&['torpedoes','pursuit'].includes(a.name)&&(a.stage==='warn'||a.stage==='active'&&a.t<.38*(a.count-1)+.55);
+    e.launcherLift=clamp((e.launcherLift||0)+(raising?1:-1)*dt/.22,0,1);e.launchFlash=Math.max(0,(e.launchFlash||0)-dt);
     if(e.mode==='enter'){
       move(e,144,30,dt);
       if(e.x<=144.1){set(e,'intro');g.showTitle(BREAKWATER);sfx.horn();log(g,e,'entrance');}
@@ -214,11 +219,11 @@ export const BREAKWATER={
       if(warning){
         if(a.name==='broadside')for(let d=5;d<240;d+=5){const x=a.mx+Math.cos(a.angle)*d,y=a.my+Math.sin(a.angle)*d;if(x<1||x>207||y<11||y>129)break;c.fillRect(snap(x),snap(y),1,.5);}
         if(a.name==='torpedoes'||a.name==='pursuit'){
-          for(let i=0;i<a.count;i++)c.fillRect(snap(e.x+3+i*3),snap(e.y+11),1,2);
+          for(let i=0;i<a.count;i++)c.fillRect(snap(e.x+28+i*2),snap(e.y+6),1,1);
           // These are tracking weapons, so show launch arrows, not a false
           // promise of a fixed aim line. Each missile has its own hunt lamp.
-          const dir=a.rear?1:-1,x=a.rear?e.x+e.w+3:e.x-3;
-          for(let d=4;d<17;d+=4){c.fillRect(snap(x+dir*d),snap(e.y+13-d*.2),1,1);}
+          const port=launcherPort(e,0,2);
+          for(let d=4;d<17;d+=4)c.fillRect(snap(port.x),snap(port.y-d),1,1);
         }
         if(a.name==='flak'||a.name==='rushFlak')for(let y=12;y<129;y+=3)if(Math.abs(y-a.gap)>16)c.fillRect(snap(a.wallX),y,1,1);
         if(a.name==='skip'){for(const p of a.path)c.fillRect(snap(p.x),snap(p.y),1,1);target(c,a.tx,125,snap);}
@@ -228,6 +233,7 @@ export const BREAKWATER={
       if((a.name==='flak'||a.name==='rushFlak')&&a.stage!=='recover')drawGap(a,c,snap);
     }
     const p=picture(e);c.drawImage(e.flash>0?p.flash:p,snap(e.x),snap(e.y));
+    if(e.launchFlash>0){const port=launcherPort(e,e.launchTube||0,2);c.fillStyle='#f1d69a';c.fillRect(snap(port.x-1),snap(port.y-2),2,2);}
     if(a&&(['warn','turn'].includes(a.stage)||a.name==='broadside'&&a.stage==='active'&&a.volleys<5)&&Math.floor(e.t*14)%2===0){c.fillStyle='#f1d69a';c.fillRect(snap(e.x+18),snap(e.y+10),1,1);c.fillRect(snap(e.x+41),snap(e.y+13),1,2);}
   }
 };

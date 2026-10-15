@@ -24,7 +24,13 @@ phase. Revision 3 replaces that beam, introduces 2/3/4 missile salvos, responsiv
 phase-2 attacks and two phase-3 combinations, with shorter rests. Preserve the
 player's own laser and every original weapon. This approved work stays in the
 separate preview; full Level 4 and new music remain later stages. Await phone
-review after delivery.
+review after delivery. The owner then liked the broadside's speed and lethality
+but found torpedoes easy to dodge. They approved revision 4: sharper, longer,
+predictive pursuit from a distinct roof launcher, and Twin Darts that remain
+until killed. Preserve the broadside exactly. Keep two fighters maximum, replace
+only missing lanes, retain survivor damage across phases/respawns and stagger
+their fire without making the boss wait for them. The approved plan is
+`docs/concepts/level-4-enemies/boss-pursuit-plan.md`.
 
 ---
 
@@ -95,6 +101,11 @@ review after delivery.
 ## 2. Gameplay taste (learned the hard way)
 
 **Difficulty**
+- The owner specifically likes Breakwater's broadside: fast and lethal. Keep
+  that attack unchanged while tuning torpedoes to demand angled maneuvers and
+  direction changes. A distinct roof launcher makes its weapon roles visible.
+- Boss-released Twin Darts should stay until killed; keep survivors and their
+  damage, with a two-fighter cap and no extra copies filling occupied lanes.
 - Breakwater must introduce new attacks and tactics in each phase, alongside
   greater aggression. A speed increase alone does not establish a new phase.
 - The owner requested removing the boss laser; their own laser weapon remains.
@@ -639,6 +650,26 @@ fewer rounds are needed.
   original drawing-call counts are unchanged. Review physical-phone performance
   separately from cloud drawing samples.
   Phone difficulty review remains the next decision.
+- Boss preview revision 4: the owner approved more precise pursuit and lasting
+  fighters while praising the broadside. Keep every broadside value and test
+  independent golden counts, speeds, damage and warnings. Guidance lasts
+  1.2/1.4/1.6 s, turns are bounded at 2.6/2.9/3.2 rad/s, and a short movement
+  lead improves interception without instant turns. Preserve missile size,
+  speeds and durability. Three cached roof-launcher heights in the existing
+  hull box get matching masks and exact ten-part reconstruction tests. Making
+  fighters permanent requires removing their bodies and shots from the boss's
+  pattern-completion gate, limiting them to two distinct slots and replenishing
+  only vacancies. Keep HP across phases/respawns; suppress contact and firing
+  during safe dialogue/entry. Stagger full new warnings during recovery/idle,
+  cap escort rounds at two, and cancel queued warnings during dangerous patterns.
+  Verify complete no-hit maneuvers with both fighters alive at close/mid/far
+  boss positions, including their follow-up shots. Original regular-enemy
+  behavior stays local to its existing demo. All 256 focused plus 220 existing
+  checks pass (476 total), including 60-second patrols and no-hit routes with
+  both fighters alive. Both portable phone layouts finish without external
+  requests or browser errors; existing drawing-call counts are unchanged.
+  The short video selects phase 3 with two fighters and normal health, rather
+  than claiming an earned full fight. Phone review remains next.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a
@@ -779,6 +810,12 @@ selection, then bound both repeats and how long a defining combination can be
 absent. In linked attacks, finish homing before warning a new escape route.
 Verify complete no-hit routes with normal movement at several boss positions;
 stationary damage counts alone cannot establish human difficulty.
+
+**Persistent boss escorts**: separate persistent enemies from transient-pattern
+completion checks, or a boss can wait forever. Preserve their HP across safe
+pauses, cap occupied slots and replace only vacancies. Pause new firing through
+dangerous patterns with full warnings on resume. Test complete maneuvers with
+escorts alive and retain the original behavior for non-boss uses.
 
 **Making a game presentable** (the order that worked here): opening
 screen with a strong logo (tap to continue) → main menu (continue / new

@@ -4,9 +4,10 @@ import { PAL } from '../../js/config.js?v=0.29.0';
 import { drawText } from '../../js/font.js?v=0.29.0';
 import { CoastBackground, COAST_FLOOR, coastReady } from '../glacier-coast/coast.js?demo=2';
 import { LOCAL_TYPES, spawnLocal } from '../glacier-combat/enemies.js?combat=3';
-import { BREAKWATER, SKIP_SHELL, clearThreats, log } from './boss.js?boss=3';
-import { beginBreakup, updateBreakup, drawBreakup } from './wreck.js?boss=3';
-import { HUNTER_TORPEDO } from './torpedo.js?boss=3';
+import { BREAKWATER, SKIP_SHELL, clearThreats, log } from './boss.js?boss=4';
+import { beginBreakup, updateBreakup, drawBreakup } from './wreck.js?boss=4';
+import { HUNTER_TORPEDO } from './torpedo.js?boss=4';
+import { ESCORT, escortAwake } from './escorts.js?boss=4';
 export { coastReady };
 const SCENE={number:4,name:'BREAKWATER PREVIEW',floor:COAST_FLOOR,background:{sun:false,dust:false},events:[[Number.MAX_SAFE_INTEGER,'end']]};
 export class BossGame extends Game{
@@ -14,16 +15,17 @@ export class BossGame extends Game{
   reset(){
     super.reset();this.bg=this.coast||(this.coast=new CoastBackground());this.bg.t=0;
     this.terrain=new Terrain(COAST_FLOOR);this.terrain.draw=()=>{};
-    this.banner=null;this.wreck=null;this.audit=[];this.nextId=0;this.started=false;
+    this.banner=null;this.wreck=null;this.audit=[];this.nextId=0;this.started=false;this.escortShotAt=-10;
     this.runner={update:()=>{if(!this.started&&this.time>=2.5){this.started=true;this.spawnEnemy('breakwater',214,0);}}};
   }
   spawnEnemy(type,x,y,opts={}){
     if(LOCAL_TYPES[type]){
       const e=spawnLocal(this,type,x,y,opts);
+      if(opts.persistentEscort){e.T=ESCORT;ESCORT.init(e,this);}
       if(opts.launch){
         const base=e.T,launch=e.launch,thisGame=this;
-        e.T={...base,flies:false,noTarget:true,hitTest:()=>null,
-          update(e,dt,g){if(e.dead)return;launch.t+=dt;const k=Math.min(1,launch.t/.65);
+        e.T={...base,flies:false,noTarget:true,hitTest:()=>null,shotTest:()=>null,
+          update(e,dt,g){if(e.dead||e.persistentEscort&&!escortAwake(g))return;launch.t+=dt;const k=Math.min(1,launch.t/.65);
             e.x=launch.sx+(launch.tx-launch.sx)*k;e.y=launch.sy+(launch.ty-launch.sy)*k;
             if(k===1){e.T=base;e.baseY=e.y;delete e.launch;}},
           draw(e,c,snap){c.save();c.beginPath();c.rect(0,11,208,(thisGame.boss?.y||106)-11);c.clip();base.draw(e,c,snap);c.restore();}
@@ -39,7 +41,7 @@ export class BossGame extends Game{
   }
   fireShot(x,y,angle,speed,kind='orb',byBoss=true){return super.fireShot(x,y,angle,speed,kind,byBoss);}
   killPlayer(source){super.killPlayer(source);if(this.boss&&this.boss.mode!=='dying'){
-    clearThreats(this);this.boss.attack=null;this.boss.open=false;this.boss.idle=1;
+    clearThreats(this,true);this.boss.attack=null;this.boss.open=false;this.boss.idle=1;
   }}
   startBossDeath(e){super.startBossDeath(e);clearThreats(this);beginBreakup(e,this);e.open=false;log(this,e,'death');}
   update(dt,input){super.update(dt,input);if(this.wreck?.dead){this.wreck.timer+=dt;updateBreakup(this.wreck,dt,this);}}

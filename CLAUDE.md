@@ -598,6 +598,25 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      combined-pattern routes at three positions and the unchanged earlier levels.
      The portable HTML wins at both phone sizes with zero external requests.
      Await the owner's phone review before another stage.
+     **Boss preview revision 4 — approved pursuit and persistent escorts:**
+     the owner likes the broadside's lethality; preserve every broadside value.
+     Torpedoes turn at 2.6/2.9/3.2 radians/s, predict 0.10/0.13/0.16 s of native
+     player motion and track for 1.2/1.4/1.6 s after emergence. Size, speeds,
+     durability and counts stay unchanged. A separate twin-cell roof launcher
+     raises within the existing 58×24 box; all cached poses have matching masks
+     and join the existing ten-part breakup. Twin Darts retain their 11×8 art,
+     2 HP and 30 points but persist in two separated patrol lanes until killed,
+     including across phases and respawns. Replace only missing lanes. They
+     hold harmless during dialogue and respawn, and take turns firing warned
+     shots during boss recovery/idle/deployment, with at most two escort rounds.
+     The boss continues its patterns while fighters survive. These escort rules
+     are local to the boss preview; regular-enemy flights are unchanged. See
+     `docs/concepts/level-4-enemies/boss-pursuit-plan.md` and the boss README.
+     All 256 focused and 220 existing checks pass (476 total), including full
+     no-hit maneuvers with both fighters alive at three boss positions.
+     The portable HTML wins at both phone sizes without external requests or
+     browser errors; existing drawing-call counts are unchanged.
+     Look for BREAKWATER 4; await phone review after this approved revision.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -833,8 +852,8 @@ review now covers seven regular types plus Breakwater. The owner likes the
 new designs and approved the revised two-flight combat-preview plan. Both
 flights are implemented at `demos/glacier-combat/`; the owner accepted revision 3.
 Breakwater's approved boss preview has been revised after the owner rejected
-its first design and difficulty; approved revision 3 adds torpedoes and phase
-escalation and awaits phone review. The full level
+its first design and difficulty; approved revision 4 adds stronger pursuit,
+a roof launcher and persistent fighters, and awaits phone review. The full level
 still requires a separately approved implementation stage.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**
@@ -867,7 +886,8 @@ it over. The owner tests on Android; ideally the friend checks iPhone each stage
   phase rewards, native supplies, safe speech, victory/loss and replay. No
   campaign or save registration. `wreck.js` handles the staged ten-part
   destruction; `torpedo.js` contains the local guided missiles and their cached
-  art; focused tests cover both;
+  art; `escorts.js` holds the boss-only persistent Twin Dart behavior. Focused
+  tests cover guidance, all launcher poses, persistent fighters and breakup;
   `tools/boss-benchmark.mjs` compares Warden timing/pressure and cached drawing;
   `tools/export-boss-demo.mjs <output.html>` makes a portable review copy.
 - `demos/glacier-combat/` — approved standalone combat preview. `scene.js`

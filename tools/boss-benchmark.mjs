@@ -10,7 +10,7 @@ try{
  const p=await browser.newPage({viewport:{width:915,height:412}});await p.goto(base+'demos/glacier-boss/');await p.waitForFunction(()=>window.__boss?.artworkReady);await p.evaluate(()=>window.__boss.frozen=true);
  const metrics=await p.evaluate(async()=>{
   const {makePilot}=await import('/tools/boss-review-pilot.js');
-  const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=3');const {Game}=await import('/js/game.js?v=0.29.0');const {useDetail}=await import('/js/detail.js?v=0.29.0');
+  const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=4');const {Game}=await import('/js/game.js?v=0.29.0');const {useDetail}=await import('/js/detail.js?v=0.29.0');
   const fights=[];
   for(const specials of [false,true])for(const type of ['breakwater','warden']){
    const g=type==='breakwater'?new BossGame():new Game({level:3,startAt:'checkpoint'});g.rand=()=>.45;g.weapons.reset();g.health=1000000;g.player.invuln=0;
@@ -58,6 +58,7 @@ try{
   const median=v=>v.sort((a,b)=>a-b)[1];
   for(let i=0;i<4;i++)g.spawnEnemy('hunterTorpedo',65+i*25,40+i*15,{angle:-2.9,phase:3,byBoss:true});
   for(let y=14;y<120;y+=9)g.fireShot(120,y,Math.PI,104,'icicle',true);
+  for(const lane of [0,1])g.spawnEnemy('twinDart',lane?176:148,lane?52:80,{lane,persistentEscort:true,byBoss:true});
   const activeDraw=[sample(g),sample(g),sample(g)];
   g.startBossDeath(b);for(let i=0;i<340;i++)g.update(1/120,{dx:0,dy:0,fire:false});
   const deathDraw=[sample(g),sample(g),sample(g)];

@@ -11,7 +11,7 @@ function poly(c,points,color){
 }
 function panel(c,x,y,w,h,color=P.olive){rect(c,x,y,w,h,P.ink);rect(c,x+.5,y+.5,w-1,h-1,color);rect(c,x+1,y+.5,w-2,.5,P.light);rect(c,x+1,y+h-1,w-2,.5,P.dark);for(const dx of [1,w-1.5])for(const dy of [1,h-1.5])rect(c,x+dx,y+dy,.5,.5,P.steel);}
 function vent(c,x,y,w,h){panel(c,x,y,w,h,P.dark);for(let yy=1;yy<h-1;yy+=1)rect(c,x+1,y+yy,w-2,.5,P.steel);}
-function paint(phase,open){
+function paint(phase,open,lift=0){
   const {canvas,ctx:c}=detailCanvas(WIDTH,HEIGHT);
   // Sharp naval icebreaker: swept armored prow, recessed reactor spine,
   // slab-sided drive pods and a split siege cannon. All within the old box.
@@ -86,6 +86,17 @@ function paint(phase,open){
     poly(c,[[5,10],[12,7],[17,8],[11,11]],P.steel);
     rect(c,45,2,2,3,P.dark);
   }
+  // Roof launcher: two upward-facing cells rise out of the command cabin.
+  // All three cached positions fit within the same 58x24 silhouette bounds.
+  panel(c,28,5,13,2,P.dark);
+  for(const x of [29,35]){
+    const y=3-lift*1.5;
+    rect(c,x+1,y+3,2,4-y,P.steel);
+    poly(c,[[x,y+1],[x+1,y],[x+4,y],[x+5,y+1],[x+5,y+4],[x,y+4]],P.ink);
+    rect(c,x+.5,y+1,4,2,P.olive);rect(c,x+1,y+.5,3,1,P.dark);
+    rect(c,x+1,y,3,.5,P.light);rect(c,x+3.5,y+1,.5,2,P.copper);
+    if(lift)rect(c,x+1.5,y+1.5,1,1,P.amber);
+  }
   // Fine wear is deterministic and only prepainted once.
   const im=canvas.hi.getContext('2d').getImageData(0,0,WIDTH*2,HEIGHT*2),b=im.data;
   for(let y=0;y<HEIGHT*2;y++)for(let x=0;x<WIDTH*2;x++){const i=(y*WIDTH*2+x)*4;if(!b[i+3])continue;
@@ -96,7 +107,10 @@ function paint(phase,open){
   flash.hi.getContext('2d').putImageData(im,0,0);canvas.flash=flash;return canvas;
 }
 export const HULLS=[1,2,3].map(p=>({closed:paint(p,false),open:paint(p,true)}));
-export function picture(e){return HULLS[e.phase-1][e.open?'open':'closed'];}
+export const LAUNCHER_HULLS=[HULLS,...[1,2].map(lift=>[1,2,3].map(p=>({closed:paint(p,false,lift),open:paint(p,true,lift)})))];
+export const launcherStage=e=>Math.min(2,Math.floor((e.launcherLift||0)*2+.01));
+export const launcherPort=(e,tube=0,stage=launcherStage(e))=>({x:e.x+31.5+tube*6,y:e.y+3.5-stage*1.5});
+export function picture(e){return LAUNCHER_HULLS[launcherStage(e)][e.phase-1][e.open?'open':'closed'];}
 export function hullContact(e,x,y,w,h){
   if(e.mode==='enter'||e.mode==='dying')return null;
   const p=picture(e),x0=Math.max(0,Math.floor((x-e.x)*2)),x1=Math.min(WIDTH*2,Math.ceil((x+w-e.x)*2));

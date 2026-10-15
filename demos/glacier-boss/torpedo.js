@@ -1,4 +1,5 @@
 import { detailCanvas } from '../../js/detail.js?v=0.29.0';
+import { PLAYER } from '../../js/config.js?v=0.29.0';
 import { clamp } from '../../js/util.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
 // Original compact missile, pointing left. The solid center contains the
@@ -21,16 +22,22 @@ const circle=(e,x,y,w,h)=>{
   const dx=Math.max(x-cx,0,cx-x-w),dy=Math.max(y-cy,0,cy-y-h);
   return dx*dx+dy*dy<2.25?'hit':null;
 };
+export const HUNT=[0,1.2,1.4,1.6],TURN=[0,2.6,2.9,3.2],LEAD=[0,.10,.13,.16];
 export const HUNTER_TORPEDO={
  hp:2,score:15,noTarget:true,ram:2,gore:{metal:2},explodeSize:.3,
- init(e){e.w=7;e.h=4;e.mode='hunt';e.trail=0;e.hunt=e.hunt??.85;e.phase=e.phase||1;},
+ init(e,g){e.w=7;e.h=4;e.mode='hunt';e.trail=0;e.phase=e.phase||1;e.hunt=e.hunt??HUNT[e.phase];e.lastPlayer=g.playerCenter();},
  update(e,dt,g){
   if(e.dead)return;
+  const p=g.playerCenter(),last=e.lastPlayer||p;
+  const vx=clamp((p.x-last.x)/dt,-PLAYER.speed,PLAYER.speed),vy=clamp((p.y-last.y)/dt,-PLAYER.speed,PLAYER.speed);
+  e.lastPlayer=p;
   if(e.mode==='hunt'&&e.t>.22){
    if(e.t<e.hunt+.22){
-    const p=g.playerCenter(),want=Math.atan2(p.y-e.y-2,p.x-e.x-3.5);
+    const tx=clamp(p.x+vx*LEAD[e.phase],8,200),ty=clamp(p.y+vy*LEAD[e.phase],16,123);
+    const want=Math.atan2(ty-e.y-2,tx-e.x-3.5);
+    e.aimX=tx;e.aimY=ty;
     const delta=Math.atan2(Math.sin(want-e.angle),Math.cos(want-e.angle));
-    e.angle+=clamp(delta,-1.8*dt,1.8*dt);
+    e.angle+=clamp(delta,-TURN[e.phase]*dt,TURN[e.phase]*dt);
    }else{
     e.mode='locked';e.lockAt=g.time;e.lockAngle=e.angle;
     g.audit.push({time:g.time,id:e.id,kind:'torpedoLock',phase:e.phase,angle:e.angle});sfx.tick();
