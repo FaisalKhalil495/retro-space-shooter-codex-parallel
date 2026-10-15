@@ -20,15 +20,16 @@ was revised after the owner rejected the simple ice blocks. Revision 2 adds
 a detailed glacier valley, fractured shelves, and visible fjord water. The
 hero and bullets must look exactly like the previous game. The owner approved
 revision 2's location and requested pictures of the enemies, including the
-boss. Those visual proposals are the current review stage. The main game is
+boss. The main game is
 still v0.29.0; the full level and boss have not been approved for implementation.
 The owner then requested more enemies. The concept roster now includes seven
 regular types plus Breakwater, with four additional silhouettes and roles:
 Crest Bomber, Snow Roller, Needle Wing, and Wake Hunter. The expanded art review
 comes before revising the earlier three-enemy combat-preview proposal.
-The owner likes the new designs and requested planning. Preserve their look.
-The revised proposal splits all seven types across two selectable 30-second
-combat flights; implementation approval is pending. Breakwater and the full
+The owner liked the new designs and explicitly approved the revised plan.
+All seven types now run across two selectable 30-second combat flights under
+`demos/glacier-combat/`. The preview passed 89 combat checks plus the existing
+119 game/scenery checks and awaits phone review. Breakwater and the full
 campaign stage follow later plans.
 
 ---
@@ -511,6 +512,28 @@ fewer rounds are needed.
   approved 30-second scenery journey reusable. Plan readability and fairness
   checks, unchanged original hero/bullets, and zero save writes. This is a
   proposal awaiting approval, followed by separate boss and full-level plans.
+- The owner explicitly approved the two-flight plan. Implemented all seven
+  types in a separate preview using a Game subclass and local type objects;
+  shared ENEMY_TYPES, LEVELS, the campaign, and scenery-only demo are untouched.
+  Flight 1 introduces skiff, anchor and dart pairs; flight 2 introduces bomber,
+  roller, needle and hunter. Each lasts 30 seconds with original damage/lives,
+  pause, interruption handling, replay and flight switching. Art is newly
+  painted at half-pixel scale from the reviewed silhouettes, with caches and
+  alpha-mask hit tests. Enemy attacks use existing shot/effect/audio helpers;
+  no new music, pickups or persistent scores are introduced. Bombs and charges
+  can be shot safely, and rockets ignore them. Needle aim and hunter dash
+  directions lock before attack. Initial tuning is in the combat README.
+  Verification: 89 focused checks, 49 smoke, 35 seeded-level, 35 scenery checks,
+  plus a standalone export running both flights at both phone sizes with zero
+  external requests. Hero/flame/bullet pixels and firing exactly match the
+  original renderer. The five-scene drawing benchmark completed with unchanged
+  call counts, and a same-machine preview comparison stayed close to the
+  scenery-only draw cost. Fixed a last-life death at the deadline incorrectly
+  reporting completion; it now offers replay. Lesson: explicitly test deadline
+  outcomes as well as normal game over, and isolate weapon tests with an
+  actually aligned shot. Videos and a playable export support phone review;
+  physical Android Chrome and Safari remain user checks. Await that review
+  before planning the separate boss and full campaign level.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

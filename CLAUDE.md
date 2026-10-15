@@ -523,23 +523,24 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      The hero, engine flame, and bullets must match the previous game exactly;
      their original code is reused, with pixel and firing comparisons passing.
      **Location approved:** the owner approved revision 2 and requested enemy
-     pictures, including the boss. The next visual review is Shelf Skiff,
-     Anchor Gun, Twin Darts, and Breakwater; see
-     `docs/concepts/level-4-enemies/review.md`. These are design proposals, not
-     approved enemies or final game sprites. The playable full Level 4 is not
-     built yet; implementation still needs a separately approved stage.
-     The revised next proposal is a separate preview with two selectable
-     30-second combat flights covering all seven regular enemy types; see
-     `docs/concepts/level-4-enemies/next-stage.md`. It awaits implementation
-     approval and does not include Breakwater or campaign registration.
+     pictures, including the boss. Shelf Skiff, Anchor Gun, Twin Darts, and
+     Breakwater were the first visual proposals; see
+     `docs/concepts/level-4-enemies/review.md`. The playable full Level 4 and
+     Breakwater remain unimplemented.
      **Expanded roster requested:** the owner asked for more enemies. Four
      additional concepts are Crest Bomber (bomb drops), Snow Roller (shootable
      rolling charges), Needle Wing (warned precision shot), and Wake Hunter
      (warned diving pass). Together with Shelf Skiff, Anchor Gun, and Twin
      Darts, there are seven proposed regular enemy types plus Breakwater.
-     The owner likes the new designs and requested the next-step plan.
-     Preserve their visual direction; attack rules, tuning, and implementation
-     remain subject to the revised combat-preview plan's approval.
+     The owner liked the new designs and explicitly approved the revised
+     two-flight combat-preview plan. It is now implemented independently at
+     `demos/glacier-combat/`: two selectable 30-second flights with all seven
+     regular types, shootable bombs and charges, damage, respawn, pause, replay,
+     flight switching, original hero/bullets, and zero save writes. See
+     `docs/concepts/level-4-enemies/next-stage.md` for approved scope and the
+     combat README for exact initial tuning. All 89 combat checks plus 49
+     smoke, 35 seeded-level, and 35 scenery checks pass. The preview awaits
+     phone review; Breakwater and campaign registration need later plans.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -772,9 +773,9 @@ The approved scenery-demo revision 2 is complete and documented in
 `demos/glacier-coast/README.md`. The owner approved this location and requested
 enemy and boss concept pictures, then requested more enemies. The expanded
 review now covers seven regular types plus Breakwater. The owner likes the
-new designs and requested a plan. The revised two-flight combat-preview plan
-is ready for review; the full level still requires a separately approved
-implementation stage.
+new designs and approved the revised two-flight combat-preview plan. Both
+flights are implemented at `demos/glacier-combat/` and await phone review.
+The full level still requires a separately approved implementation stage.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**
 (3D, 3E) → **Android app** on Google Play (stage A) → iPhone app (optional)
@@ -800,6 +801,14 @@ it over. The owner tests on Android; ideally the friend checks iPhone each stage
 
 ## Code map
 
+- `demos/glacier-combat/` — approved standalone combat preview. `scene.js`
+  subclasses Game with two 30-second arrival schedules, `enemies.js` defines
+  seven local types and two shootable hazard types, `art.js` prepaints detailed
+  half-pixel pictures and silhouette masks, and `main.js` handles flight choice,
+  pause, replay and game-over UI through the original controls/layout. Shared
+  game modules and the scenery demo are untouched. `tools/combat-demo-test.mjs`
+  exercises 89 focused checks; `tools/export-combat-demo.mjs <output.html>`
+  exports modules plus the original landscape in a self-contained review copy.
 - `demos/glacier-coast/` — separate 30-second scenery review, served directly
   like the main game. Reuses `Game`, `Controls`, the original ship, sound
   effects, and safe-area layout; defines its own scene without changing

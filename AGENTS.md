@@ -47,10 +47,11 @@ and firing behavior; do not redraw or substitute them. The pixel comparison
 in `tools/coast-demo-test.mjs` checks this explicitly.
 
 The user approved revision 2's location and requested pictures of the enemies,
-including the boss. The current authorized stage is visual concepts for Shelf
+including the boss. The first visual concepts were Shelf
 Skiff, Anchor Gun, Twin Darts, and Breakwater. Save them under
 `docs/concepts/level-4-enemies/` and show them for review. This request does not
-approve their final designs, mechanics, tuning, or campaign implementation.
+approve their final designs, mechanics, tuning, or campaign implementation;
+the subsequent two-flight implementation approval is recorded below.
 
 The user subsequently requested more enemies. Expand the visual roster with
 Crest Bomber, Snow Roller, Needle Wing, and Wake Hunter: seven regular enemy
@@ -60,7 +61,13 @@ art review; do not treat the request for more concepts as full-level approval.
 The user now likes the new designs and requested the next-step plan. Preserve
 that visual direction. The revised proposal is two selectable 30-second
 combat flights covering all seven regular types; see
-`docs/concepts/level-4-enemies/next-stage.md`. It awaits implementation approval.
+`docs/concepts/level-4-enemies/next-stage.md`. The user explicitly approved
+this plan: both selectable 30-second combat flights and all seven local enemy
+behaviors are authorized under `demos/glacier-combat/`. Complete this stage,
+its tests, playable export, and videos without asking for approval again.
+Both flights are implemented and verified: 89 combat checks plus the existing
+49 smoke, 35 seeded-level, and 35 scenery-demo checks pass. See
+`demos/glacier-combat/README.md` for initial tuning and phone review steps.
 Breakwater and campaign Level 4 remain separately planned stages.
 
 Before implementing a new stage, present a small, concrete plan for the user's
@@ -139,8 +146,11 @@ boss. The planet's final name, enemy behavior, and boss rules are not settled.
 using the existing ship and controls. It has pause, replay, a solid snow floor,
 and no campaign registration or save writes. Revision 2 replaces the simple
 cliffs with a glacier valley and fjord, and the user approved this location.
-The next review covers the enemy and boss concept pictures in
-`docs/concepts/level-4-enemies/review.md`. See `demos/glacier-coast/README.md`.
+The approved combat-preview stage is now complete under `demos/glacier-combat/`:
+two selectable 30-second flights, all seven regular enemy types, local hazards,
+damage, replay and flight switching, with original hero/bullets and zero save
+writes. It awaits the user's phone review. See the combat README for tuning;
+Breakwater and campaign registration remain outside the approved stage.
 
 ## Validation and handover
 

@@ -1,6 +1,6 @@
 # Ember Drift — Level 4 concept review
 
-**Status: B — Glacier Coast location approved after demo revision 2. Enemy and boss pictures are the next review; the full level remains unimplemented.**
+**Status: Glacier Coast location approved. The approved two-flight enemy preview is implemented and awaits phone review. Breakwater and the full campaign level remain unimplemented.**
 
 Prepared only for `FaisalKhalil495/retro-space-shooter-codex-parallel`.
 `retro-space-shooter` and `retro-space-shooter-codex` are outside the scope of
@@ -179,8 +179,9 @@ Bomber, Snow Roller, Needle Wing, and Wake Hunter. Their pictures and proposed
 roles are in the linked review. The user likes the four new designs and asked
 to plan the next step. The revised proposal is two selectable 30-second enemy
 combat flights, with Breakwater and the full level planned separately. See
-[the next-stage plan](level-4-enemies/next-stage.md); implementation is pending
-the user's approval.
+[the approved next-stage plan](level-4-enemies/next-stage.md). Both flights are
+now implemented separately at `demos/glacier-combat/` and await phone review.
+Breakwater and campaign Level 4 remain unimplemented.
 
 Any eventual boss must retain the established entrance, name card, roar,
 unique music, three phases, five warned attacks, moving weak point, speech

@@ -6,8 +6,9 @@ dark mechanical undersides, frost, and small amber warning lamps.
 
 The pictures show close-up concepts in the approved daylight glacier world.
 They are not gameplay screenshots or finished sprites. Enemy designs, attack
-rules, counts, health, and difficulty remain open. Nothing has been added to
-the demo or campaign.
+rules, health, and difficulty are subject to playable review. The approved
+separate combat preview now implements these seven regular types, with initial
+tuning in `demos/glacier-combat/README.md`. They are not in the campaign.
 
 The user likes the four new designs. Preserve that visual direction. The
 next review concerns the playable combat plan and behavior, not another
@@ -19,8 +20,9 @@ Twin Darts count as one type, with two craft. These are type counts, not the
 number of enemies that would appear in a full level.
 
 The [revised combat-preview proposal](next-stage.md) has two selectable
-30-second flights covering all seven regular types. It awaits implementation
-approval. The boss fight would follow in a separately planned stage.
+30-second flights covering all seven regular types. The user approved it;
+the implemented preview awaits phone review. The boss fight would follow in
+a separately planned stage.
 
 ## Shelf Skiff
 

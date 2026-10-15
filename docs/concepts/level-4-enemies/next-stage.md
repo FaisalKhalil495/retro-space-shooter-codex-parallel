@@ -1,6 +1,12 @@
 # Next proposed stage — two 30-second coast combat flights
 
-**Status: revised plan for review. No combat implementation has started.**
+**Status: explicitly approved, implemented, and verified; awaiting phone review.**
+
+The working page is `demos/glacier-combat/`. Its README records final arrival
+times, counts, initial tuning and review steps. All 89 focused combat checks,
+49 existing smoke checks, 35 seeded level checks and 35 scenery checks pass.
+The standalone export was verified at both phone sizes without external
+resource requests. This document retains the approved scope below.
 
 The user likes the expanded enemy concepts and asked to plan the next step.
 The detailed glacier location remains approved. Liking the art does not settle
@@ -14,7 +20,7 @@ roles without crowding every introduction into a single short flight. Both
 flights use the approved coast, the exact original hero and bullets, and the
 existing movement, firing, sound effects, and touch controls.
 
-The next approval would cover both preview flights and their local enemy
+The user's approval covers both preview flights and their local enemy
 behaviors below. The Breakwater boss and campaign Level 4 remain later stages.
 
 ## Flight 1 — ground guns and paired fighters
@@ -102,7 +108,8 @@ bonuses, and separately reviewed music. Then plan the full approximately
 three-minute Level 4 timeline, terrain, pickups, difficulty, transitions, and
 campaign integration. Each implementation stage needs its own review.
 
-## Decision needed
+## Approved scope
 
-Approve building these two short enemy-combat flights, or revise this plan.
-This is a planning handover; the current game and demos are unchanged.
+The user approved building both short enemy-combat flights. Complete and
+verify this stage, then hand it over for phone review. Preserve the current
+campaign and scenery-only demo; later stages still need their own plans.
