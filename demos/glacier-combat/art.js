@@ -125,9 +125,21 @@ function hunter(c) {
 }
 function charge(c){disc(c,4,4,4,P.ink);disc(c,4,4,3,P.copper);disc(c,4,4,2,P.dark);rect(c,2,1,3,.5,P.cream);lamp(c,3,3);}
 function bomb(c){poly(c,[[2,0],[6,0],[7,3],[6,8],[2,8],[1,3]],P.ink);panel(c,2,1,4,5,P.copper);rect(c,3,2,1,3,P.cream);rect(c,2,6,4,1,P.amber);}
-const spec={skiff:[32,16,skiff],anchor:[22,22,anchor],dart:[24,12,dart],bomber:[38,18,bomber],roller:[30,23,roller],needle:[40,22,needle],hunter:[32,22,hunter],charge:[8,8,charge],bomb:[8,8,bomb]};
-function paint(w,h,fn,open,seed){
-  const {canvas,ctx}=detailCanvas(w,h);fn(ctx,open);
+// Match shipped enemy classes on the 208×144 grid (not concept-photo sizes):
+// Rime Guard, cliff turret, seeker, Cryo Layer, crawler, sniper, Rust Raider.
+// Keep the approved source silhouettes, sampled sharply onto the final grid.
+const spec={
+  skiff:[12,8,skiff,32,16],anchor:[11,7,anchor,22,22],
+  dart:[10,7,dart,24,12],bomber:[16,9,bomber,38,18],
+  roller:[14,9,roller,30,23],needle:[14,7,needle,40,22],
+  hunter:[13,9,hunter,32,22],charge:[8,8,charge,8,8],bomb:[8,8,bomb,8,8]
+};
+function paint(w,h,fn,sw,sh,open,seed){
+  const source=detailCanvas(sw,sh);fn(source.ctx,open);
+  const {canvas}=detailCanvas(w,h);
+  const sampled=canvas.hi.getContext('2d');sampled.setTransform(1,0,0,1,0,0);
+  sampled.imageSmoothingEnabled=false;
+  sampled.drawImage(source.canvas.hi,0,0,w*2,h*2);
   const c=canvas.hi.getContext('2d'),im=c.getImageData(0,0,w*2,h*2);
   const buf=im.data;
   for(let y=0;y<h*2;y++)for(let x=0;x<w*2;x++){
@@ -145,16 +157,17 @@ function paint(w,h,fn,open,seed){
   flash.hi.getContext('2d').putImageData(im,0,0);canvas.flash=flash;
   return canvas;
 }
-export const ART=Object.fromEntries(Object.entries(spec).map(([key,[w,h,fn]],i)=>[key,{idle:paint(w,h,fn,false,700+i),open:paint(w,h,fn,true,700+i)}]));
+export const ART=Object.fromEntries(Object.entries(spec).map(([key,[w,h,fn,sw,sh]],i)=>[key,{idle:paint(w,h,fn,sw,sh,false,700+i),open:paint(w,h,fn,sw,sh,true,700+i)}]));
+const picture=e=>ART[e.T.art][['warn','vent','aim'].includes(e.mode)?'open':'idle'];
 export function artHit(e,x,y,w,h){
-  const pic=ART[e.T.art].idle;
+  const pic=picture(e);
   const x0=Math.max(0,Math.floor((x-e.x)*2)),x1=Math.min(e.w*2,Math.ceil((x+w-e.x)*2));
   const y0=Math.max(0,Math.floor((y-e.y)*2)),y1=Math.min(e.h*2,Math.ceil((y+h-e.y)*2));
   for(let py=y0;py<y1;py++)for(let px=x0;px<x1;px++)if(pic.mask[py*pic.width*2+px])return 'hit';
   return null;
 }
 export function body(e,c,snap){
-  const open=['warn','vent','aim'].includes(e.mode),pic=ART[e.T.art][open?'open':'idle'];
+  const pic=picture(e);
   c.drawImage(e.flash>0?pic.flash:pic,snap(e.x),snap(e.y));
 }
 export function target(c,x,y,snap,lit=true){

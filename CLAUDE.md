@@ -538,9 +538,17 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      regular types, shootable bombs and charges, damage, respawn, pause, replay,
      flight switching, original hero/bullets, and zero save writes. See
      `docs/concepts/level-4-enemies/next-stage.md` for approved scope and the
-     combat README for exact initial tuning. All 89 combat checks plus 49
+     combat README for exact initial tuning. All 99 combat checks plus 49
      smoke, 35 seeded-level, and 35 scenery checks pass. The preview awaits
      phone review; Breakwater and campaign registration need later plans.
+     **Combat revision 2 — size correction:** the owner found the enemies too
+     large and asked for the same scale as earlier levels. All seven regular
+     types now match existing enemy sprite dimensions, 10–16 pixels wide and
+     7–9 tall. Collision silhouettes and gun/warning positions follow the art.
+     Keep the approved designs and this scale; inspect mixed waves with no
+     kills. The two flights keep their arrivals and attack tuning. Details and
+     crowding measurements are in the combat README. The hero, bullets,
+     landscape, shipped levels, controls, audio and saving remain unchanged.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -807,7 +815,7 @@ it over. The owner tests on Android; ideally the friend checks iPhone each stage
   half-pixel pictures and silhouette masks, and `main.js` handles flight choice,
   pause, replay and game-over UI through the original controls/layout. Shared
   game modules and the scenery demo are untouched. `tools/combat-demo-test.mjs`
-  exercises 89 focused checks; `tools/export-combat-demo.mjs <output.html>`
+  exercises 99 focused checks; `tools/export-combat-demo.mjs <output.html>`
   exports modules plus the original landscape in a self-contained review copy.
 - `demos/glacier-coast/` — separate 30-second scenery review, served directly
   like the main game. Reuses `Game`, `Controls`, the original ship, sound

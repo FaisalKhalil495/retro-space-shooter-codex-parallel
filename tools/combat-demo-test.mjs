@@ -48,10 +48,21 @@ try{
     for(const flight of [1,2]){
       await tap('#flight'+flight);await page.waitForFunction(()=>window.__combat.mode==='playing');
       const sim=await page.evaluate(flight=>{
-        const h=window.__combat,g=h.game;let groundErrors=0,overlaps=0;
+        const h=window.__combat,g=h.game;let groundErrors=0,overlaps=0,maxArea=0,maxCount=0,minGap=120;
         const snapshots={};
         for(let i=0;i<3600;i++){
           g.player.invuln=100;h.advance(1/120,{dx:0,dy:0,fire:false});
+          const visible=g.enemies.filter(e=>!e.dead&&e.x<208&&e.x+e.w>0);
+          maxCount=Math.max(maxCount,visible.length);
+          maxArea=Math.max(maxArea,visible.reduce((a,e)=>a+Math.max(0,Math.min(208,e.x+e.w)-Math.max(0,e.x))*e.h,0));
+          // Audit every step with no kills: local enemy boxes plus 2px margins
+          // must leave a three-ship-height band in each 24px-wide column.
+          for(let x=0;x<208;x+=8){
+            const bands=visible.filter(e=>e.x<x+24&&e.x+e.w>x).map(e=>[Math.max(11,e.y-2),Math.min(129,e.y+e.h+2)]).sort((a,b)=>a[0]-b[0]);
+            let end=11,gap=0;
+            for(const [a,z] of bands){gap=Math.max(gap,a-end);end=Math.max(end,z);}
+            minGap=Math.min(minGap,Math.max(gap,129-end));
+          }
           for(const e of g.enemies){
             if(['shelfSkiff','anchorGun','snowRoller','rollingCharge'].includes(e.type)&&Math.abs(e.y+e.h-g.terrain.floorY)>.01)groundErrors++;
             if(e.type==='twinDart')for(const o of g.enemies)if(o.id>e.id&&o.type===e.type&&e.x<o.x+o.w&&e.x+e.w>o.x&&e.y<o.y+o.h&&e.y+e.h>o.y)overlaps++;
@@ -69,7 +80,7 @@ try{
             const w=warns.get(e.id);if(!w||e.time-w.time<.63)warningErrors++;
           }
         }
-        return {mode:h.mode,time:g.time,bg:g.bg.t,groundErrors,overlaps,warningErrors,snapshots,audit:g.audit,boss:g.boss};
+        return {mode:h.mode,time:g.time,bg:g.bg.t,groundErrors,overlaps,warningErrors,snapshots,audit:g.audit,boss:g.boss,maxArea,maxCount,minGap,shipHeight:g.player.h};
       },flight);
       check(phone.name+': flight '+flight+' lasts exactly 30 seconds',sim.mode==='done'&&sim.time===30&&sim.bg===30);
       check(phone.name+': flight '+flight+' keeps machines grounded',sim.groundErrors===0);
@@ -77,6 +88,8 @@ try{
       check(phone.name+': flight '+flight+' warns before every shot, charge and dash',sim.warningErrors===0);
       const wanted=flight===1?['shelfSkiff','anchorGun','twinDart']:['crestBomber','snowRoller','needleWing','wakeHunter'];
       check(phone.name+': flight '+flight+' demonstrates every intended attack',wanted.every(t=>sim.audit.some(e=>e.type===t&&['fire','dash'].includes(e.kind)))&&!sim.boss);
+      check(phone.name+': flight '+flight+' mixed waves leave room with no enemies destroyed',sim.maxArea/(208*120)<.02&&sim.minGap>=sim.shipHeight*3&&sim.maxCount<=4);
+      console.log('DENSITY',phone.name,flight,JSON.stringify({maxCount:sim.maxCount,maxArea:sim.maxArea,minGap:sim.minGap}));
       await page.evaluate(()=>window.__combat.advance(5));
       check(phone.name+': flight '+flight+' stays frozen when complete',await page.evaluate(()=>window.__combat.game.time===30));
       await tap('#action');check(phone.name+': flight '+flight+' replay resets hazards, health and score',await page.evaluate(()=>{const g=window.__combat.game;return g.time===0&&g.bg.t===0&&g.audit.length===0&&g.enemies.length===0&&g.enemyShots.length===0&&g.score===0&&g.health===5&&g.lives===3;}));
@@ -106,15 +119,16 @@ try{
     // Direct behavior checks isolate dodging, armor, damage and hazards from
     // the flight schedule; production update/collision methods still execute.
     const behavior=await page.evaluate(async()=>{
-      const {CombatGame}=await import('/demos/glacier-combat/scene.js?combat=1');
-      const {ART}=await import('/demos/glacier-combat/art.js?combat=1');
+      const {CombatGame}=await import('/demos/glacier-combat/scene.js?combat=2');
+      const {ART}=await import('/demos/glacier-combat/art.js?combat=2');
+      const {SPRITES}=await import('/js/sprites.js?v=0.29.0');
       const {ENEMY_TYPES}=await import('/js/enemies.js?v=0.29.0');const {LEVELS}=await import('/js/levels.js?v=0.29.0');
       const make=()=>{const g=new CombatGame();g.runner={update(){}};Object.assign(g.player,{x:35,y:80,entering:0,invuln:100});return g;};
       const tick=(g,t)=>{for(let i=0;i<Math.round(t*120);i++)g.update(1/120,{dx:0,dy:0,fire:false});};
       const g=make();const anchor=g.spawnEnemy('anchorGun',150,0);g.damage(anchor,1);const closed=anchor.hp===4;
       tick(g,1.5);const wasOpen=anchor.T.isVulnerable(anchor);g.damage(anchor,1);const open=anchor.hp===3;
       anchor.mode='closed';g.weapons.collect('bomb');g.weapons.fire();tick(g,.6);const bombBlocked=anchor.hp===3;
-      anchor.mode='vent';anchor.timer=5;g.player.y=anchor.y+8-g.player.h/2;
+      anchor.mode='vent';anchor.timer=5;g.player.y=anchor.T.muzzle(anchor).y-g.player.h/2;
       g.weapons.collect('laser');g.weapons.fire();tick(g,.4);const laserKilled=anchor.dead;
       const ordinaryKills=['shelfSkiff','anchorGun','snowRoller'].every(type=>{
         const target=make(),e=target.spawnEnemy(type,130,0);
@@ -139,7 +153,24 @@ try{
       d.hurtPlayer(99);tick(d,1.5);const respawn=d.state==='playing'&&d.lives===2&&d.health===5;
       const shared=LEVELS.length===3&&!Object.hasOwn(ENEMY_TYPES,'shelfSkiff');
       const sharp=Object.values(ART).every(a=>Object.values(a).every(p=>p.hi.width===p.width*2&&p.hi.height===p.height*2&&p.mask.some(Boolean)));
-      return {closed,wasOpen,open,bombBlocked,laserKilled,ordinaryKills,needleLocked,hunterLocked,shotCharge,hazardsEnd,visibleBurst,rocketIgnores,damage,respawn,shared,sharp};
+      const references={skiff:'rimeGuard',anchor:'turretShut',dart:'seeker',bomber:'cryoLayer',roller:'crawler',needle:'sniper',hunter:'raider'};
+      const sizesMatch=Object.entries(references).every(([key,ref])=>Object.values(ART[key]).every(p=>p.width===SPRITES[ref].width&&p.height===SPRITES[ref].height));
+      const k=make();let silhouettes=true,muzzles=true;
+      for(const type of ['shelfSkiff','anchorGun','twinDart','crestBomber','snowRoller','needleWing','wakeHunter']){
+        const e=k.spawnEnemy(type,130,45),m=e.T.muzzle(e),p=ART[e.T.art].idle;
+        muzzles&&=m.x>=e.x&&m.x<=e.x+e.w&&m.y>=e.y&&m.y<=e.y+e.h;
+        silhouettes&&=e.w===p.width&&e.h===p.height;
+        for(const mode of ['enter','warn']){
+          e.mode=mode;const pic=ART[e.T.art][mode==='warn'?'open':'idle'];
+          const alpha=pic.hi.getContext('2d').getImageData(0,0,e.w*2,e.h*2).data;
+          for(let fy=0;fy<e.h*2;fy++)for(let fx=0;fx<e.w*2;fx++){
+            const solid=alpha[(fy*e.w*2+fx)*4+3]>127;
+            silhouettes&&=Boolean(e.T.hitTest(e,e.x+fx/2+.1,e.y+fy/2+.1,.2,.2))===solid;
+            silhouettes&&=Boolean(pic.mask[fy*e.w*2+fx])===solid;
+          }
+        }
+      }
+      return {sizesMatch,silhouettes,muzzles,closed,wasOpen,open,bombBlocked,laserKilled,ordinaryKills,needleLocked,hunterLocked,shotCharge,hazardsEnd,visibleBurst,rocketIgnores,damage,respawn,shared,sharp};
     });
     for(const [name,ok] of Object.entries(behavior))check(phone.name+': '+name,ok);
     // Exhaust lives through the real game state, then exercise actual UI replay.

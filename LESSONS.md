@@ -534,6 +534,23 @@ fewer rounds are needed.
   actually aligned shot. Videos and a playable export support phone review;
   physical Android Chrome and Safari remain user checks. Await that review
   before planning the separate boss and full campaign level.
+- Combat preview revision 2: the owner found the enemies too big and worried
+  that mixed waves would crowd the screen. Match actual earlier enemy classes
+  before judging new art: skiff 12×8, anchor 11×7, dart 10×7, bomber 16×9,
+  roller 14×9, needle 14×7, hunter 13×9. These are exact existing sprite sizes.
+  Keep the reviewed designs recognizable through crisp final-grid sampling;
+  resize real bounds and masks too, and relocate guns and warning flashes.
+  Open-hatch collision masks must match the displayed frame. Verify ordinary
+  shots still reach small grounded enemies. A no-fire audit includes every
+  survivor: flights peak at four/three visible enemies and hazards, occupy
+  under 1.4% of the play area in bounding boxes, and keep at least 42/48 pixels
+  of vertical clearance per 24-pixel column between padded enemy boxes.
+  This is a crowding measure, not a claim that bullets leave those paths free.
+  Lesson: a concept illustration's scale does not belong in the game; compare
+  new enemies beside the current roster and hero before handover. Revision 2
+  has 99 focused checks, including dimensions, active silhouettes, muzzles and
+  no-kill crowding. Preserve the landscape, hero/bullets, campaign, controls,
+  audio and saves. Boss and full-level work still await a later approved stage.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

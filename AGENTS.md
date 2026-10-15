@@ -65,10 +65,17 @@ combat flights covering all seven regular types; see
 this plan: both selectable 30-second combat flights and all seven local enemy
 behaviors are authorized under `demos/glacier-combat/`. Complete this stage,
 its tests, playable export, and videos without asking for approval again.
-Both flights are implemented and verified: 89 combat checks plus the existing
+Both flights are implemented and verified: 99 combat checks plus the existing
 49 smoke, 35 seeded-level, and 35 scenery-demo checks pass. See
 `demos/glacier-combat/README.md` for initial tuning and phone review steps.
 Breakwater and campaign Level 4 remain separately planned stages.
+
+The user requested smaller enemies after the first combat review. Revision 2
+matches all seven regular types to existing enemy-class dimensions (10–16 px
+wide, 7–9 px tall), with matching collision silhouettes and gun positions.
+Keep this scale for future coast work: concept-picture size is not play size.
+Check mixed waves with no kills so surviving enemies cannot crowd the screen.
+Preserve the approved designs, landscape, and exact original hero/bullets.
 
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
