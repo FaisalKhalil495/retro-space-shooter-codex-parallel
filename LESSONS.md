@@ -551,6 +551,18 @@ fewer rounds are needed.
   has 99 focused checks, including dimensions, active silhouettes, muzzles and
   no-kill crowding. Preserve the landscape, hero/bullets, campaign, controls,
   audio and saves. Boss and full-level work still await a later approved stage.
+- Combat revision 3: after the size correction, the owner asked for a little
+  more size and sharpness. Increase widths only 9–17% (heights 11–14%) from
+  revision 2, retaining the compact roster rather than reverting to the large
+  first preview. Current dimensions: 14×9, 12×8, 11×8, 18×10, 16×10, 16×8,
+  15×10 for skiff, anchor, dart, bomber, roller, needle and hunter. Rebuild a
+  clean half-pixel dark boundary on the final grid and add restrained lit
+  bevels without changing alpha. Hit masks still follow the visible silhouette.
+  Gun positions move with the new dimensions; hazards keep their existing size.
+  The no-kill audit peaks at four/three objects, under 1.7% occupied area, and
+  41/47 pixels of column clearance. The latest preference supersedes exact
+  matching to earlier sizes; preserve their comparable scale. Focused checks
+  now include opaque crisp edges and enforce a bounded small enlargement.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

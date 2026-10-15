@@ -1,7 +1,7 @@
 # Glacier Coast — two 30-second combat flights
 
 The user approved this separate preview. Open `demos/glacier-combat/` through
-the game's static server. Look for **COAST COMBAT 2** below the left controls.
+the game's static server. Look for **COAST COMBAT 3** below the left controls.
 The main game remains v0.29.0 with three campaign levels.
 
 ## Phone review
@@ -38,45 +38,40 @@ bomber at 23 s and hunter at 24 s. Six regular enemies: two bombers, one roller,
 one needle, two hunters. Bombs and charges are separate shootable hazards.
 Survivors may still be present when the next type enters.
 
-## Scale revision 2
+## Scale and sharpness revision 3
 
-The owner requested the same enemy scale as the earlier levels so mixed waves
-stay readable. All seven regular types now use exact existing sprite dimensions:
+After requesting smaller enemies, the owner asked for a little more size and
+sharpness. Widths are 9–17% larger than revision 2; heights are 11–14% larger.
+This supersedes exact matching to the earlier sprite dimensions while keeping
+the coast roster comparable in scale.
 
-| Coast type | Existing size reference |
-| --- | --- |
-| Shelf Skiff | Rime Guard, 12 × 8 |
-| Anchor Gun | Cliff Turret, 11 × 7 |
-| Twin Dart | Seeker, 10 × 7 |
-| Crest Bomber | Cryo Layer, 16 × 9 |
-| Snow Roller | Mortar Crawler, 14 × 9 |
-| Needle Wing | Sniper, 14 × 7 |
-| Wake Hunter | Rust Raider, 13 × 9 |
-
-The paintings are sampled without smoothing onto the final double-detail grid.
-Gun/warning positions and actual collision sizes match the smaller art; open
-hatches use their displayed silhouette. Ordinary fire still reaches all three
-ground types. Arrivals, attack warnings, speeds, HP and hazard sizes are unchanged.
+The approved paintings are sampled without smoothing onto the final double-detail
+grid. A continuous half-pixel dark outline and restrained lit armor bevels make
+the silhouettes clearer. Neither refinement changes alpha. Real collision masks
+and gun/warning positions follow the final size, including open hatches. Normal
+fire still reaches all three ground types. Arrivals, attacks, HP and hazard sizes
+are unchanged.
 
 A no-fire audit of every physics step includes surviving enemies and hazards.
-Flight 1 peaks at four visible objects and 313 square game pixels of bounding
-boxes; flight 2 peaks at three and 334 (under 1.4% of the playable area each).
-Every 24-pixel column retains at least 42/48 pixels of vertical space between
+Flight 1 peaks at four visible objects and 398 square game pixels of bounding
+boxes; flight 2 peaks at three and 404 (under 1.7% of the playable area each).
+Every 24-pixel column retains at least 41/47 pixels of vertical space between
 padded enemy boxes. This measures enemy crowding, not bullet-free paths or final
-difficulty. The test requires three ship heights of clearance and under 2%
-occupied area, and compares dimensions directly with the shipped sprites.
+difficulty. Tests require three ship heights of clearance, under 2% occupied area,
+and a small enlargement bounded against the earlier sprites. Pixel checks verify
+opaque, continuous dark edges without blurred pixels.
 
 ## Current tuning
 
 | Type | HP | Size in game pixels | Warning | Attack |
 | --- | --- | --- | --- | --- |
-| Shelf Skiff | 4 | 12 × 8 | 0.60 s | Two three-round spreads at 72 px/s. Brakes on the floor. |
-| Anchor Gun | 4 | 11 × 7 | 0.75 s | Heavy aimed shell at 70 px/s, 2 damage. Open during warning and 1.60 s venting; armor also blocks specials and ramming. |
-| Twin Dart | 2 each | 10 × 7 | 0.45 s | Two aimed rounds at 82 px/s per drone, staggered between lanes. |
-| Crest Bomber | 5 | 16 × 9 | 0.80 s before release | Two marked bombs; 1.10 s descent to a fixed target, then six fragments at 58 px/s. |
-| Snow Roller | 5 | 14 × 9 | 0.80 s before launch | Two shootable rolling charges at 54 px/s. Charges live 1.50 s, flash for the last 0.65 s, then burst upward at 62 px/s. |
-| Needle Wing | 3 | 14 × 7 | 0.50 s tracking, then 0.65 s locked | Two precision rounds at 110 px/s. Changing height after lock does not retarget the shot. |
-| Wake Hunter | 3 | 13 × 9 | 0.80 s locked | A 145 px/s diving pass for 0.90 s, then climbs out. No retargeting during the dash. |
+| Shelf Skiff | 4 | 14 × 9 | 0.60 s | Two three-round spreads at 72 px/s. Brakes on the floor. |
+| Anchor Gun | 4 | 12 × 8 | 0.75 s | Heavy aimed shell at 70 px/s, 2 damage. Open during warning and 1.60 s venting; armor also blocks specials and ramming. |
+| Twin Dart | 2 each | 11 × 8 | 0.45 s | Two aimed rounds at 82 px/s per drone, staggered between lanes. |
+| Crest Bomber | 5 | 18 × 10 | 0.80 s before release | Two marked bombs; 1.10 s descent to a fixed target, then six fragments at 58 px/s. |
+| Snow Roller | 5 | 16 × 10 | 0.80 s before launch | Two shootable rolling charges at 54 px/s. Charges live 1.50 s, flash for the last 0.65 s, then burst upward at 62 px/s. |
+| Needle Wing | 3 | 16 × 8 | 0.50 s tracking, then 0.65 s locked | Two precision rounds at 110 px/s. Changing height after lock does not retarget the shot. |
+| Wake Hunter | 3 | 15 × 10 | 0.80 s locked | A 145 px/s diving pass for 0.90 s, then climbs out. No retargeting during the dash. |
 
 Ordinary rounds, fragments and hazard contact cost one block; machine contact
 costs two. Bomb impact also costs one if the ship is inside its marked area.
@@ -114,20 +109,19 @@ node tools/smoke-test.mjs /tmp/ember-smoke
 SEED=28 node tools/level-test.mjs /tmp/ember-levels
 node tools/coast-demo-test.mjs /tmp/ember-coast
 node tools/speed-test.mjs
-node tools/export-combat-demo.mjs /workspace/artifacts/glacier-coast-combat-v2.html
+node tools/export-combat-demo.mjs /workspace/artifacts/glacier-coast-combat-v3.html
 ```
 
 Create screenshot directories before the existing smoke and level tests; the
 combat and coast suites create their own. Run suites sequentially. The optional
 export embeds the exact module sources and existing landscape PNG in one HTML
 file with import maps and Blob URLs. It is not a build step for the served game.
-Validation: 99 focused combat checks, 49 smoke checks, 35 seeded level checks,
+Validation: 101 focused combat checks, 49 smoke checks, 35 seeded level checks,
 and 35 scenery checks passed. Both phone-size exports ran both flights with
 zero external resource requests. The original five-scene drawing benchmark
-completed with unchanged drawing-call counts. In a same-machine comparison
-of 60 draws (median of three alternating samples), flight 1 measured 79.3 ms
-without enemies versus 80.5 ms with combat, and flight 2 measured 78.6 ms versus
-79.9 ms. These cloud-browser samples do not establish phone frame rates.
+completed with unchanged drawing-call counts. The preview also runs a
+same-machine comparison of 60 draws with and without enemies (median of three alternating samples). These cloud-browser samples do
+not establish phone frame rates.
 The managed browser blocks direct `file:` navigation; validate the single-file
 copy through an internal server and separately review physical-phone opening.
 Use local server URLs only for internal checks, not as phone links.

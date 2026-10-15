@@ -65,17 +65,19 @@ combat flights covering all seven regular types; see
 this plan: both selectable 30-second combat flights and all seven local enemy
 behaviors are authorized under `demos/glacier-combat/`. Complete this stage,
 its tests, playable export, and videos without asking for approval again.
-Both flights are implemented and verified: 99 combat checks plus the existing
+Both flights are implemented and verified: 101 combat checks plus the existing
 49 smoke, 35 seeded-level, and 35 scenery-demo checks pass. See
 `demos/glacier-combat/README.md` for initial tuning and phone review steps.
 Breakwater and campaign Level 4 remain separately planned stages.
 
-The user requested smaller enemies after the first combat review. Revision 2
-matches all seven regular types to existing enemy-class dimensions (10–16 px
-wide, 7–9 px tall), with matching collision silhouettes and gun positions.
-Keep this scale for future coast work: concept-picture size is not play size.
-Check mixed waves with no kills so surviving enemies cannot crowd the screen.
-Preserve the approved designs, landscape, and exact original hero/bullets.
+The user requested smaller enemies after the first combat review, then asked
+for a little more size and sharpness. Revision 3 uses a modest 9–17% width
+increase over revision 2, with clean half-pixel dark outlines and lit armor
+edges. Current sizes: skiff 14×9, anchor 12×8, dart 11×8, bomber 18×10,
+roller 16×10, needle 16×8, hunter 15×10. Keep the roster compact; the latest
+request supersedes revision 2's exact old-sprite-size rule. Collision silhouettes
+and gun positions match the art. Check mixed waves with no kills, and preserve
+the approved designs, landscape, and exact original hero/bullets.
 
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read

@@ -125,14 +125,14 @@ function hunter(c) {
 }
 function charge(c){disc(c,4,4,4,P.ink);disc(c,4,4,3,P.copper);disc(c,4,4,2,P.dark);rect(c,2,1,3,.5,P.cream);lamp(c,3,3);}
 function bomb(c){poly(c,[[2,0],[6,0],[7,3],[6,8],[2,8],[1,3]],P.ink);panel(c,2,1,4,5,P.copper);rect(c,3,2,1,3,P.cream);rect(c,2,6,4,1,P.amber);}
-// Match shipped enemy classes on the 208×144 grid (not concept-photo sizes):
-// Rime Guard, cliff turret, seeker, Cryo Layer, crawler, sniper, Rust Raider.
+// Revision 3: about 10–17% larger than the shipped enemy-class references.
+// Keep the coast roster compact on the 208×144 grid.
 // Keep the approved source silhouettes, sampled sharply onto the final grid.
 const spec={
-  skiff:[12,8,skiff,32,16],anchor:[11,7,anchor,22,22],
-  dart:[10,7,dart,24,12],bomber:[16,9,bomber,38,18],
-  roller:[14,9,roller,30,23],needle:[14,7,needle,40,22],
-  hunter:[13,9,hunter,32,22],charge:[8,8,charge,8,8],bomb:[8,8,bomb,8,8]
+  skiff:[14,9,skiff,32,16],anchor:[12,8,anchor,22,22],
+  dart:[11,8,dart,24,12],bomber:[18,10,bomber,38,18],
+  roller:[16,10,roller,30,23],needle:[16,8,needle,40,22],
+  hunter:[15,10,hunter,32,22],charge:[8,8,charge,8,8],bomb:[8,8,bomb,8,8]
 };
 function paint(w,h,fn,sw,sh,open,seed){
   const source=detailCanvas(sw,sh);fn(source.ctx,open);
@@ -149,6 +149,21 @@ function paint(w,h,fn,sw,sh,open,seed){
     const n=grit(x,y,seed);
     if((olive||cream)&&n>.94){buf[i]=154;buf[i+1]=158;buf[i+2]=140;}
     if((olive||cream)&&n<.07 && y>0 && !buf[i-w*8+3]){buf[i]=232;buf[i+1]=238;buf[i+2]=229;}
+  }
+  // Restore a continuous one-sharp-pixel outline after reduction. Keep alpha
+  // unchanged, so neither sharpness nor highlights inflate the collision shape.
+  if(sw!==w||sh!==h){
+    const stride=w*2;
+    const solid=(x,y)=>x>=0&&y>=0&&x<stride&&y<h*2&&buf[(y*stride+x)*4+3]>127;
+    for(let y=0;y<h*2;y++)for(let x=0;x<stride;x++){
+      const i=(y*stride+x)*4;if(!buf[i+3])continue;
+      if(!solid(x-1,y)||!solid(x+1,y)||!solid(x,y-1)||!solid(x,y+1)){
+        buf[i]=24;buf[i+1]=36;buf[i+2]=44;
+      }else if(!solid(x,y-2)&&buf[i]>85){
+        // A restrained lit bevel separates armor panels from the darker edge.
+        buf[i]=Math.min(240,buf[i]+14);buf[i+1]=Math.min(240,buf[i+1]+14);buf[i+2]=Math.min(232,buf[i+2]+10);
+      }
+    }
   }
   c.putImageData(im,0,0);
   canvas.mask=Uint8Array.from({length:w*h*4},(_,i)=>buf[i*4+3]>127?1:0);

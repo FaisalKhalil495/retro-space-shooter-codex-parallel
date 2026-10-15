@@ -3,7 +3,7 @@ import { Terrain } from '../../js/terrain.js?v=0.29.0';
 import { VIEW_W, PAL } from '../../js/config.js?v=0.29.0';
 import { drawText } from '../../js/font.js?v=0.29.0';
 import { CoastBackground, COAST_FLOOR, coastReady } from '../glacier-coast/coast.js?demo=2';
-import { LOCAL_TYPES, spawnLocal } from './enemies.js?combat=2';
+import { LOCAL_TYPES, spawnLocal } from './enemies.js?combat=3';
 
 export { coastReady };
 export const DURATION=30;

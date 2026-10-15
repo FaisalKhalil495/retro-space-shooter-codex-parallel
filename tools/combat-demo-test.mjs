@@ -119,8 +119,8 @@ try{
     // Direct behavior checks isolate dodging, armor, damage and hazards from
     // the flight schedule; production update/collision methods still execute.
     const behavior=await page.evaluate(async()=>{
-      const {CombatGame}=await import('/demos/glacier-combat/scene.js?combat=2');
-      const {ART}=await import('/demos/glacier-combat/art.js?combat=2');
+      const {CombatGame}=await import('/demos/glacier-combat/scene.js?combat=3');
+      const {ART}=await import('/demos/glacier-combat/art.js?combat=3');
       const {SPRITES}=await import('/js/sprites.js?v=0.29.0');
       const {ENEMY_TYPES}=await import('/js/enemies.js?v=0.29.0');const {LEVELS}=await import('/js/levels.js?v=0.29.0');
       const make=()=>{const g=new CombatGame();g.runner={update(){}};Object.assign(g.player,{x:35,y:80,entering:0,invuln:100});return g;};
@@ -154,8 +154,8 @@ try{
       const shared=LEVELS.length===3&&!Object.hasOwn(ENEMY_TYPES,'shelfSkiff');
       const sharp=Object.values(ART).every(a=>Object.values(a).every(p=>p.hi.width===p.width*2&&p.hi.height===p.height*2&&p.mask.some(Boolean)));
       const references={skiff:'rimeGuard',anchor:'turretShut',dart:'seeker',bomber:'cryoLayer',roller:'crawler',needle:'sniper',hunter:'raider'};
-      const sizesMatch=Object.entries(references).every(([key,ref])=>Object.values(ART[key]).every(p=>p.width===SPRITES[ref].width&&p.height===SPRITES[ref].height));
-      const k=make();let silhouettes=true,muzzles=true;
+      const modestSizeIncrease=Object.entries(references).every(([key,ref])=>Object.values(ART[key]).every(p=>p.width>SPRITES[ref].width&&p.width<=SPRITES[ref].width*1.17&&p.height>SPRITES[ref].height&&p.height<=SPRITES[ref].height*1.15));
+      const k=make();let silhouettes=true,muzzles=true,crispEdges=true;
       for(const type of ['shelfSkiff','anchorGun','twinDart','crestBomber','snowRoller','needleWing','wakeHunter']){
         const e=k.spawnEnemy(type,130,45),m=e.T.muzzle(e),p=ART[e.T.art].idle;
         muzzles&&=m.x>=e.x&&m.x<=e.x+e.w&&m.y>=e.y&&m.y<=e.y+e.h;
@@ -164,13 +164,17 @@ try{
           e.mode=mode;const pic=ART[e.T.art][mode==='warn'?'open':'idle'];
           const alpha=pic.hi.getContext('2d').getImageData(0,0,e.w*2,e.h*2).data;
           for(let fy=0;fy<e.h*2;fy++)for(let fx=0;fx<e.w*2;fx++){
-            const solid=alpha[(fy*e.w*2+fx)*4+3]>127;
+            const index=(fy*e.w*2+fx)*4,solid=alpha[index+3]>127;
+            crispEdges&&=alpha[index+3]===0||alpha[index+3]===255;
+            const opaque=(x,y)=>x>=0&&y>=0&&x<e.w*2&&y<e.h*2&&alpha[(y*e.w*2+x)*4+3]===255;
+            if(solid&&(!opaque(fx-1,fy)||!opaque(fx+1,fy)||!opaque(fx,fy-1)||!opaque(fx,fy+1)))
+              crispEdges&&=alpha[index]===24&&alpha[index+1]===36&&alpha[index+2]===44;
             silhouettes&&=Boolean(e.T.hitTest(e,e.x+fx/2+.1,e.y+fy/2+.1,.2,.2))===solid;
             silhouettes&&=Boolean(pic.mask[fy*e.w*2+fx])===solid;
           }
         }
       }
-      return {sizesMatch,silhouettes,muzzles,closed,wasOpen,open,bombBlocked,laserKilled,ordinaryKills,needleLocked,hunterLocked,shotCharge,hazardsEnd,visibleBurst,rocketIgnores,damage,respawn,shared,sharp};
+      return {modestSizeIncrease,silhouettes,muzzles,crispEdges,closed,wasOpen,open,bombBlocked,laserKilled,ordinaryKills,needleLocked,hunterLocked,shotCharge,hazardsEnd,visibleBurst,rocketIgnores,damage,respawn,shared,sharp};
     });
     for(const [name,ok] of Object.entries(behavior))check(phone.name+': '+name,ok);
     // Exhaust lives through the real game state, then exercise actual UI replay.

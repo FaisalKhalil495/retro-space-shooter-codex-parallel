@@ -2,7 +2,7 @@ import { VIEW_W, HUD_H } from '../../js/config.js?v=0.29.0';
 import { GROUND_SPEED } from '../../js/terrain.js?v=0.29.0';
 import { clamp, rectsOverlap } from '../../js/util.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
-import { ART, artHit, body, target } from './art.js?combat=2';
+import { ART, artHit, body, target } from './art.js?combat=3';
 
 const event=(g,e,kind,extra={})=>g.audit.push({time:g.time,id:e.id,type:e.type,kind,...extra});
 const facing=(e,g)=>g.state==='playing' && e.x>=g.player.x+g.player.w+5 && e.x+e.w<=VIEW_W-2 && e.x>8;
@@ -39,7 +39,7 @@ function line(c,e,snap,locked){
 }
 export const LOCAL_TYPES={
   shelfSkiff:common('skiff',4,40,{
-    gunY:3,
+    gunY:3.5,
     init(e,g){e.y=g.terrain.floorY-e.h;e.volleys=0;phase(e,'enter',0,g);},
     update(e,dt,g){
       e.y=g.terrain.floorY-e.h;
@@ -57,7 +57,7 @@ export const LOCAL_TYPES={
     }
   }),
   anchorGun:common('anchor',4,50,{
-    gunY:2.5,isVulnerable:e=>e.mode==='warn'||e.mode==='vent',
+    gunY:3,isVulnerable:e=>e.mode==='warn'||e.mode==='vent',
     init(e,g){e.y=g.terrain.floorY-e.h;phase(e,'closed',.7,g);},
     update(e,dt,g){
       e.y=g.terrain.floorY-e.h;e.x-=GROUND_SPEED*dt;
@@ -116,7 +116,7 @@ export const LOCAL_TYPES={
     draw(e,c,snap){if(e.mode==='warn')target(c,e.tx,e.ty,snap,Math.floor(e.t*8)%2===0);body(e,c,snap);}
   }),
   snowRoller:common('roller',5,60,{
-    gunY:1.5,
+    gunY:2,
     init(e,g){e.y=g.terrain.floorY-e.h;e.shots=0;phase(e,'enter',0,g);},
     update(e,dt,g){
       e.y=g.terrain.floorY-e.h;e.x-=(e.mode==='enter'?42:e.mode==='leave'?45:GROUND_SPEED)*dt;
@@ -137,7 +137,7 @@ export const LOCAL_TYPES={
     }
   }),
   needleWing:common('needle',3,50,{
-    flies:true,gunY:4.5,
+    flies:true,gunY:5,
     init(e,g){e.baseY=e.y;e.shots=0;phase(e,'enter',0,g);},
     update(e,dt,g){
       if(e.mode==='enter'){e.x-=46*dt;if(e.x<=150)phase(e,'aim',.5,g);}
