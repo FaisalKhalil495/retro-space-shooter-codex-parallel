@@ -22,6 +22,10 @@ hero and bullets must look exactly like the previous game. The owner approved
 revision 2's location and requested pictures of the enemies, including the
 boss. Those visual proposals are the current review stage. The main game is
 still v0.29.0; the full level and boss have not been approved for implementation.
+The owner then requested more enemies. The concept roster now includes seven
+regular types plus Breakwater, with four additional silhouettes and roles:
+Crest Bomber, Snow Roller, Needle Wing, and Wake Hunter. The expanded art review
+comes before revising the earlier three-enemy combat-preview proposal.
 
 ---
 
@@ -483,6 +487,17 @@ fewer rounds are needed.
   records live in `docs/concepts/level-4-enemies/`. Location approval advances
   the art review; it does not settle enemy mechanics or authorize the full
   level. No gameplay, demo, controls, audio, or saving changes in this stage.
+- Expanded enemy review: the owner requested more enemies after the initial
+  three types. Add four distinct concepts rather than variants of the same
+  fighter: a broad bomber, a grounded drum roller, a slender precision craft,
+  and a crescent-wing interceptor. All share the coast invaders' olive and
+  cream materials, frost, mechanical wear, and amber warning lamps. Proposed
+  roles are bomb drops, shootable rolling charges, a warned precision shot,
+  and a warned diving pass. Seven regular types plus Breakwater are proposed;
+  Twin Darts remain one type represented by two craft. Names, final behavior,
+  wave counts, and implementation remain review items. Preserve the approved
+  landscape and exact original hero/bullets. The earlier three-enemy preview
+  proposal needs review in light of the larger roster.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

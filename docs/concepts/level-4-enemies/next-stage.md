@@ -2,9 +2,14 @@
 
 **Status: proposal for review; implementation has not started.**
 
-The glacier location is approved. The [three enemy designs and the boss](review.md)
-are ready for review. This proposal covers the first playable enemy preview,
-using the pictured Shelf Skiff, Anchor Gun, and Twin Darts.
+**Roster update:** the user requested more enemies and the art review now has
+seven regular types plus Breakwater. This earlier three-enemy preview plan is
+on hold while the expanded pictures are reviewed. Revise the small playable
+stage after that review; the schedule below is the earlier proposal.
+
+The glacier location is approved. This earlier proposal covers a first
+playable preview using Shelf Skiff, Anchor Gun, and Twin Darts. The current
+[expanded enemy and boss pictures](review.md) also include four new types.
 
 ## What you would play
 
@@ -73,6 +78,7 @@ a fresh video and downloadable preview for the owner's physical-phone review.
 
 ## Decision needed
 
-Approve using these three enemy designs in this 30-second combat preview, or
-request visual changes first. Approval of this proposal would cover the local
-enemy preview; Breakwater and the full campaign level remain separate stages.
+Review the expanded seven-enemy roster first, then confirm or revise this
+bounded preview proposal. Any implementation approval would cover only the
+specified local enemy preview; Breakwater and the full campaign level remain
+separate stages.

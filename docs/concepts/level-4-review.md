@@ -173,6 +173,12 @@ See [enemy and boss visual review](level-4-enemies/review.md). Enemy waves and
 the Breakwater fight remain unimplemented. Location approval does not approve
 every proposed name, attack, number, or future development stage.
 
+The user subsequently requested more enemy variety. The visual roster now has
+seven regular types plus Breakwater: the first three and the added Crest
+Bomber, Snow Roller, Needle Wing, and Wake Hunter. Their pictures and proposed
+roles are in the linked review. Revisit the earlier three-enemy combat-preview
+plan after reviewing this larger set.
+
 Any eventual boss must retain the established entrance, name card, roar,
 unique music, three phases, five warned attacks, moving weak point, speech
 only during pauses, alternating supplies, and quiet stage bonuses. New music

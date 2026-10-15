@@ -1,0 +1,109 @@
+{
+  "kind": "Four additional enemy visual concepts",
+  "generation_tool": "OpenAI ImageGen (host-native)",
+  "generation_date_utc": "2026-10-15",
+  "approval_status": "Location approved; expanded seven-enemy roster plus Breakwater awaiting design review",
+  "reference_images": [
+    {
+      "file": "demos/glacier-coast/assets/glacier-world.png",
+      "sha256": "867b6266f8fe432ef83489596be5d532a4f25e5846879b4c5a4eb0bc28d55f14"
+    },
+    {
+      "file": "docs/concepts/level-4-enemies/shelf-skiff.png",
+      "sha256": "0f5453df5b619b1e1b7fe0cfaa17efaf5b469f9bddf675b1348e517558cae6e2"
+    }
+  ],
+  "exact_prompts": "requests-expanded.json",
+  "transforms": "None; original generated PNG bytes copied without cropping, resizing or repainting",
+  "rights_note": "Generated at the user\u2019s request using project-generated reference art. No third-party asset library or separately billed provider used. Provenance is not legal clearance or canonical game-dev package validation.",
+  "assets": [
+    {
+      "name": "Crest Bomber",
+      "file": "crest-bomber.png",
+      "sha256": "04c2a455d172d62adfab2af2fc82f4a3ea1463c16b44840535dc8abc0e98f0f8",
+      "bytes": 2980634,
+      "format": "PNG",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "prompt_record": "requests-expanded.json#crest-bomber",
+      "static_inspection": "PNG verifies and decodes successfully",
+      "visual_inspection": "One broad airborne bomber with arched wing, two engine gondolas and open bomb bay; full silhouette visible.",
+      "common_visual_checks": [
+        "Olive and cream faction materials, frost and mechanical wear",
+        "Approved daylight glacier world with visible water",
+        "Full subject inside frame",
+        "No hero, bullets, labels or gameplay UI"
+      ],
+      "runtime_status": "Concept source only; no sprites, enemy logic or campaign registration"
+    },
+    {
+      "name": "Snow Roller",
+      "file": "snow-roller.png",
+      "sha256": "a0610c932dd5f89b628eef8ee6cb79a6c540069e51da09c0270552e19d135fa1",
+      "bytes": 2812649,
+      "format": "PNG",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "prompt_record": "requests-expanded.json#snow-roller",
+      "static_inspection": "PNG verifies and decodes successfully",
+      "visual_inspection": "One squat ground vehicle with a large front drum and smaller rear drum touching the snow; exposed launcher above the front drum.",
+      "common_visual_checks": [
+        "Olive and cream faction materials, frost and mechanical wear",
+        "Approved daylight glacier world with visible water",
+        "Full subject inside frame",
+        "No hero, bullets, labels or gameplay UI"
+      ],
+      "runtime_status": "Concept source only; no sprites, enemy logic or campaign registration"
+    },
+    {
+      "name": "Needle Wing",
+      "file": "needle-wing.png",
+      "sha256": "c71515121b0fb89a7b41ffc2b9a3d80c076d07e6d89e0d8fb90e2d4ee0145c67",
+      "bytes": 2987467,
+      "format": "PNG",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "prompt_record": "requests-expanded.json#needle-wing",
+      "static_inspection": "PNG verifies and decodes successfully",
+      "visual_inspection": "One slender airborne precision craft with long left-facing railgun and tall rear fin, separated from the ground.",
+      "common_visual_checks": [
+        "Olive and cream faction materials, frost and mechanical wear",
+        "Approved daylight glacier world with visible water",
+        "Full subject inside frame",
+        "No hero, bullets, labels or gameplay UI"
+      ],
+      "runtime_status": "Concept source only; no sprites, enemy logic or campaign registration"
+    },
+    {
+      "name": "Wake Hunter",
+      "file": "wake-hunter.png",
+      "sha256": "a4459d2548975a8774c558970830f49c15a5d8e2b09181ec8312926bb9ee7446",
+      "bytes": 2891770,
+      "format": "PNG",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "mode": "RGB",
+      "prompt_record": "requests-expanded.json#wake-hunter",
+      "static_inspection": "PNG verifies and decodes successfully",
+      "visual_inspection": "One airborne interceptor with curved swept wings, visible air-brake panels and left-facing guns; no saw ring.",
+      "common_visual_checks": [
+        "Olive and cream faction materials, frost and mechanical wear",
+        "Approved daylight glacier world with visible water",
+        "Full subject inside frame",
+        "No hero, bullets, labels or gameplay UI"
+      ],
+      "runtime_status": "Concept source only; no sprites, enemy logic or campaign registration"
+    }
+  ]
+}

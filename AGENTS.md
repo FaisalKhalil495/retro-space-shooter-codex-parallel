@@ -52,6 +52,12 @@ Skiff, Anchor Gun, Twin Darts, and Breakwater. Save them under
 `docs/concepts/level-4-enemies/` and show them for review. This request does not
 approve their final designs, mechanics, tuning, or campaign implementation.
 
+The user subsequently requested more enemies. Expand the visual roster with
+Crest Bomber, Snow Roller, Needle Wing, and Wake Hunter: seven regular enemy
+types plus Breakwater in total. These are additional concepts for review.
+Revisit the earlier three-enemy combat-preview proposal after this expanded
+art review; do not treat the request for more concepts as full-level approval.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already
