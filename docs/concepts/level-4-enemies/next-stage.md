@@ -1,9 +1,9 @@
 # Next proposed stage — two 30-second coast combat flights
 
-**Status: explicitly approved, implemented, and verified; awaiting phone review.**
+**Status: implemented and verified; the owner accepted combat revision 3.**
 
 The working page is `demos/glacier-combat/`. Its README records final arrival
-times, counts, initial tuning and review steps. All 89 focused combat checks,
+times, counts, initial tuning and review steps. All 101 focused combat checks,
 49 existing smoke checks, 35 seeded level checks and 35 scenery checks pass.
 The standalone export was verified at both phone sizes without external
 resource requests. This document retains the approved scope below.
@@ -113,3 +113,9 @@ campaign integration. Each implementation stage needs its own review.
 The user approved building both short enemy-combat flights. Complete and
 verify this stage, then hand it over for phone review. Preserve the current
 campaign and scenery-only demo; later stages still need their own plans.
+
+## Current next proposal
+
+The owner accepted the sharper, slightly larger enemies in combat revision 3
+and requested the next plan. See [Breakwater boss preview](boss-preview-plan.md).
+That boss stage awaits approval; this earlier combat approval does not cover it.

@@ -79,6 +79,11 @@ request supersedes revision 2's exact old-sprite-size rule. Collision silhouette
 and gun positions match the art. Check mixed waves with no kills, and preserve
 the approved designs, landscape, and exact original hero/bullets.
 
+The user accepted revision 3 and requested the next plan. The next proposal is
+Breakwater's separate boss preview; see
+`docs/concepts/level-4-enemies/boss-preview-plan.md`. It awaits approval;
+requesting a plan does not authorize boss or full-level implementation.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already
@@ -158,7 +163,7 @@ cliffs with a glacier valley and fjord, and the user approved this location.
 The approved combat-preview stage is now complete under `demos/glacier-combat/`:
 two selectable 30-second flights, all seven regular enemy types, local hazards,
 damage, replay and flight switching, with original hero/bullets and zero save
-writes. It awaits the user's phone review. See the combat README for tuning;
+writes. The user accepted revision 3. See the combat README for tuning;
 Breakwater and campaign registration remain outside the approved stage.
 
 ## Validation and handover

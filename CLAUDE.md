@@ -539,8 +539,8 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      flight switching, original hero/bullets, and zero save writes. See
      `docs/concepts/level-4-enemies/next-stage.md` for approved scope and the
      combat README for exact initial tuning. All 101 combat checks plus 49
-     smoke, 35 seeded-level, and 35 scenery checks pass. The preview awaits
-     phone review; Breakwater and campaign registration need later plans.
+     smoke, 35 seeded-level, and 35 scenery checks pass. The owner accepted
+     revision 3; Breakwater and campaign registration need later plans.
      **Combat revision 2 — size correction:** the owner found the enemies too
      large and asked for the same scale as earlier levels. All seven regular
      types now match existing enemy sprite dimensions, 10–16 pixels wide and
@@ -555,6 +555,12 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      armor edges. Current sizes are in the combat README; these supersede the
      exact old-sprite-size constraint. Maintain the compact scale and no-kill
      spacing checks. All other scope and preservation rules still apply.
+     The owner accepted revision 3 and asked for the next plan. A separate
+     Breakwater boss preview is proposed in
+     `docs/concepts/level-4-enemies/boss-preview-plan.md`: mobile runner vessel,
+     opening gun chamber, three phases and five warned attacks. Its size,
+     timings and full implementation remain unapproved. Music gets a separate
+     listening review; campaign Level 4 remains a later stage.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -788,7 +794,7 @@ The approved scenery-demo revision 2 is complete and documented in
 enemy and boss concept pictures, then requested more enemies. The expanded
 review now covers seven regular types plus Breakwater. The owner likes the
 new designs and approved the revised two-flight combat-preview plan. Both
-flights are implemented at `demos/glacier-combat/` and await phone review.
+flights are implemented at `demos/glacier-combat/`; the owner accepted revision 3.
 The full level still requires a separately approved implementation stage.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**

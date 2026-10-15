@@ -563,6 +563,14 @@ fewer rounds are needed.
   41/47 pixels of column clearance. The latest preference supersedes exact
   matching to earlier sizes; preserve their comparable scale. Focused checks
   now include opaque crisp edges and enforce a bounded small enlargement.
+- The owner accepted combat revision 3 and requested the next plan. Propose a
+  separate Breakwater fight before the full level, preserving the accepted
+  regular-enemy scale and sharpness. Start with a compact low vessel around
+  58×24 pixels and validate movement and escape space at actual play size.
+  Three phases, five warned attacks, reachable opening gun chamber, supplies,
+  stage bonuses and safe speech remain required. Detailed proposal:
+  `docs/concepts/level-4-enemies/boss-preview-plan.md`. This is not permission
+  to implement it; new boss music also needs a separate listening review.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a
