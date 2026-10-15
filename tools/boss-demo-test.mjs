@@ -34,11 +34,13 @@ try{
   check(phone.name+': portrait pauses',await page.evaluate(()=>window.__boss.mode==='paused'&&!window.__boss.controls.enabled));
   await page.setViewportSize({width:phone.width,height:phone.height});await page.waitForFunction(()=>document.getElementById('rotate').hidden);await tap('#action');await page.evaluate(()=>window.dispatchEvent(new Event('blur')));
   check(phone.name+': app interruption pauses',await page.evaluate(()=>window.__boss.mode==='paused'));
-  await tap('#restart');check(phone.name+': restart clears the whole encounter',await page.evaluate(()=>{const g=window.__boss.game;return g.time===0&&g.bg.t===0&&!g.boss&&g.enemies.length===0&&g.enemyShots.length===0&&g.pickups.length===0&&g.health===5&&g.lives===3&&g.weapons.kind===null&&g.audit.length===0;}));
+  await tap('#restart');check(phone.name+': restart clears the whole encounter',await page.evaluate(()=>{const g=window.__boss.game;return g.time===0&&g.bg.t===0&&!g.boss&&g.enemies.length===0&&g.enemyShots.length===0&&g.pickups.length===0&&g.health===5&&g.lives===3&&g.weapons.kind===null&&g.audit.length===0&&g.wreck===null;}));
   const result=await page.evaluate(async()=>{
-   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=1');
-   const {BREAKWATER,beginAttack,clearThreats,MOVES}=await import('/demos/glacier-boss/boss.js?boss=1');
-   const {HULLS}=await import('/demos/glacier-boss/art.js?boss=1');
+   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=2');
+   const {BREAKWATER,beginAttack,clearThreats,MOVES}=await import('/demos/glacier-boss/boss.js?boss=2');
+   const {HULLS}=await import('/demos/glacier-boss/art.js?boss=2');
+   const {useDetail}=await import('/js/detail.js?v=0.29.0');
+   const {BREAKUP_SECONDS}=await import('/demos/glacier-boss/wreck.js?boss=2');
    const {Game}=await import('/js/game.js?v=0.29.0');const {ENEMY_TYPES}=await import('/js/enemies.js?v=0.29.0');const {LEVELS}=await import('/js/levels.js?v=0.29.0');
    const make=()=>{const g=new BossGame();g.runner={update(){}};g.rand=()=>.45;Object.assign(g.player,{x:26,y:115,entering:0,invuln:100});const b=g.spawnEnemy('breakwater',214,0);Object.assign(b,{x:130,mode:'fight',idle:99});return {g,b};};
    const tick=(g,s,input={dx:0,dy:0,fire:false})=>{for(let i=0;i<Math.round(s*120);i++)g.update(1/120,input);};
@@ -52,11 +54,11 @@ try{
     const {g,b}=make();g.player.y=b.y+9;if(open)expose(b);g.weapons.collect(kind);g.weapons.fire();tick(g,1.05);weapon[kind+(open?'Open':'Shut')]=open?b.hp<hp:b.hp===hp;
    }
    const phase=make();let bonuses=[];phase.g.stageBonus=(b,n)=>{bonuses.push(n);Game.prototype.stageBonus.call(phase.g,b,n);};
-   expose(phase.b);phase.g.damage(phase.b,84);const p2=phase.b.phase===2&&phase.b.mode==='transition'&&!phase.b.open&&phase.g.isSpeaking(phase.b)&&phase.g.enemyShots.length===0;
-   tick(phase.g,2.4);expose(phase.b);phase.g.damage(phase.b,80);const p3=phase.b.phase===3&&phase.b.mode==='transition'&&bonuses.join(',')==='2,3'&&phase.g.score===3000&&phase.g.pickups.filter(p=>p.magnet).length>0;
+   expose(phase.b);phase.g.damage(phase.b,85);const p2=phase.b.phase===2&&phase.b.mode==='transition'&&!phase.b.open&&phase.g.isSpeaking(phase.b)&&phase.g.enemyShots.length===0;
+   tick(phase.g,2.4);expose(phase.b);phase.g.damage(phase.b,84);const p3=phase.b.phase===3&&phase.b.mode==='transition'&&bonuses.join(',')==='2,3'&&phase.g.score===3000&&phase.g.pickups.filter(p=>p.magnet).length>0;
    const talk=make();talk.g.say(talk.b,'HOLD YOUR FIRE', 'talk',2);talk.b.idle=0;const blockedStart=!beginAttack(talk.b,talk.g,'broadside');tick(talk.g,1.5);const noTalkShots=!talk.g.audit.some(a=>a.kind==='fire');
    const attacks=[];
-   for(const name of ['broadside','skip','darts','ice','rush']){
+   for(const name of ['broadside','skip','darts','ice','rush','flak','beam']){
     const {g,b}=make();b.phase=3;b.moveIndex=0;beginAttack(b,g,name);const angle=b.attack.angle,marks=JSON.stringify(b.attack.marks),path=JSON.stringify(b.attack.path);g.player.y=25;
     let maxDarts=0,maxShots=0,minY=130,maxX=0,minX=208,overlap=false;
     for(let i=0;i<12*120;i++){
@@ -71,7 +73,7 @@ try{
       if(ev.kind==='fire'){volleyCount++;allWarnings&&=!!lastWarning&&ev.time-lastWarning.time>=lastWarning.duration-.01;}
     }
     const fire=g.audit.find(a=>a.id===b.id&&a.kind==='fire'),warn=g.audit.find(a=>a.id===b.id&&a.kind==='warn');
-    attacks.push({name,warned:!!fire&&fire.time-warn.time>=warn.duration-.01&&allWarnings&&volleyCount===(name==='broadside'?3:1),locked:!!fire&&Math.abs(fire.angle-angle)<1e-8,maxDarts,maxShots,ground:Math.abs(b.y+b.h-130)<.01,onscreen:minX>=29.9&&maxX<=208,overlap,clean:!b.attack&&!g.enemies.some(e=>['skipShell','twinDart'].includes(e.type)),marks,path});
+    attacks.push({name,warned:!!fire&&fire.time-warn.time>=warn.duration-.01&&allWarnings&&volleyCount===(name==='broadside'?5:1),locked:!!fire&&Math.abs(fire.angle-angle)<1e-8,maxDarts,maxShots,ground:Math.abs(b.y+b.h-130)<.01,onscreen:minX>=29.9&&maxX<=208,overlap,clean:!b.attack&&!g.enemies.some(e=>['skipShell','twinDart'].includes(e.type)),marks,path});
    }
    let iceMarksSeparate=true;
    for(const x of [30,64,104,130,144])for(const px of [2,26,100,170,188]){
@@ -103,25 +105,88 @@ try{
     pockets.push({x,y,hurt:10000-g.health});
    }
    let dodges=true;
-   for(const name of ['broadside','rush','ice','skip']){
+   for(const name of ['rush','ice','skip','flak']){
     const {g,b}=make();g.health=10000;g.player.invuln=0;b.phase=3;if(name==='skip')g.player.y=97;beginAttack(b,g,name);
     const start=g.time;
     for(let i=0;i<12*120;i++){
       const elapsed=g.time-start;
       const goal=name==='ice'?(b.attack?.marks?.[0]+b.attack?.marks?.[1])/2-9:26;
       const dx=name==='ice'&&Number.isFinite(goal)&&Math.abs(g.player.x-goal)>1?Math.sign(goal-g.player.x):0;
-      g.update(1/120,{dx,dy:name==='ice'?0:elapsed<1?-1:0,fire:false});
+      const goalY=name==='flak'?b.attack?.gap-5.5:null;
+      const dy=Number.isFinite(goalY)?Math.abs(g.player.y-goalY)>1?Math.sign(goalY-g.player.y):0:name==='ice'?0:elapsed<1?-1:0;
+      g.update(1/120,{dx,dy,fire:false});
       if(!b.attack)break;
     }
     dodges&&=g.health===10000;
    }
+   // Repeated volleys must lock to each new position, then retain that
+   // warning's angle while the player moves before the next shot.
+   const tracking=make();tracking.b.phase=3;beginAttack(tracking.b,tracking.g,'broadside');
+   let lastVolley=0;
+   for(let i=0;i<10*120&&tracking.b.attack;i++){
+     const a=tracking.b.attack;
+     const count=a.volleys||0;
+     if(count!==lastVolley){lastVolley=count;tracking.g.player.y=[25,65,115][count%3];}
+     tracking.g.update(1/120,{dx:0,dy:0,fire:false});
+   }
+   const tw=tracking.g.audit.filter(a=>a.kind==='warn'),tf=tracking.g.audit.filter(a=>a.kind==='fire');
+   const retargeted=tf.length===5&&new Set(tf.map(a=>a.angle.toFixed(3))).size>=3;
+   const eachVolleyLocked=tf.every((f,i)=>Math.abs(f.angle-tw[i].angle)<1e-9&&f.time-tw[i].time>=tw[i].duration-.01);
+   let volleyEscape=true,beamEscape=true;
+   // Concrete no-hit flights using ordinary movement, including the closest
+   // and furthest patrol positions. These cover complete five-volley attacks.
+   for(const [name,bx,left,right,top,bottom]of [
+    ['broadside',90,2,65,25,118],['broadside',110,26,85,12,108],
+    ['broadside',130,26,85,12,108],['broadside',144,26,85,12,108],
+    ['beam',130,26,85,12,108]]){
+    const {g,b}=make();b.x=bx;b.phase=3;g.player.invuln=0;beginAttack(b,g,name);
+    const route=[[right,bottom],[right,top],[left,top],[left,bottom]];let k=0;
+    for(let i=0;i<12*120&&b.attack;i++){
+     const [x,y]=route[k%4],p=g.player;
+     if(Math.abs(p.x-x)<2&&Math.abs(p.y-y)<2)k++;
+     g.update(1/120,{dx:Math.abs(p.x-x)>1?Math.sign(x-p.x):0,dy:Math.abs(p.y-y)>1?Math.sign(y-p.y):0,fire:false});
+    }
+    if(name==='beam')beamEscape&&=g.health===5;else volleyEscape&&=g.health===5;
+   }
+   // A diagonal beam's visible body must cover the complete 3x3 squares
+   // used for contact, not only the ray's center line.
+   const visual=make();visual.b.phase=3;visual.g.player.y=30;beginAttack(visual.b,visual.g,'beam');tick(visual.g,1.25);
+   const va=visual.b.attack,ray=va.beam,vc=document.createElement('canvas');vc.width=832;vc.height=576;
+   const vx=useDetail(vc.getContext('2d'));vx.scale(4,4);visual.b.T.draw(visual.b,vx,x=>x);
+   const vb=vx.getImageData(0,0,832,576).data;let beamCoversDamage=true;
+   for(let d=20;d<ray.len-8;d+=3)for(const ox of [-1.49,1.49])for(const oy of [-1.49,1.49]){
+    const x=va.mx+Math.cos(ray.angle)*d+ox,y=va.my+Math.sin(ray.angle)*d+oy;
+    if(x>1&&x<207&&y>12&&y<128)beamCoversDamage&&=vb[(Math.floor(y*4)*832+Math.floor(x*4))*4+3]>0;
+   }
+   // Actual destruction: all pixels partitioned, staged launch, angular and
+   // ballistic motion, floor impacts, harmless finale, one score award.
+   const death=make();expose(death.b);death.g.player.invuln=0;
+   const original=HULLS[0].open;death.g.damage(death.b,death.b.hp);
+   const d=death.b,w=d.wreck;
+   const canvas=document.createElement('canvas');canvas.width=116;canvas.height=48;
+   const ctx=useDetail(canvas.getContext('2d'));ctx.scale(2,2);
+   for(const p of w.pieces)ctx.drawImage(p.img,p.sx,p.sy,p.sw,p.sh,p.sx,p.sy,p.sw,p.sh);
+   const restored=ctx.getImageData(0,0,116,48).data;
+   const source=original.hi.getContext('2d').getImageData(0,0,116,48).data;
+   const exactBreakup=restored.every((v,i)=>v===source[i]);
+   const deathSafe=death.g.enemyShots.length===0&&!d.T.hitTest(d,d.x,d.y,58,24)&&!d.attack;
+   tick(death.g,.3);const heldInitially=w.released===0;
+   tick(death.g,.7);const stagedBreakup=w.released>0&&w.released<10;
+   tick(death.g,2);const allLaunched=w.released===10&&w.core&&w.pieces.every(p=>p.launched&&Math.abs(p.angle)>.1);
+   const beforeFinish=!d.dead&&death.g.boss===d;
+   tick(death.g,BREAKUP_SECONDS+.1-death.g.time);
+   const oneAward=d.dead&&death.g.boss===null&&death.g.score===7000&&w.finished;
+   const fallingParts=w.impacts>0&&w.pieces.every(p=>Number.isFinite(p.x+p.y+p.angle)&&p.y<=130);
+   const harmlessWreck=death.g.health===5&&death.g.lives===3&&death.g.enemyShots.length===0;
+   tick(death.g,2);const persistentWreck=death.g.wreck===d&&w.pieces.length===10&&death.g.score===7000;
+   death.g.reset();const resetWreck=death.g.wreck===null&&!death.g.boss&&death.g.score===0;
    const noSafePockets=pockets.every(p=>p.hurt>0);
    const art=HULLS.every(a=>Object.values(a).every(p=>p.width===58&&p.height===24&&p.hi.width===116&&p.hi.height===48&&p.mask.some(Boolean)&&p.flash.hi.width===116));
    const masks=HULLS.every((a,index)=>Object.entries(a).every(([state,p])=>{const e={x:0,y:0,phase:index+1,open:state==='open',mode:'fight'};return p.mask.every((v,i)=>Boolean(v)===Boolean(BREAKWATER.hitTest(e,(i%116)/2+.1,Math.floor(i/116)/2+.1,.2,.2)));}));
-   return {closed,frontPath,hullBlocks,ordinaryHits,...weapon,p2,p3,blockedStart,noTalkShots,iceMarksSeparate,shellSafe,lateShellSafe,retargetAfterCleanup,bossDartOwnership,killedClear,respawn,knockback:pushes.every(Boolean),nativeDamage,noSafePockets,dodges,art,masks,isolated:LEVELS.length===3&&!ENEMY_TYPES.breakwater,attacks};
+   return {closed,frontPath,hullBlocks,ordinaryHits,...weapon,p2,p3,blockedStart,noTalkShots,iceMarksSeparate,shellSafe,lateShellSafe,retargetAfterCleanup,bossDartOwnership,killedClear,respawn,knockback:pushes.every(Boolean),nativeDamage,retargeted,eachVolleyLocked,volleyEscape,beamEscape,beamCoversDamage,exactBreakup,deathSafe,heldInitially,stagedBreakup,allLaunched,beforeFinish,oneAward,fallingParts,harmlessWreck,persistentWreck,resetWreck,noSafePockets,dodges,art,masks,isolated:LEVELS.length===3&&!ENEMY_TYPES.breakwater,attacks};
   });
   for(const [key,value]of Object.entries(result))if(key!=='attacks')check(phone.name+': '+key,value,result);
-  for(const a of result.attacks){check(phone.name+': '+a.name+' warned and locked',a.warned&&a.locked,a);check(phone.name+': '+a.name+' bounded, grounded and clears',a.maxDarts<=2&&a.maxShots<=10&&a.ground&&a.onscreen&&!a.overlap&&a.clean,a);}
+  for(const a of result.attacks){check(phone.name+': '+a.name+' warned and locked',a.warned&&a.locked,a);check(phone.name+': '+a.name+' bounded, grounded and clears',a.maxDarts<=2&&a.maxShots<=20&&a.ground&&a.onscreen&&!a.overlap&&a.clean,a);}
   // Real encounter starts empty: no test laser or supply bypass. Ordinary
   // simulation runs to victory with original weapons, phase rewards and pods.
   const run=await page.evaluate(()=>{
@@ -136,17 +201,20 @@ try{
   });
   check(phone.name+': complete victory through original weapons and rewards',run.mode==='won'&&run.phases.join(',')==='1,2,3'&&run.score>=10000&&!run.boss,run);
   check(phone.name+': about 90–120 seconds with phase rewards',run.time>=85&&run.time<=125,run.time);
-  check(phone.name+': all five attacks occur in complete fight',['broadside','skip','darts','ice','rush'].every(n=>run.audit.some(a=>a.attack===n&&a.kind==='fire')));
-  check(phone.name+': full encounter keeps threats bounded and speech safe',run.maxDarts<=2&&run.maxShots<=10&&run.ground&&!run.pausedAttack,run);
+  check(phone.name+': all seven attacks occur in complete fight',['broadside','skip','darts','ice','rush','flak','beam'].every(n=>run.audit.some(a=>a.attack===n&&a.kind==='fire')),run.audit.filter(a=>a.kind==='fire').map(a=>[a.phase,a.attack]));
+  check(phone.name+': full encounter keeps threats bounded and speech safe',run.maxDarts<=2&&run.maxShots<=20&&run.ground&&!run.pausedAttack,run);
   const supplies=run.audit.filter(a=>a.kind==='supply').map(a=>a.drop);check(phone.name+': actual survival and weapon supplies alternate',supplies.length>=3&&supplies.every((s,i)=>s===(i%2?'weapon':'smart')),supplies);
   const done=await page.evaluate(()=>window.__boss.game.time);await page.evaluate(()=>window.__boss.advance(4));check(phone.name+': victory freezes until replay',await page.evaluate(t=>window.__boss.game.time===t,done));
   await tap('#action');await page.evaluate(()=>{const h=window.__boss;h.game.player.invuln=100;h.advance(30);});
   check(phone.name+': fight continues beyond the old 30-second limit',await page.evaluate(()=>window.__boss.mode==='playing'&&window.__boss.game.time>29.9&&window.__boss.game.boss?.hp>0));
   await page.screenshot({path:join(out,phone.name+'-fight.png')});
-  await page.evaluate(()=>{const g=window.__boss.game;g.spawnEnemy('skipShell',130,123,{sx:133,tx:40,amp:50});g.weapons.collect('laser');g.weapons.fire();});
-  await tap('#pause');await tap('#restart');
-  check(phone.name+': restart clears boss hazards, speech, weapons and rewards',await page.evaluate(()=>{const g=window.__boss.game;return !g.boss&&g.enemies.length===0&&g.enemyShots.length===0&&g.pickups.length===0&&g.timers.length===0&&!g.speech.bubble&&!g.weapons.laser&&g.weapons.kind===null&&g.supplyCount===0&&g.score===0;}));
-  await page.evaluate(()=>{const h=window.__boss;h.game.player.invuln=100;h.advance(11);const b=h.game.boss;b.open=true;h.game.damage(b,84);h.game.lives=1;h.game.hurtPlayer(99,b);h.advance(1.6);});
+  await page.evaluate(()=>{const g=window.__boss.game;g.spawnEnemy('skipShell',130,123,{sx:133,tx:40,amp:50});g.weapons.collect('laser');g.weapons.fire();g.boss.open=true;g.damage(g.boss,g.boss.hp);window.__boss.advance(1.2);});
+  await tap('#pause');
+  const deathFrozen=await page.evaluate(()=>JSON.stringify(window.__boss.game.wreck.wreck));await page.evaluate(()=>window.__boss.advance(3));
+  check(phone.name+': pause freezes flying wreckage',await page.evaluate(before=>JSON.stringify(window.__boss.game.wreck.wreck)===before,deathFrozen));
+  await tap('#restart');
+  check(phone.name+': restart clears boss hazards, speech, weapons and rewards',await page.evaluate(()=>{const g=window.__boss.game;return !g.boss&&g.enemies.length===0&&g.enemyShots.length===0&&g.pickups.length===0&&g.timers.length===0&&!g.speech.bubble&&!g.weapons.laser&&g.weapons.kind===null&&g.supplyCount===0&&g.score===0&&g.wreck===null;}));
+  await page.evaluate(()=>{const h=window.__boss;h.game.player.invuln=100;h.advance(11);const b=h.game.boss;b.open=true;h.game.damage(b,85);h.game.lives=1;h.game.hurtPlayer(99,b);h.advance(1.6);});
   check(phone.name+': last-life death during a phase change remains a loss',await page.evaluate(()=>window.__boss.mode==='lost'));
   await tap('#action');
   await page.evaluate(()=>{const h=window.__boss;h.game.player.invuln=100;h.advance(11);const b=h.game.boss;b.hp=1;b.open=true;h.game.damage(b,1);h.game.lives=1;h.game.hurtPlayer(99,b);h.advance(2);});

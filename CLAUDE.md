@@ -566,6 +566,21 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      preserving dodge lanes and keeping at most two darts/ten projectiles.
      Boss music still needs a separate listening review, and full campaign
      Level 4 remains a later stage. Await the owner's boss-preview review.
+     **Boss preview revision 2 — owner feedback:** revision 1's design,
+     easy fight and tiny death effect were rejected. The owner selected a
+     **sharp armored icebreaker with a huge split bow cannon**. The preview
+     retains the 58×24 size but replaces the boxy ship, adds a warned sweeping
+     cannon and flak-gap barrage (seven attacks total), re-aims each of five
+     broadside volleys, speeds up patrol movement and shortens rests. HP is
+     250; this is not primarily a health increase. `wreck.js` stages ten actual
+     hull sections tearing loose, spinning, burning, falling and bouncing on
+     snow, with a reactor rupture and settled wreckage. Finishing awards points
+     once after 6.4 s. These are authorized revisions to the separate preview;
+     campaign integration and new music remain later stages. Current tuning,
+     fairness checks and comparison limits are in the boss README. Look for
+     BREAKWATER 2. All 164 focused and 220 existing checks pass (384 total),
+     with full portable wins at both phone sizes and zero external resources.
+     Await the owner's phone review.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -800,8 +815,9 @@ enemy and boss concept pictures, then requested more enemies. The expanded
 review now covers seven regular types plus Breakwater. The owner likes the
 new designs and approved the revised two-flight combat-preview plan. Both
 flights are implemented at `demos/glacier-combat/`; the owner accepted revision 3.
-Breakwater's separately approved boss preview is implemented and awaits phone
-review. The full level still requires a separately approved implementation stage.
+Breakwater's approved boss preview has been revised after the owner rejected
+its first design and difficulty; revision 2 awaits phone review. The full level
+still requires a separately approved implementation stage.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**
 (3D, 3E) → **Android app** on Google Play (stage A) → iPhone app (optional)
@@ -831,7 +847,8 @@ it over. The owner tests on Android; ideally the friend checks iPhone each stage
   and shootable-shell definitions, cached double-detail hull/flash/mask art,
   launch animations using accepted Twin Darts, opening-chamber collision rules,
   phase rewards, native supplies, safe speech, victory/loss and replay. No
-  campaign or save registration. `tools/boss-demo-test.mjs` has 122 checks;
+  campaign or save registration. `wreck.js` handles the staged ten-part
+  destruction; focused tests cover it;
   `tools/boss-benchmark.mjs` compares Warden timing/pressure and cached drawing;
   `tools/export-boss-demo.mjs <output.html>` makes a portable review copy.
 - `demos/glacier-combat/` — approved standalone combat preview. `scene.js`

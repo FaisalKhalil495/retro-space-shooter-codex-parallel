@@ -14,23 +14,17 @@ stage — and, one day, a system for building more games.
 - At the end of every stage also add a retrospective (section 7) and move
   anything reusable into section 8 ("Recipe for future games").
 
-Latest decision: after the v0.29.0 Level 4 concept review, the owner selected
-**B — Glacier Coast** and approved a separate 30-second scenery demo. That demo
-was revised after the owner rejected the simple ice blocks. Revision 2 adds
-a detailed glacier valley, fractured shelves, and visible fjord water. The
-hero and bullets must look exactly like the previous game. The owner approved
-revision 2's location and requested pictures of the enemies, including the
-boss. The main game is
-still v0.29.0; the full level and boss have not been approved for implementation.
-The owner then requested more enemies. The concept roster now includes seven
-regular types plus Breakwater, with four additional silhouettes and roles:
-Crest Bomber, Snow Roller, Needle Wing, and Wake Hunter. The expanded art review
-comes before revising the earlier three-enemy combat-preview proposal.
-The owner liked the new designs and explicitly approved the revised plan.
-All seven types now run across two selectable 30-second combat flights under
-`demos/glacier-combat/`. The preview passed 89 combat checks plus the existing
-119 game/scenery checks and awaits phone review. Breakwater and the full
-campaign stage follow later plans.
+Latest decision: **B — Glacier Coast** remains selected, and the owner
+approved the detailed scenery-demo revision 2. The exact original hero and
+bullets must be preserved. All seven regular enemy types now run in the
+separately approved two-flight combat preview; its compact, sharper revision 3
+was accepted. The owner also approved the separate Breakwater boss-preview
+plan, then rejected its first design, tiny death effect and easy fight compared
+with the Glacier Warden. They selected **a sharp armored icebreaker with a huge
+split bow cannon** and requested spectacular destruction with parts flying
+apart. Revision 2 addresses this within the same isolated boss preview and
+awaits phone review. The campaign remains v0.29.0 with three levels. Full
+Level 4 integration and Breakwater's new music remain later stages.
 
 ---
 
@@ -101,6 +95,8 @@ campaign stage follow later plans.
 ## 2. Gameplay taste (learned the hard way)
 
 **Difficulty**
+- Breakwater revision 1 was "a piece of cake"; the Glacier Warden's demanding
+  fight was frustrating in a fun way. Use that as the difficulty reference.
 - Wants it **hard**. "Classic" was "far too easy"; Rockjaw had to become a
   modern console-style boss ("God of War-like", menacing, many tricks).
 - But hard must be **fair** and **survivable**: after the hard rework the
@@ -197,6 +193,10 @@ campaign stage follow later plans.
 
 - Modern retro **pixel art**, muted warm palette (deep blues, ambers, dusty
   reds). **No neon, no glow.** Original art and sound only (no Nokia assets).
+- **Boss destruction must tear machines apart:** recognizable spinning hull,
+  engine, bridge and runner pieces; chain explosions, a large final rupture
+  and falling wreckage. A few small flashes followed by disappearance was
+  rejected for Breakwater.
 - **Explosions** are the main "juice": flash → fireball cooling cream →
   amber → red → smoke; bigger enemies add a shockwave ring and wreckage.
 - **Colour language must stay consistent**: amber "A" = ammo everywhere;
@@ -234,6 +234,8 @@ campaign stage follow later plans.
 
 | What happened | Lesson |
 |---|---|
+| Breakwater revision 1 had comparable stationary damage numbers but was effortless for the owner; its fixed repeated aim and long passive waits were easy to exploit | Stationary damage is not dodging difficulty. Test re-aiming, movement and pressure against evasive play, preserve explicit escape routes, and let phone feedback decide the final difficulty. Do not fix a passive fight by only increasing HP. |
+| Making repeat volleys faster and denser closed comfortable routes near the screen edge | Test the full volley sequence with normal movement at several boss positions. Give each new aim a readable locked warning; difficulty must not rely on an unavoidable projectile overlap. |
 | v0.5.0 rework rejected as boring | Change one system at a time; let the owner feel each change before adding the next. Cheap reverts (each merge is a save point) made recovery easy — keep it that way. |
 | Boss supply pods almost never gave weapons | Priority chains starve later items when an earlier condition is almost always true (shield lasts 10 s, pods come every 20 s). Simulate real timings, not just the rule on paper. |
 | Tests missed the supply-pod bug | The test shortcut (`?start=boss`) handed the player a laser, hiding the bug. Test the real path the player takes, not only shortcuts. |
@@ -592,6 +594,26 @@ fewer rounds are needed.
   deaths. Preserve the accepted regular-enemy scale, original hero/bullets,
   audio and saving. Boss music and full Level 4 integration remain later stages
   after the owner's boss-preview review.
+- Boss preview revision 2: owner rejected the boxy vessel, tiny death effect
+  and weak fight. Asked one visual choice while independently improving the
+  already authorized fight and destruction. Owner chose the sharp icebreaker
+  and split bow cannon. Keep its compact 58×24 footprint and prepainted masks;
+  seven warned attacks now include a sweeping beam and a flak barrage with
+  a visible gap. Five volleys re-aim separately and then hold each warning's
+  direction. Patrol presses farther forward and rests shrink; HP only rises
+  from 240 to 250. Actual last-frame art is partitioned exactly into ten
+  identifiable sections; staged releases, angular motion, gravity, flame
+  trails, snow impacts and a reactor rupture replace the generic small pop.
+  Death lasts 6.4 s before scoring once, with harmless wreckage retained until
+  victory. Test exact reconstruction, pause/replay cleanup, effects bounds,
+  native-life loss races and complete fights alongside the original suites.
+  The visible cannon beam covers the full diagonal contact samples; test the
+  rendered pixels, since a thin diagonal line can hide square hit corners.
+  A reactive review pilot uses ordinary inputs and normal health, but handles
+  each boss differently; do not call its results proof of human difficulty.
+  All 164 focused and 220 existing checks pass (384 total); portable fights
+  finish at both phone sizes without external requests. The owner's phone
+  review remains the deciding step before a new stage.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

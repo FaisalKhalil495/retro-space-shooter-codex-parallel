@@ -1,9 +1,10 @@
 import { VIEW_W, HUD_H, PAL } from '../../js/config.js?v=0.29.0';
 import { clamp, rectsOverlap } from '../../js/util.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
-import { picture, hullContact, WIDTH, HEIGHT, SHELL } from './art.js?boss=1';
+import { picture, hullContact, WIDTH, HEIGHT, SHELL } from './art.js?boss=2';
+import { updateBreakup, drawBreakup } from './wreck.js?boss=2';
 import { target } from '../glacier-combat/art.js?combat=3';
-export const MOVES=[null,['broadside','skip'],['ice','darts','broadside','skip'],['rush','broadside','ice','skip','darts']];
+export const MOVES=[null,['broadside','beam','flak','skip'],['ice','darts','broadside','beam','flak','skip'],['rush','flak','broadside','beam','ice','darts','skip']];
 export const log=(g,e,kind,extra={})=>g.audit.push({time:g.time,id:e.id,kind,phase:e.phase,...extra});
 const muzzle=e=>({x:e.x+1,y:e.y+15});
 const localThreat=e=>e.type==='twinDart'||e.type==='skipShell';
@@ -18,10 +19,12 @@ function markedX(x,e){x=clamp(x,14,190);if(x>e.x-9&&x<e.x+e.w+9)return clamp(e.x
 export function beginAttack(e,g,name){
   if(g.state!=='playing'||!g.bossMayAttack(e)||threats(g))return false;
   const p=g.playerCenter(),m=muzzle(e);
-  const a=e.attack={name,t:0,stage:'warn',warn:name==='rush'?1.15:name==='skip'?1.1:e.phase===3?.85:1.0};
+  const a=e.attack={name,t:0,stage:'warn',warn:name==='rush'?1.0:name==='skip'?1.0:name==='flak'?1.15:e.phase===3?.75:.95};
   // A rear deck gun can pressure a ship hiding aft or above the vessel too.
   a.mx=p.x>e.x+e.w/2?e.x+e.w-2:m.x;a.my=p.x>e.x+e.w/2?e.y+8:m.y;
   a.angle=Math.atan2(p.y-a.my,p.x-a.mx);
+  if(name==='beam'){a.arc={from:a.angle-.28,to:a.angle+.28};a.warn=e.phase===3?.7:.9;}
+  if(name==='flak'){a.gap=clamp(p.y+(p.y>72?-32:32),30,111);a.wallX=e.x-4;a.rounds=0;}
   if(name==='skip'){
     a.sx=e.x-3;a.tx=clamp(p.x-18,12,188);a.amp=clamp(126-p.y,28,88);
     a.path=Array.from({length:25},(_,i)=>skipPoint(a,i/24));
@@ -32,18 +35,27 @@ export function beginAttack(e,g,name){
     a.marks=[first,alternatives.find(x=>Math.abs(first-x)>=44)];
   }
   if(name==='rush'){a.left=clamp(p.x-18,30,72);a.home=144;}
-  log(g,e,'warn',{attack:name,duration:a.warn,angle:a.angle,mx:a.mx,my:a.my,marks:a.marks,path:a.path});sfx.charge(a.warn);return true;
+  log(g,e,'warn',{attack:name,duration:a.warn,angle:a.angle,mx:a.mx,my:a.my,marks:a.marks,path:a.path,gap:a.gap,wallX:a.wallX,arc:a.arc});sfx.charge(a.warn);return true;
 }
 export function skipPoint(a,k){return {x:a.sx+(a.tx-a.sx)*k,y:126-Math.abs(Math.sin(k*Math.PI*2))*a.amp};}
+function beamRay(x,y,angle){
+  let len=0;for(;len<260;len+=2){const px=x+Math.cos(angle)*len,py=y+Math.sin(angle)*len;if(px<0||px>208||py<11||py>129)break;}
+  return {angle,len,x:x+Math.cos(angle)*len,y:y+Math.sin(angle)*len};
+}
+// A 4.5px outer beam covers every 3x3 collision sample, even diagonally.
+function beamLine(c,m,a,width,color){const b=beamRay(m.mx,m.my,a);c.save();c.strokeStyle=color;c.lineWidth=width;c.lineCap='round';c.beginPath();c.moveTo(m.mx,m.my);c.lineTo(b.x,b.y);c.stroke();c.restore();}
 function broadside(e,g,a){
-  for(let i=0;i<5;i++)g.fireShot(a.mx,a.my,a.angle+(i-2)*.18,72+e.phase*5,i===2?'shell':'orb',true).dmg=i===2?2:1;
+  for(let i=0;i<5;i++)g.fireShot(a.mx,a.my,a.angle+(i-2)*.22,89+e.phase*9,i===2?'shell':'orb',true).dmg=i===2?2:1;
   sfx.cannon();
 }
 function fire(e,g,a){
   log(g,e,'fire',{attack:a.name,angle:a.angle,mx:a.mx,my:a.my});
   if(a.name==='broadside'){
     broadside(e,g,a);a.volleys=1;
-    log(g,e,'warn',{attack:a.name,duration:1.2,angle:a.angle});
+    aimAgain(e,g,a);
+  }else if(a.name==='flak'){
+    for(let y=14;y<=126;y+=7)if(Math.abs(y-a.gap)>16)g.fireShot(a.wallX,y,Math.PI,86+e.phase*6,'icicle',true);
+    a.rounds++;sfx.shatter();
   }else if(a.name==='skip'){
     g.spawnEnemy('skipShell',a.sx-3,123,{sx:a.sx,tx:a.tx,amp:a.amp,byBoss:true});sfx.mortar();
   }else if(a.name==='darts'){
@@ -52,14 +64,21 @@ function fire(e,g,a){
     for(const x of a.marks){g.blasts.blast(x,126,.4);for(let i=0;i<3;i++)g.fireShot(x,125,-Math.PI/2+(i-1)*.10,70+e.phase*3,'icicle',true);}
     sfx.shatter();
   }
+  if(a.name==='beam')sfx.beam(1.1);
   a.stage=a.name==='rush'?'dash':'active';a.t=0;
+}
+function aimAgain(e,g,a){
+  const p=g.playerCenter(),rear=p.x>e.x+e.w/2;
+  a.mx=e.x+(rear?e.w-2:1);a.my=e.y+(rear?8:15);
+  a.angle=Math.atan2(p.y-a.my,p.x-a.mx);a.nextWarn=e.phase===3?.95:1.1;
+  log(g,e,'warn',{attack:a.name,duration:a.nextWarn,angle:a.angle,mx:a.mx,my:a.my});sfx.charge(a.nextWarn);
 }
 function launchDart(e,g,lane){
   g.spawnEnemy('twinDart',e.x+39,e.y+12,{lane,byBoss:true,launch:{sx:e.x+39,sy:e.y+12,tx:e.x+(lane?39:12),ty:e.y-18-lane*25,t:0}});
 }
 function updateAttack(e,a,dt,g){
   a.t+=dt;
-  e.open=a.stage==='recover'||a.stage==='warn'&&a.t>=a.warn-.4||a.stage==='active'&&a.name==='broadside'&&a.volleys<3&&a.t>=.8;
+  e.open=a.stage==='recover'||a.stage==='warn'&&a.t>=a.warn-.4||a.stage==='active'&&a.name==='broadside'&&a.volleys<5&&a.t>=a.nextWarn-.3||a.name==='beam'&&a.stage==='active';
   if(a.stage==='warn'){
     if(a.t>=a.warn)fire(e,g,a);
   }else if(a.stage==='dash'){
@@ -69,27 +88,35 @@ function updateAttack(e,a,dt,g){
   }else if(a.stage==='return'){
     if(move(e,a.home,68,dt)){a.stage='recover';a.t=0;}
   }else if(a.stage==='active'){
+    if(a.name==='beam'){
+      if(a.t<1.1){
+        a.beam=beamRay(a.mx,a.my,a.arc.from+(a.arc.to-a.arc.from)*Math.min(1,a.t/.95));
+        if(g.playerVulnerable())for(let d=4;d<a.beam.len;d+=2){
+          const x=a.mx+Math.cos(a.beam.angle)*d,y=a.my+Math.sin(a.beam.angle)*d;
+          if(g.touchesPlayer(x-1.5,y-1.5,3,3)){g.hurtPlayer(2,e);break;}
+        }
+      }else{a.beam=null;a.stage='recover';a.t=0;}
+      return;
+    }
     if(a.pendingDart&&a.t>=.45){launchDart(e,g,1);a.pendingDart=false;}
-    if(a.name==='broadside'&&a.volleys<3){
-      if(a.t>=1.2){log(g,e,'fire',{attack:a.name,angle:a.angle,mx:a.mx,my:a.my});broadside(e,g,a);a.volleys++;a.t=0;
-        if(a.volleys<3)log(g,e,'warn',{attack:a.name,duration:1.2,angle:a.angle});}
+    if(a.name==='broadside'&&a.volleys<5){
+      if(a.t>=a.nextWarn){log(g,e,'fire',{attack:a.name,angle:a.angle,mx:a.mx,my:a.my});broadside(e,g,a);a.volleys++;a.t=0;
+        if(a.volleys<5)aimAgain(e,g,a);}
       return;
     }
     // Resolve a complete attack before promising a new dodge lane.
     if(a.t>.3&&!a.pendingDart&&!threats(g)){a.stage='recover';a.t=0;log(g,e,'recovery');}
-  }else if(a.stage==='recover'&&a.t>1.15){e.attack=null;e.open=false;e.idle=e.phase===3?.55:.9;}
+  }else if(a.stage==='recover'&&a.t>1.05){e.attack=null;e.open=false;e.idle=e.phase===3?.25:.45;}
 }
 export const BREAKWATER={
-  boss:true,name:'BREAKWATER',title:'THE COASTBREAKER',hp:240,score:7000,voice:'metal',
+  boss:true,name:'BREAKWATER',title:'THE COASTBREAKER',hp:250,score:7000,voice:'metal',
   taunt:'I OWN THIS COAST',killLines:['SWEPT ASIDE','UNDER MY BOW','THE COAST IS MINE'],
   stageLines:[null,null,'YOU BROKE MY BOW','I WILL BREAK YOU'],
-  init(e,g){Object.assign(e,{w:WIDTH,h:HEIGHT,x:VIEW_W+6,y:g.terrain.floorY-HEIGHT,mode:'enter',timer:0,phase:1,open:false,attack:null,idle:.8,moveIndex:0,targetX:110,sprayT:0,deathBeat:0});},
+  init(e,g){Object.assign(e,{w:WIDTH,h:HEIGHT,x:VIEW_W+6,y:g.terrain.floorY-HEIGHT,mode:'enter',timer:0,phase:1,open:false,attack:null,idle:.8,moveIndex:0,targetX:110,sprayT:0});},
   update(e,dt,g){
     e.timer+=dt;e.y=g.terrain.floorY-e.h;e.sprayT-=dt;
     if(e.mode==='dying'){
-      e.open=false;
-      if(e.timer>e.deathBeat){e.deathBeat+=.24;g.blasts.blast(e.x+8+g.rand()*44,e.y+5+g.rand()*15,.6);sfx.explode(.4);}
-      if(e.timer>2.2)g.finishBoss(e);return;
+      e.open=false;updateBreakup(e,dt,g);return;
     }
     if(e.mode==='enter'){
       move(e,144,30,dt);
@@ -102,8 +129,8 @@ export const BREAKWATER={
       if(g.state!=='playing'||!g.bossMayAttack(e))return;
       if(e.attack)updateAttack(e,e.attack,dt,g);
       else{
-        e.open=false;move(e,e.targetX,18+e.phase*3,dt);
-        if(Math.abs(e.x-e.targetX)<1)e.targetX=e.targetX<125?144:104;
+        e.open=false;move(e,e.targetX,24+e.phase*4,dt);
+        if(Math.abs(e.x-e.targetX)<1)e.targetX=e.targetX<125?144:90;
         e.idle-=dt;
         if(e.idle<=0&&!threats(g)){
           const moves=MOVES[e.phase],name=moves[e.moveIndex%moves.length];
@@ -143,16 +170,23 @@ export const BREAKWATER={
     }
   },
   draw(e,c,snap){
+    if(e.mode==='dying'){drawBreakup(e,c,snap);return;}
     const a=e.attack;
-    if(a&&(a.stage==='warn'||a.name==='broadside'&&a.stage==='active'&&a.volleys<3)){
+    if(a&&(a.stage==='warn'||a.name==='broadside'&&a.stage==='active'&&a.volleys<5)){
       c.fillStyle=Math.floor(e.t*10)%2?'#d99b43':'#9b7953';
       if(a.name==='broadside')for(let d=5;d<240;d+=5){const x=a.mx+Math.cos(a.angle)*d,y=a.my+Math.sin(a.angle)*d;if(x<1||x>207||y<11||y>129)break;c.fillRect(snap(x),snap(y),1,.5);}
+      if(a.name==='beam'){beamLine(c,a,a.arc.from,.5,'#d99b43');beamLine(c,a,a.arc.to,.5,'#9b7953');}
+      if(a.name==='flak'){
+        for(let y=12;y<129;y+=3)if(Math.abs(y-a.gap)>16)c.fillRect(snap(a.wallX),y,1,1);
+        c.fillStyle='#e8eee5';for(const y of [a.gap-16,a.gap+16]){c.fillRect(2,snap(y),Math.max(1,a.wallX-4),.5);}
+      }
       if(a.name==='skip'){for(const p of a.path)c.fillRect(snap(p.x),snap(p.y),1,1);target(c,a.tx,125,snap);}
       if(a.name==='ice')for(const x of a.marks){target(c,x,122,snap);for(let y=86;y<119;y+=5)c.fillRect(snap(x),y,.5,2);}
       if(a.name==='rush')for(let x=a.left;x<e.x;x+=5)c.fillRect(snap(x),e.y+e.h-2,2,.5);
     }
+    if(a?.beam){beamLine(c,a,a.beam.angle,4.5,'#9b7953');beamLine(c,a,a.beam.angle,1.5,'#e0dcc1');}
     const p=picture(e);c.drawImage(e.flash>0?p.flash:p,snap(e.x),snap(e.y));
-    if(a&&(['warn','turn'].includes(a.stage)||a.name==='broadside'&&a.stage==='active'&&a.volleys<3)&&Math.floor(e.t*14)%2===0){c.fillStyle='#f1d69a';c.fillRect(snap(e.x+18),snap(e.y+10),1,1);c.fillRect(snap(e.x+41),snap(e.y+13),1,2);}
+    if(a&&(['warn','turn'].includes(a.stage)||a.name==='broadside'&&a.stage==='active'&&a.volleys<5)&&Math.floor(e.t*14)%2===0){c.fillStyle='#f1d69a';c.fillRect(snap(e.x+18),snap(e.y+10),1,1);c.fillRect(snap(e.x+41),snap(e.y+13),1,2);}
   }
 };
 export const SKIP_SHELL={

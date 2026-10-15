@@ -1,132 +1,127 @@
-# Breakwater — separate boss preview
+# Breakwater — separate boss preview, revision 2
 
-The owner approved this stage after accepting coast combat revision 3. This
-preview is implemented under `demos/glacier-boss/`. Look for **BREAKWATER 1**
-below the left controls. The campaign remains v0.29.0 with three levels.
+The owner rejected revision 1's boxy design, weak fight and small death effect.
+They selected **a sharp armored icebreaker with a huge split bow cannon**.
+This revision implements that feedback within the approved separate preview.
+Look for **BREAKWATER 2** below the left controls. Campaign Level 4 and new
+music remain separate stages; the main game remains v0.29.0 with three levels.
 
 ## Phone review
 
-1. Hold the phone sideways and tap **Start boss fight**.
-2. Steer with the original left pad and hold **Fire**. Aim at the front gun
-   chamber when the bow opens. Closed armor blocks ordinary and special shots.
-3. Watch the aim dots, hopping-shell trail, snow markers and flashing lamps.
-   Move above the hull when it winds up for a sliding rush; the return pass
-   has its own pause, rev and warning lamps.
-4. Shoot supply pods and collect their drops. The **Special** button uses the
-   weapon you carry. You start with the normal gun, five health blocks, three
-   lives and no special; existing adaptive supply rules apply.
-5. Pause/resume or restart the whole fight. Turning upright or switching apps
-   pauses it. Victory and losing all lives offer replay. There is no fixed
-   30-second finish: this preview ends on victory or loss.
+1. Hold the phone sideways and tap **Start boss fight**. Hold Fire and steer
+   with the original pad. You start with five health blocks, three lives and
+   the normal gun; no extra test weapon or invulnerability.
+2. Hit the forward cannon chamber when the prow splits open. Ordinary and
+   special weapons both respect closed armor. Fire back during a cannon sweep
+   if you can keep clear of it; collect the original adaptive supplies.
+3. Move again when a broadside re-aims. Its next dotted direction locks before
+   firing. For the sweeping beam, leave the slice between its two guide lines.
+   For the flak barrage, fly between the two pale gap guides. Fly above a rush.
+4. Defeat the boss to see the chain reaction: bridge, bow, engines, hull sections
+   and runners tear away, spin, burn and fall onto the snow. The reactor bursts
+   and the pieces bounce and settle. Wreckage cannot hurt the player.
+5. Pause, resume, restart or replay as before. Turning upright or switching
+   apps pauses the fight, including its destruction sequence.
 
-Review size, readability, warning time, the opening chamber and the feel of
-sliding movement. All three phases should be distinct. Android/iPhone sizes
-are checked in Chromium; physical Android Chrome and Safari remain phone checks.
+Review the new design, how demanding the fight feels compared with the Glacier
+Warden, and whether the destruction has enough weight. Physical Android Chrome
+and Safari remain owner checks; Chromium phone sizes do not prove Safari support.
 
-## Implemented tuning
+## Current tuning
 
-Breakwater is a 58×24-pixel low naval vessel with three smooth runners, a
-wedge bow, bridge, side bay, stern gun and exhaust towers. It has no legs,
-tracks or saw ring. Art is prepainted at double detail before the first frame:
-three damage states, closed/open chamber states, flashes and silhouette masks.
-The chamber has a visible, unobstructed forward opening. Its plates fold back
-far enough to let the existing curved rockets reach it; closed armor still
-blocks them. Contact follows the displayed opaque silhouette.
+Same 58×24 footprint and grounded runners, with swept armor, a split prow,
+a wedge command bridge, diagonal drive pods and increasingly exposed machinery.
+No legs, tracks, saw ring, neon or blood. Six hull pictures, flashes and exact
+silhouette masks are prepainted at double detail before entry. The forward
+opening leaves the original curved rockets a clear path to the weak point.
 
-- 240 HP, 7,000 kill points; original 1,000/2,000 phase bonuses and survival/
-  weapon rewards at 66% and 33% HP. Original surviving-life bonus on victory.
-- Enters after 2.5 seconds, slides in, shows its name card, roars and speaks.
-  Speech happens during safe pauses; dying cancels pending attacks/hazards.
-- Phase 1: broadside and skipping shells. Phase 2 adds ice bursts and darts.
-  Phase 3 adds the sliding rush, shorter rests and faster broadside rounds.
-- Regular movement stays between x=104 and 144 at 21/24/27 px/s. A committed
-  rush reaches x=30–72 at 112 px/s, warns again for 0.75 s, then returns at
-  68 px/s. Contact costs 2 health blocks, or 3 during either sliding pass.
-- The chamber opens in the final 0.40 s of an attack warning, before repeat
-  broadside volleys, and for 1.15 s of recovery. Breaking armor does not leave
-  it permanently open. Bombs, rockets and laser obey the opening rule.
+250 HP (240 in revision 1), 7,000 points, original phase rewards at 66%/33%,
+alternating adaptive supply pods and safe speech. The modest HP change is not
+the difficulty mechanism: re-aiming volleys, two new area attacks, shorter rests
+and stronger forward movement replace the earlier passive rhythm.
 
-| Attack | Warning and behavior |
+| Attack | Behavior |
 | --- | --- |
-| Broadside | 1.00 s initially, 0.85 s in phase 3; five rounds per volley at 77/82/87 px/s. Three volleys, each subsequent one warned 1.20 s ahead along the same locked angle. Central heavy shell costs 2; four ordinary rounds cost 1 each. |
-| Skipping shell | 1.10 s warning and a fixed dotted two-hop path. A 6×6 shootable shell travels for 2.10 s, then bursts into three upward rounds at 58 px/s. Shooting it destroys it safely, even immediately before expiry. 1 HP, 10 points, rockets ignore it. |
-| Dart launch | 1.00/0.85 s warning. Two accepted 11×8 Twin Darts launch from the side bay, 0.45 s apart, rising for 0.65 s into separate lanes. They cannot ram or be targeted while emerging behind the hull. Then they use the accepted original dart behavior, warning and art. |
-| Ice bursts | 1.00/0.85 s warning. Two fixed visible marks, at least 44 px apart and clear of the hull, release three upward icicles each at 76/79 px/s. No lasting solid terrain. |
-| Sliding rush | 1.15 s warning before a committed low pass; separate 0.75 s warning before returning. Fly above it. It opens to recover after returning home. |
+| Broadside | Five volleys of five rounds, each aimed again at the player's latest position. The next warning then stays locked until firing. Initial warning 0.95 s / 0.75 s in phase 3; repeat warnings 1.10 s / 0.95 s. Speed 98/107/116 px/s; central shell costs 2 blocks, outer shots 1. |
+| Sweeping cannon | Two guide lines mark a fixed 0.56-radian slice. Warns 0.90 s / 0.70 s in phase 3, then sweeps for 1.10 s. Beam costs 2 blocks. The chamber stays open while firing. |
+| Flak barrage | A vertical row of icicles travels left at 92/98/104 px/s, with a marked 32-pixel gap. The gap is offset from the player's height, clamped to remain reachable, and fixed during its 1.15 s warning. |
+| Skipping shell | 1.00 s warning, fixed two-hop path, shootable 6×6 shell; after 2.10 s it bursts into three upward rounds. Shooting it prevents the burst, including on its final pending frame. |
+| Twin Darts | Phase 2+: two accepted compact darts rise from the bay into separate lanes, 0.45 s apart, then use their original warned behavior. They cannot ram or be targeted while behind the hull. |
+| Ice bursts | Phase 2+: two visible marks at least 44 px apart and outside the hull halo. After 0.95/0.75 s, three upward icicles emerge from each. |
+| Sliding rush | Phase 3: 1.00 s warning before a 112 px/s low pass to x=30–72. A separate 0.75 s warning precedes the 68 px/s return. Contact costs 3 blocks; fly above it. |
 
-Patterns resolve before the next begins; no simultaneous different patterns in
-this first review. Repeated broadside volleys keep their locked direction and
-escape lanes. Limits are two darts and at most ten enemy projectiles at once.
-Drones, shots and shells must clear before the next pattern promises a new gap.
+Phase 1: broadside, beam, flak and skipping shell. Phase 2 introduces ice and
+darts before cycling the existing attacks. Phase 3 adds rushes and faster rounds.
+Patrol movement reaches x=90–144 at 28/32/36 px/s, rather than x=104–144 at
+21/24/27. The opening lasts the final 0.40 s of a warning, the final 0.30 s
+before repeat volleys, throughout beam firing, and 1.05 s of recovery. Rests
+last 0.45 s, or 0.25 s in phase 3. Different patterns finish before the next
+begins; repeat rounds from the same broadside can coexist. At most two darts
+and twenty projectiles are allowed by the encounter checks.
 
-Boss supplies use the existing alternating survival/weapon pods: first after
-3 s of fighting, then every 20 s. They stay high and visible. Drops still adapt
-to current health, shield and weapon, so a weapon-role pod may give repair when
-hurt. Existing machine explosions, metal debris and sound effects are reused.
-There is no blood or new recorded music. Breakwater's own song needs a separate
-listening review before campaign Level 4 is released.
+## Destruction
 
-## Validation and preservation
+`wreck.js` partitions the actual last visible hull picture into ten sections;
+it does not substitute generic rectangles. The original double-detail drawing
+is reused directly. Pieces release in stages from 0.40–2.80 s, with individual
+velocities, gravity, angular motion, flame trails and two snow impacts before
+settling. The reactor ruptures at 2.80 s. At 6.40 s the normal boss finish awards
+points once; wreckage stays visible through the quiet victory delay. All parts
+and effects reset on replay. Physics follows the same fixed game clock and
+pauses with the game. No new collision hazards, gore, save state or recorded
+music are introduced.
 
-122 focused checks exercise both phone layouts, real simultaneous touches,
-weak-point reachability, all specials against armor, every volley's warning,
-locked paths, separated launch lanes, mark placement across hull positions,
-projectile caps, actual dodges, five common hiding positions, knockback from
-all sides, supplies, a full win, native damage/lives, losses during phase changes
-and simultaneous boss/player deaths, pause, replay and interruption handling.
-Exact original hero/flame/bullet pixels and firing match. Saves have zero writes,
-and no recorded music is requested. Both standalone exports complete a full
-fight with zero external resource requests. Existing 101 combat, 49 smoke,
-35 seeded-level and 35 scenery checks pass: **342 checks in total**.
+## Checks and limitations
 
-`tools/boss-benchmark.mjs` uses the same controlled pilot for this boss and the
-Glacier Warden: fixed simulation dice, normal starting gun, no pre-equipped
-special, a ship held at x=26 tracking each aim point’s height without dodging,
-normal hit invulnerability,
-and a large health pool to count damage without deaths. It compares normal-gun
-runs and runs using the special weapons received from phase rewards. This
-measures encounter duration and stationary pressure, not human difficulty.
-Exact results are written to the selected output directory's `metrics.json`.
-Current controlled results (seconds include entrance and victory):
+`tools/boss-demo-test.mjs` covers real simultaneous thumbs, safe areas, all
+seven warned patterns, each re-aimed volley's locked direction, tested escapes,
+weak-point reachability with all original specials, exact collision masks,
+phase rewards and supplies, native damage/lives, full victory, loss races,
+interruption handling, replay and save preservation. Breakup checks reconstruct
+the complete picture pixel-for-pixel, verify staged release/rotation/gravity,
+floor impacts, harmlessness, retained wreckage and a single score award. A raster check also verifies that a diagonal beam
+visibly covers its complete contact area.
 
-| Pilot | Breakwater | Glacier Warden |
-| --- | --- | --- |
-| Normal gun | 131.1 s, 21.8 damage blocks/min | 159.6 s, 22.0 blocks/min |
-| Uses phase-reward specials | 96.4 s, 23.6 blocks/min | 117.7 s, 18.2 blocks/min |
+Revision 2 passes **164 focused checks** plus the existing 101 combat, 49 smoke,
+35 seeded-level and 35 scenery checks: **384 checks in total**. Both portable
+phone layouts complete a full fight with zero external resource requests.
+The normal-input recording is a combat excerpt; the destruction clip stages
+the finishing hit and labels that explicitly.
 
-These samples show comparable normal-gun pressure and higher pressure when using
-phase-reward weapons; they are not a substitute for the owner's difficulty review.
-A separate alternating 60-draw comparison uses the loaded coast background and
-cached phase-3 art; cloud-browser samples do not establish phone frame rates.
-The existing five-scene benchmark also retains its original drawing-call counts.
+`tools/boss-benchmark.mjs` compares against the unchanged Glacier Warden. The
+stationary pilot measures duration and incoming damage with a large health
+pool. The separate reactive helper (`tools/boss-review-pilot.js`) uses only
+normal movement, Fire and Special with normal health/lives; it reacts to visible
+warnings and shots. It is not a human skill model and does not handle every
+Warden mechanic equally well. Neither metric establishes how the owner will
+rank the bosses. Compare the owner's phone feedback before settling difficulty.
+It also measures cached drawing and an active destruction frame on the same
+cloud browser; these samples are not phone FPS claims.
 
-`scene.js` extends the original Game; boss, shell and preview definitions stay
-local. Neither shared ENEMY_TYPES nor LEVELS is changed. `main.js` reuses original
-controls and layout, with no score/progress/option writes or campaign navigation.
-The approved coast and enemy demos, hero/bullets, existing levels, menus, saves,
-recorded themes and shipped assets remain unchanged. Boss music and full Level 4
-integration remain separate stages after this review.
+All runtime changes stay under `demos/glacier-boss/`. The approved landscape,
+regular enemies, original hero/flame/bullets, campaign levels, controls, saves,
+menus and music files remain unchanged. The preview uses original sound effects
+and reads existing options without writing them.
 
 ## Reproduce checks and delivery
 
 ```sh
 source /workspace/.cloud-onboarding/retro-space-shooter/environment.sh
-node tools/boss-demo-test.mjs /tmp/ember-boss-checks
-node tools/boss-benchmark.mjs /tmp/ember-boss-benchmark
+node tools/boss-demo-test.mjs /tmp/ember-boss-v2-checks
+node tools/boss-benchmark.mjs /tmp/ember-boss-v2-benchmark
 node tools/combat-demo-test.mjs /tmp/ember-combat-checks
 node tools/smoke-test.mjs /tmp/ember-smoke
 SEED=28 node tools/level-test.mjs /tmp/ember-levels
 node tools/coast-demo-test.mjs /tmp/ember-coast
 node tools/speed-test.mjs
-node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss.html
+node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v2.html
 ```
 
 Create smoke/level screenshot directories first and run suites sequentially.
 The single-file export embeds the exact modules and approved landscape PNG;
-it is a review copy, not a build requirement. The managed browser blocks direct
-`file:` navigation, so the export is verified through an internal server.
-Physical-phone opening remains a user check; do not give localhost phone links.
-The fight video uses an automated touch pilot with normal health, lives and
-weapons, without invulnerability or boss-health edits. It demonstrates the
-fight; its duration depends on dodging and firing opportunities. The MP4 is
-silent; the playable preview retains the original sound effects.
+it is a review copy, not a build requirement. Verify both phone-size exports
+through an internal server with zero external resource requests. Physical-phone
+opening remains an owner check; do not give localhost links. The destruction
+video stages the finishing hit to show that animation promptly; a fight video
+uses normal health, lives, weapons and original touchscreen inputs. Videos are
+silent; the playable preview retains the sound effects.

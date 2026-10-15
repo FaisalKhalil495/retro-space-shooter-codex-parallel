@@ -4,7 +4,8 @@ import { PAL } from '../../js/config.js?v=0.29.0';
 import { drawText } from '../../js/font.js?v=0.29.0';
 import { CoastBackground, COAST_FLOOR, coastReady } from '../glacier-coast/coast.js?demo=2';
 import { LOCAL_TYPES, spawnLocal } from '../glacier-combat/enemies.js?combat=3';
-import { BREAKWATER, SKIP_SHELL, clearThreats, log } from './boss.js?boss=1';
+import { BREAKWATER, SKIP_SHELL, clearThreats, log } from './boss.js?boss=2';
+import { beginBreakup, updateBreakup, drawBreakup } from './wreck.js?boss=2';
 export { coastReady };
 const SCENE={number:4,name:'BREAKWATER PREVIEW',floor:COAST_FLOOR,background:{sun:false,dust:false},events:[[Number.MAX_SAFE_INTEGER,'end']]};
 export class BossGame extends Game{
@@ -12,7 +13,7 @@ export class BossGame extends Game{
   reset(){
     super.reset();this.bg=this.coast||(this.coast=new CoastBackground());this.bg.t=0;
     this.terrain=new Terrain(COAST_FLOOR);this.terrain.draw=()=>{};
-    this.banner=null;this.audit=[];this.nextId=0;this.started=false;
+    this.banner=null;this.wreck=null;this.audit=[];this.nextId=0;this.started=false;
     this.runner={update:()=>{if(!this.started&&this.time>=2.5){this.started=true;this.spawnEnemy('breakwater',214,0);}}};
   }
   spawnEnemy(type,x,y,opts={}){
@@ -39,6 +40,8 @@ export class BossGame extends Game{
   killPlayer(source){super.killPlayer(source);if(this.boss&&this.boss.mode!=='dying'){
     clearThreats(this);this.boss.attack=null;this.boss.open=false;this.boss.idle=1;
   }}
-  startBossDeath(e){super.startBossDeath(e);e.open=false;e.deathBeat=0;clearThreats(this);log(this,e,'death');}
+  startBossDeath(e){super.startBossDeath(e);clearThreats(this);beginBreakup(e,this);e.open=false;log(this,e,'death');}
+  update(dt,input){super.update(dt,input);if(this.wreck?.dead){this.wreck.timer+=dt;updateBreakup(this.wreck,dt,this);}}
+  draw(c,snap){super.draw(c,snap);if(this.wreck?.dead){c.save();c.beginPath();c.rect(0,11,208,119);c.clip();drawBreakup(this.wreck,c,snap);c.restore();}}
   drawHud(c){c.fillStyle=PAL.void;c.fillRect(0,0,208,10);super.drawHud(c);if(this.boss)drawText(c,'P'+this.boss.phase,145,2,PAL.amberLight);}
 }

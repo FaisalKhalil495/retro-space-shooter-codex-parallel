@@ -91,6 +91,19 @@ boss README for actual tuning. Do not ask for this approval again. Await the
 owner's review before the next stage; new music and campaign integration remain
 separate stages.
 
+The owner rejected boss preview revision 1's design, small death effect and
+low difficulty, explicitly requesting revisions. They chose **a sharp armored
+icebreaker with a huge split bow cannon**. Revision 2 is authorized feedback
+work, not a new campaign stage: same 58×24 footprint, seven warned attacks
+(including a sweeping cannon and a flak gap), re-aimed repeat volleys, stronger
+movement, and a long mechanical breakup with recognizable spinning parts and
+snow impacts. Preserve compact regular enemies and all earlier content.
+See the boss README for current values; its revision 2 rules supersede the
+revision 1 tuning above. Review actual dodging, not only stationary damage
+rates. Revision 2 passes 164 focused plus 220 existing checks; both portable
+phone layouts complete with no external requests. Await phone review after
+completing these revisions.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already
