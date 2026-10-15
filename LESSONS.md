@@ -571,6 +571,27 @@ fewer rounds are needed.
   stage bonuses and safe speech remain required. Detailed proposal:
   `docs/concepts/level-4-enemies/boss-preview-plan.md`. This is not permission
   to implement it; new boss music also needs a separate listening review.
+- Breakwater preview: the owner explicitly approved the plan. Implemented a
+  separate 58×24 low naval vessel on three runners, three phases and five warned
+  attacks, with visible chamber openings, native special weapons, alternating
+  supplies, phase rewards, safe speech, native health/lives and victory/replay.
+  The campaign and both coast demos stay unchanged. 122 focused checks plus
+  the existing 220 checks pass; the standalone export completes both phone-size
+  fights without external resources. Cached hulls are painted before entry.
+  Compare against the Warden with the same controlled pilot, and record real
+  touches with normal damage rather than treating an invincible test as a play
+  demonstration. The first pressure comparison prompted warned repeat volleys
+  and a central heavy shell; keep different patterns sequential for readability.
+  Lessons: fold visible armor clear of the entire incoming rocket path; block
+  a destroyed timed hazard from updating on its final pending frame; clamp a
+  warning position before checking whether the hull conceals it; mark removed
+  enemies dead so guided rockets release cached targets; explicitly
+  test separated warning pairs at both screen edges. Launch drones from the
+  vessel into separated lanes rather than making them appear above it. Tests
+  also cover a last-life death during transitions and simultaneous boss/player
+  deaths. Preserve the accepted regular-enemy scale, original hero/bullets,
+  audio and saving. Boss music and full Level 4 integration remain later stages
+  after the owner's boss-preview review.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

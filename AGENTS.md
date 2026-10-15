@@ -32,8 +32,8 @@ by silently inventing a new decision.
 ## Current scope and approval
 
 The user selected **B — Glacier Coast** for Level 4's visual direction after
-reviewing all three concept images. Record and preserve this choice. Enemy
-names, boss mechanics, tuning, and the full level remain proposals. The user
+reviewing all three concept images. Record and preserve this choice. Final
+Level 4 tuning and campaign integration remain proposals. The user
 approved the separate 30-second scenery demo; it is implemented under
 `demos/glacier-coast/`. Keep the campaign, its shipped graphics, touchscreen
 controls, audio, and saving unchanged. Approval of this demo does not authorize
@@ -68,7 +68,8 @@ its tests, playable export, and videos without asking for approval again.
 Both flights are implemented and verified: 101 combat checks plus the existing
 49 smoke, 35 seeded-level, and 35 scenery-demo checks pass. See
 `demos/glacier-combat/README.md` for initial tuning and phone review steps.
-Breakwater and campaign Level 4 remain separately planned stages.
+The separately approved Breakwater preview is implemented as described below;
+campaign Level 4 remains a later stage.
 
 The user requested smaller enemies after the first combat review, then asked
 for a little more size and sharpness. Revision 3 uses a modest 9–17% width
@@ -81,8 +82,14 @@ the approved designs, landscape, and exact original hero/bullets.
 
 The user accepted revision 3 and requested the next plan. The next proposal is
 Breakwater's separate boss preview; see
-`docs/concepts/level-4-enemies/boss-preview-plan.md`. It awaits approval;
-requesting a plan does not authorize boss or full-level implementation.
+`docs/concepts/level-4-enemies/boss-preview-plan.md`. The user explicitly
+approved this separate boss-preview stage. It is implemented under
+`demos/glacier-boss/`: 58×24 boss, three phases, five warned attacks, opening
+chamber, supplies, damage, victory/loss, pause and replay. The stage includes
+122 focused checks, the playable copy, scale image and fight video. See the
+boss README for actual tuning. Do not ask for this approval again. Await the
+owner's review before the next stage; new music and campaign integration remain
+separate stages.
 
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
@@ -153,8 +160,9 @@ There is no native app implementation yet.
 **Selected direction:** B — Glacier Coast: daylight snow-covered coastal
 shelves, distant blue ice cliffs, dark teal sea, and olive-and-cream invader
 machines. See `docs/concepts/level-4-review.md` and the individual B image.
-Breakwater, an armored vessel sliding on broad runners, remains a proposed
-boss. The planet's final name, enemy behavior, and boss rules are not settled.
+Breakwater, an armored vessel sliding on broad runners, is implemented in its
+separately approved preview. Its phone review, the planet's final name and full
+campaign tuning remain open.
 
 **Completed first stage:** a separate 30-second scrolling coast scenery demo
 using the existing ship and controls. It has pause, replay, a solid snow floor,
@@ -164,7 +172,10 @@ The approved combat-preview stage is now complete under `demos/glacier-combat/`:
 two selectable 30-second flights, all seven regular enemy types, local hazards,
 damage, replay and flight switching, with original hero/bullets and zero save
 writes. The user accepted revision 3. See the combat README for tuning;
-Breakwater and campaign registration remain outside the approved stage.
+Breakwater's approved separate preview is now also implemented under
+`demos/glacier-boss/` and awaits phone review. It adds no campaign level or
+save writes. See the boss README and approved plan for scope and validation;
+its own music and full Level 4 integration still need later stages.
 
 ## Validation and handover
 

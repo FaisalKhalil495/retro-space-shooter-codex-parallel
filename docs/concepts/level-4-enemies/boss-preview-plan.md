@@ -1,6 +1,12 @@
 # Proposed next stage — Breakwater boss preview
 
-**Status: proposal awaiting approval. No boss implementation is authorized yet.**
+**Status: explicitly approved, implemented and verified; awaiting phone review.**
+
+The working page is `demos/glacier-boss/`. Its README records actual tuning,
+122 focused checks, the controlled Warden comparison and delivery steps.
+The original plan below is preserved for scope; patterns are kept sequential
+in this first review to protect dodge space. Campaign integration and music
+remain later stages.
 
 The owner accepted combat revision 3 (slightly larger, sharper enemies) and
 requested the next plan. Preserve that regular-enemy scale and the approved

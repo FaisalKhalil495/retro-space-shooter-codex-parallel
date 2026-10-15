@@ -555,12 +555,17 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      armor edges. Current sizes are in the combat README; these supersede the
      exact old-sprite-size constraint. Maintain the compact scale and no-kill
      spacing checks. All other scope and preservation rules still apply.
-     The owner accepted revision 3 and asked for the next plan. A separate
-     Breakwater boss preview is proposed in
-     `docs/concepts/level-4-enemies/boss-preview-plan.md`: mobile runner vessel,
-     opening gun chamber, three phases and five warned attacks. Its size,
-     timings and full implementation remain unapproved. Music gets a separate
-     listening review; campaign Level 4 remains a later stage.
+     The owner accepted revision 3 and explicitly approved the next plan:
+     Breakwater's separate boss preview. It is implemented under
+     `demos/glacier-boss/`: 58×24 low runner vessel, opening front chamber,
+     three damage phases, five warned attacks, supplies, stage rewards, native
+     damage/lives, victory/loss, pause, restart and replay. All 122 focused boss
+     checks and the existing 220 checks pass; the playable export and scale
+     image support phone review. See its README for precise tuning and the
+     controlled Warden comparison. Current patterns finish before the next,
+     preserving dodge lanes and keeping at most two darts/ten projectiles.
+     Boss music still needs a separate listening review, and full campaign
+     Level 4 remains a later stage. Await the owner's boss-preview review.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -795,7 +800,8 @@ enemy and boss concept pictures, then requested more enemies. The expanded
 review now covers seven regular types plus Breakwater. The owner likes the
 new designs and approved the revised two-flight combat-preview plan. Both
 flights are implemented at `demos/glacier-combat/`; the owner accepted revision 3.
-The full level still requires a separately approved implementation stage.
+Breakwater's separately approved boss preview is implemented and awaits phone
+review. The full level still requires a separately approved implementation stage.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**
 (3D, 3E) → **Android app** on Google Play (stage A) → iPhone app (optional)
@@ -821,6 +827,13 @@ it over. The owner tests on Android; ideally the friend checks iPhone each stage
 
 ## Code map
 
+- `demos/glacier-boss/` — approved separate Breakwater fight, with local boss
+  and shootable-shell definitions, cached double-detail hull/flash/mask art,
+  launch animations using accepted Twin Darts, opening-chamber collision rules,
+  phase rewards, native supplies, safe speech, victory/loss and replay. No
+  campaign or save registration. `tools/boss-demo-test.mjs` has 122 checks;
+  `tools/boss-benchmark.mjs` compares Warden timing/pressure and cached drawing;
+  `tools/export-boss-demo.mjs <output.html>` makes a portable review copy.
 - `demos/glacier-combat/` — approved standalone combat preview. `scene.js`
   subclasses Game with two 30-second arrival schedules, `enemies.js` defines
   seven local types and two shootable hazard types, `art.js` prepaints detailed

@@ -21,8 +21,10 @@ number of enemies that would appear in a full level.
 
 The [revised combat-preview proposal](next-stage.md) has two selectable
 30-second flights covering all seven regular types. The user approved it;
-the implemented preview awaits phone review. The boss fight would follow in
-a separately planned stage.
+the owner accepted combat revision 3. The separately approved
+[Breakwater preview plan](boss-preview-plan.md) is also implemented under
+`demos/glacier-boss/` and awaits phone review. These pictures remain concept
+references; final campaign integration and boss music are later stages.
 
 ## Shelf Skiff
 

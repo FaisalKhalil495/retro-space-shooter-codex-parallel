@@ -118,4 +118,6 @@ campaign and scenery-only demo; later stages still need their own plans.
 
 The owner accepted the sharper, slightly larger enemies in combat revision 3
 and requested the next plan. See [Breakwater boss preview](boss-preview-plan.md).
-That boss stage awaits approval; this earlier combat approval does not cover it.
+The owner separately approved that boss stage. It is implemented under
+`demos/glacier-boss/` and awaits phone review; campaign integration is still a
+later stage.
