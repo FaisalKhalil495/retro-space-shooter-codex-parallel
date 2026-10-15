@@ -26,6 +26,10 @@ The owner then requested more enemies. The concept roster now includes seven
 regular types plus Breakwater, with four additional silhouettes and roles:
 Crest Bomber, Snow Roller, Needle Wing, and Wake Hunter. The expanded art review
 comes before revising the earlier three-enemy combat-preview proposal.
+The owner likes the new designs and requested planning. Preserve their look.
+The revised proposal splits all seven types across two selectable 30-second
+combat flights; implementation approval is pending. Breakwater and the full
+campaign stage follow later plans.
 
 ---
 
@@ -498,6 +502,15 @@ fewer rounds are needed.
   wave counts, and implementation remain review items. Preserve the approved
   landscape and exact original hero/bullets. The earlier three-enemy preview
   proposal needs review in light of the larger roster.
+- After the four additions, the owner said they liked them and asked to plan
+  the next step. Preserve their visual direction and distinguish approval of
+  the pictures from approval of enemy behavior or implementation. The revised
+  proposal uses two selectable 30-second combat flights: Shelf Skiff, Anchor
+  Gun, and Twin Darts in the first; Crest Bomber, Snow Roller, Needle Wing,
+  and Wake Hunter in the second. This gives each type room and keeps the
+  approved 30-second scenery journey reusable. Plan readability and fairness
+  checks, unchanged original hero/bullets, and zero save writes. This is a
+  proposal awaiting approval, followed by separate boss and full-level plans.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

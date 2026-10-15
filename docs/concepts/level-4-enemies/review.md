@@ -9,14 +9,18 @@ They are not gameplay screenshots or finished sprites. Enemy designs, attack
 rules, counts, health, and difficulty remain open. Nothing has been added to
 the demo or campaign.
 
+The user likes the four new designs. Preserve that visual direction. The
+next review concerns the playable combat plan and behavior, not another
+redesign of those pictures.
+
 The user requested more enemies after the first three concepts. Crest Bomber,
 Snow Roller, Needle Wing, and Wake Hunter expand the roster to seven types.
 Twin Darts count as one type, with two craft. These are type counts, not the
 number of enemies that would appear in a full level.
 
-The [earlier combat-preview proposal](next-stage.md) covered only the first
-three types. Review this expanded set before revising that small playable
-stage. The boss fight would follow in a separately planned stage.
+The [revised combat-preview proposal](next-stage.md) has two selectable
+30-second flights covering all seven regular types. It awaits implementation
+approval. The boss fight would follow in a separately planned stage.
 
 ## Shelf Skiff
 

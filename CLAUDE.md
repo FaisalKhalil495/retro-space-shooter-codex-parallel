@@ -528,17 +528,18 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      `docs/concepts/level-4-enemies/review.md`. These are design proposals, not
      approved enemies or final game sprites. The playable full Level 4 is not
      built yet; implementation still needs a separately approved stage.
-     The next concrete proposal is a separate 30-second combat preview with
-     the three regular enemy types; see
-     `docs/concepts/level-4-enemies/next-stage.md`. It awaits approval and does
-     not include the Breakwater fight or campaign registration.
+     The revised next proposal is a separate preview with two selectable
+     30-second combat flights covering all seven regular enemy types; see
+     `docs/concepts/level-4-enemies/next-stage.md`. It awaits implementation
+     approval and does not include Breakwater or campaign registration.
      **Expanded roster requested:** the owner asked for more enemies. Four
      additional concepts are Crest Bomber (bomb drops), Snow Roller (shootable
      rolling charges), Needle Wing (warned precision shot), and Wake Hunter
      (warned diving pass). Together with Shelf Skiff, Anchor Gun, and Twin
      Darts, there are seven proposed regular enemy types plus Breakwater.
-     Review the expanded pictures before revising the combat-preview plan;
-     the new designs and their behaviors are not implemented or approved yet.
+     The owner likes the new designs and requested the next-step plan.
+     Preserve their visual direction; attack rules, tuning, and implementation
+     remain subject to the revised combat-preview plan's approval.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -770,9 +771,10 @@ Approved by the owner. Keep the status column up to date.
 The approved scenery-demo revision 2 is complete and documented in
 `demos/glacier-coast/README.md`. The owner approved this location and requested
 enemy and boss concept pictures, then requested more enemies. The expanded
-review now covers seven regular types plus Breakwater. Review these designs
-before revising the combat-preview stage; the full level still requires a
-separately approved implementation stage.
+review now covers seven regular types plus Breakwater. The owner likes the
+new designs and requested a plan. The revised two-flight combat-preview plan
+is ready for review; the full level still requires a separately approved
+implementation stage.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**
 (3D, 3E) → **Android app** on Google Play (stage A) → iPhone app (optional)

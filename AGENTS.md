@@ -57,6 +57,11 @@ Crest Bomber, Snow Roller, Needle Wing, and Wake Hunter: seven regular enemy
 types plus Breakwater in total. These are additional concepts for review.
 Revisit the earlier three-enemy combat-preview proposal after this expanded
 art review; do not treat the request for more concepts as full-level approval.
+The user now likes the new designs and requested the next-step plan. Preserve
+that visual direction. The revised proposal is two selectable 30-second
+combat flights covering all seven regular types; see
+`docs/concepts/level-4-enemies/next-stage.md`. It awaits implementation approval.
+Breakwater and campaign Level 4 remain separately planned stages.
 
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read

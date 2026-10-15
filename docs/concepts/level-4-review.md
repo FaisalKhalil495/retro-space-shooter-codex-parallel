@@ -176,8 +176,11 @@ every proposed name, attack, number, or future development stage.
 The user subsequently requested more enemy variety. The visual roster now has
 seven regular types plus Breakwater: the first three and the added Crest
 Bomber, Snow Roller, Needle Wing, and Wake Hunter. Their pictures and proposed
-roles are in the linked review. Revisit the earlier three-enemy combat-preview
-plan after reviewing this larger set.
+roles are in the linked review. The user likes the four new designs and asked
+to plan the next step. The revised proposal is two selectable 30-second enemy
+combat flights, with Breakwater and the full level planned separately. See
+[the next-stage plan](level-4-enemies/next-stage.md); implementation is pending
+the user's approval.
 
 Any eventual boss must retain the established entrance, name card, roar,
 unique music, three phases, five warned attacks, moving weak point, speech

@@ -1,84 +1,108 @@
-# Next proposed stage — 30-second coast combat preview
+# Next proposed stage — two 30-second coast combat flights
 
-**Status: proposal for review; implementation has not started.**
+**Status: revised plan for review. No combat implementation has started.**
 
-**Roster update:** the user requested more enemies and the art review now has
-seven regular types plus Breakwater. This earlier three-enemy preview plan is
-on hold while the expanded pictures are reviewed. Revise the small playable
-stage after that review; the schedule below is the earlier proposal.
+The user likes the expanded enemy concepts and asked to plan the next step.
+The detailed glacier location remains approved. Liking the art does not settle
+attack timings, health, wave counts, or full-level implementation.
 
-The glacier location is approved. This earlier proposal covers a first
-playable preview using Shelf Skiff, Anchor Gun, and Twin Darts. The current
-[expanded enemy and boss pictures](review.md) also include four new types.
+## Recommendation
 
-## What you would play
+Create one separate combat-preview page with two selectable 30-second flights.
+This gives all seven regular enemy types space to demonstrate their different
+roles without crowding every introduction into a single short flight. Both
+flights use the approved coast, the exact original hero and bullets, and the
+existing movement, firing, sound effects, and touch controls.
 
-A separate 30-second flight through the approved glacier coast. Steer and fire
-with the existing controls. Enemies can be shot down, their warned attacks can
-hurt you, and the existing lives and respawn rules apply. Pause and replay
-remain available. Losing all lives offers replay; finishing the flight stops
-the action at 30 seconds.
+The next approval would cover both preview flights and their local enemy
+behaviors below. The Breakwater boss and campaign Level 4 remain later stages.
 
-| Enemy | Proposed behavior |
+## Flight 1 — ground guns and paired fighters
+
+| Enemy | Behavior to demonstrate |
 | --- | --- |
-| Shelf Skiff | Slides along the snow, brakes, flashes its front guns, and fires a short spread. It stays on the ground. |
-| Anchor Gun | Arrives on a low rock base, opens its armor, warns, and fires a heavy shot. Its muzzle and exposed chamber stay reachable by the ordinary gun. |
-| Twin Darts | Two drones fly in separate lanes and take turns warning and firing. They keep clear of each other and the ground. |
+| Shelf Skiff | Slides along the snow, brakes, flashes its front guns, then fires a short spread. |
+| Anchor Gun | Travels with its low ground base, opens its armor, warns, then fires a heavy shot. Its muzzle and exposed chamber remain reachable by the ordinary gun. |
+| Twin Darts | Two drones approach in separate lanes and take turns warning and firing. |
 
-First appearances are spaced through the flight. Survivors can remain in play
-while the next type arrives; shooting them quickly keeps the screen clear.
-The closing wave combines all three types.
+Allow the hero to enter first. Introduce a skiff around 3 seconds, a gun around
+10 seconds, and a dart pair around 17 seconds. Around 23 seconds, introduce a
+small mixed wave with staggered firing. Survivors may remain as later types
+arrive; these are spaced introductions, not guaranteed empty-screen showcases.
 
-| Flight time | Proposed arrivals |
+## Flight 2 — the four new designs
+
+| Enemy | Behavior to demonstrate |
 | --- | --- |
-| 0–3 seconds | Original ship enters; room to steer. |
-| 3 seconds | One Shelf Skiff. |
-| 10 seconds | One Anchor Gun. |
-| 17 seconds | One pair of Twin Darts. |
-| 22 seconds | One Shelf Skiff, one Anchor Gun, and one pair of Twin Darts, with staggered entry and firing. |
-| 30 seconds | Flight complete; replay available. |
+| Crest Bomber | Opens its belly bay and warns before dropping bombs toward clearly marked positions. |
+| Snow Roller | Stays on the snow and launches shootable rolling charges; each warns before bursting and expires quickly. |
+| Needle Wing | Shows its aim, locks the direction, then fires one fast projectile with time to dodge. |
+| Wake Hunter | Banks and warns before committing to a fast diving pass, then climbs away. It does not continually retarget during the dash. |
 
-That is eight individual enemies: two skiffs, two guns, and four darts.
-This is a small behavior and readability review, not the final Level 4 wave
-schedule or difficulty. Initial health and attack timings would be tuned in
-this preview and reported with the playable result.
+Introduce one type at roughly 3, 8, 13, and 18 seconds. Finish with a small
+mixed encounter around 23 seconds, using only two types together initially.
+The bomber and roller must threaten reachable flying space rather than produce
+harmless floor effects. Their markers and charges must be easy to distinguish
+from the scenery, pickups, and the hero's original shots.
 
-## What stays intact
+Both schedules are starting proposals for a short behavior review, not final
+Level 4 wave counts or difficulty. Report the implemented health, warning
+lengths, attack speeds, and arrival counts with the playable result.
 
-- The approved glacier landscape and the existing scenery-only demo.
-- The exact original hero, engine flame, bullets, movement, and firing rate.
-- Touch controls, safe areas, sound effects, and the player's saved options.
-- All three campaign levels, their graphics, music, menus, and save format.
+## What the player can do
 
-Enemy art would adapt the concepts to the game's actual double-detail scale,
-keeping the skis, anchor braces, and diamond wings recognizable. Warm warning
-lamps, dark outlines, and clear shot paths must remain readable over the snow.
-Machines use metal debris and explosions.
+Select either flight, steer, fire, destroy enemies, dodge, take damage, and
+respawn using the existing lives and health rules. The preview must display
+health and lives using the existing visual style. Pause, interruption handling,
+portrait pause, replay, and returning to flight selection must work. Losing
+all lives offers replay; reaching 30 seconds ends the flight and freezes play.
+Scores, if shown, belong only to that attempt and never enter saved progress.
 
-Breakwater remains a visual proposal in this stage. Its moving weak point,
-three phases, five or more warned attacks, entrance, supplies, voice, and music
-need a separate boss plan. The full campaign level also remains a later stage.
+Adapt the liked concept shapes to the game's double-detail grid. Keep the
+skis, anchor braces, diamond wings, bomb bay, drums, long gun, and curved wings
+recognizable. Keep dark outlines, frost, olive-and-cream panels, and readable
+warm warning lamps. Machines use explosions and metal debris.
 
-## Implementation boundary and checks
+## Preservation and implementation boundary
 
-If approved, add an independent page under `demos/glacier-combat/`, reuse the
-approved coast background, and keep enemy types local to that demo. Use the
-existing Game behavior for the hero, weapons, damage, and effects; introduce
-local enemy objects through the demo subclass rather than changing the shared
-enemy registry or campaign level list. No new engine, packages, or save writes.
+Add the independent page under `demos/glacier-combat/`. Keep enemy definitions
+and preview arrivals local to that page, reusing Game behavior for the hero,
+weapons, damage, and effects without changing the shared enemy registry or
+campaign list. Reference the existing approved landscape asset explicitly from
+the new page; keep the scenery-only demo intact. No new engine, packages,
+main-menu entry, save format, music, or campaign level in this stage.
 
-Verify actual touch movement and firing, warnings before every attack, correct
-muzzle positions, ground contact, reachable guns, separated drone lanes,
-damage and destruction, pause, death/replay, and exactly 30 seconds. Compare
-hero and bullet pixels and firing emission with the original renderer. Check
-that saves are unchanged and no new music is requested. Run the existing
-smoke, seeded three-level, and scenery-demo suites, plus focused combat checks
-and a same-machine drawing comparison. Inspect both phone layouts and provide
-a fresh video and downloadable preview for the owner's physical-phone review.
+Preserve the original hero, engine flame, bullets, movement, firing rate, touch
+controls, safe areas, sounds, saved options, all three campaign levels, and
+the existing recorded themes. No permanent score or progress writes.
+
+## Validation and handover
+
+- Compare hero, flame, and bullet pixels and firing emission with the original.
+- Exercise real simultaneous touches, safe areas, both flight choices, switching,
+  pause, interruption, portrait mode, damage, death, replay, and exact 30-second
+  completion. Reset enemy state and charges fully between flights.
+- Verify warnings before attacks, on-screen firing, correct muzzle positions,
+  grounded machines, reachable guns, separated flyers, avoidable locked attacks,
+  visible bomb markers, shootable charges, and finite hazard lifetimes.
+- Check destruction, scoring, specials against armor, pickups if any can drop,
+  and unchanged raw saves with zero writes. No new music requests.
+- Run focused combat checks, the existing scenery-demo suite, smoke checks,
+  seeded three-level checks, and a same-machine drawing comparison. Inspect both
+  phone layouts; Chromium phone dimensions do not establish Safari compatibility.
+- Deliver a playable review copy, short video of each flight, and concise phone
+  test steps. The user reviews combat feel and readability before the next stage.
+
+## Later stages
+
+After this preview review, plan Breakwater's separate boss test: a mobile
+naval silhouette on ice runners, reachable opening weak point, three phases,
+five or more warned attacks, entrance, voice, alternating supplies, stage
+bonuses, and separately reviewed music. Then plan the full approximately
+three-minute Level 4 timeline, terrain, pickups, difficulty, transitions, and
+campaign integration. Each implementation stage needs its own review.
 
 ## Decision needed
 
-Review the expanded seven-enemy roster first, then confirm or revise this
-bounded preview proposal. Any implementation approval would cover only the
-specified local enemy preview; Breakwater and the full campaign level remain
-separate stages.
+Approve building these two short enemy-combat flights, or revise this plan.
+This is a planning handover; the current game and demos are unchanged.
