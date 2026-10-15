@@ -581,6 +581,23 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      BREAKWATER 2. All 164 focused and 220 existing checks pass (384 total),
      with full portable wins at both phone sizes and zero external resources.
      Await the owner's phone review.
+     **Boss preview revision 3 — approved phase escalation:** the owner
+     requested removal of Breakwater's laser and approved Hunter Torpedoes,
+     stronger aggression and new tactics in every phase. The boss's beam is
+     replaced by compact shootable missiles with bounded homing then a straight
+     commitment: two, three, then four per salvo. Phase 2 introduces ice/darts
+     and responds to player height. Phase 3 introduces rush-with-flak and
+     torpedoes-followed-by-ice, with only two missiles in that combination and
+     ice warnings beginning after homing ends. Initial introductions give way
+     to varied selection with cooldowns; rests are 0.45/0.30/0.18 s. Preserve
+     250 HP, the 58×24 hulls and exact ten-part destruction. The player's own
+     laser, other weapons and all earlier game content remain unchanged.
+     Approved plan: `docs/concepts/level-4-enemies/boss-escalation-plan.md`;
+     actual values and validation are in the boss README. Look for BREAKWATER 3.
+     All 214 focused and 220 existing checks pass (434 total), including no-hit
+     combined-pattern routes at three positions and the unchanged earlier levels.
+     The portable HTML wins at both phone sizes with zero external requests.
+     Await the owner's phone review before another stage.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -816,7 +833,8 @@ review now covers seven regular types plus Breakwater. The owner likes the
 new designs and approved the revised two-flight combat-preview plan. Both
 flights are implemented at `demos/glacier-combat/`; the owner accepted revision 3.
 Breakwater's approved boss preview has been revised after the owner rejected
-its first design and difficulty; revision 2 awaits phone review. The full level
+its first design and difficulty; approved revision 3 adds torpedoes and phase
+escalation and awaits phone review. The full level
 still requires a separately approved implementation stage.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**
@@ -848,7 +866,8 @@ it over. The owner tests on Android; ideally the friend checks iPhone each stage
   launch animations using accepted Twin Darts, opening-chamber collision rules,
   phase rewards, native supplies, safe speech, victory/loss and replay. No
   campaign or save registration. `wreck.js` handles the staged ten-part
-  destruction; focused tests cover it;
+  destruction; `torpedo.js` contains the local guided missiles and their cached
+  art; focused tests cover both;
   `tools/boss-benchmark.mjs` compares Warden timing/pressure and cached drawing;
   `tools/export-boss-demo.mjs <output.html>` makes a portable review copy.
 - `demos/glacier-combat/` — approved standalone combat preview. `scene.js`

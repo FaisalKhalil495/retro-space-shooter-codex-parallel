@@ -14,17 +14,17 @@ stage — and, one day, a system for building more games.
 - At the end of every stage also add a retrospective (section 7) and move
   anything reusable into section 8 ("Recipe for future games").
 
-Latest decision: **B — Glacier Coast** remains selected, and the owner
-approved the detailed scenery-demo revision 2. The exact original hero and
-bullets must be preserved. All seven regular enemy types now run in the
-separately approved two-flight combat preview; its compact, sharper revision 3
-was accepted. The owner also approved the separate Breakwater boss-preview
-plan, then rejected its first design, tiny death effect and easy fight compared
-with the Glacier Warden. They selected **a sharp armored icebreaker with a huge
-split bow cannon** and requested spectacular destruction with parts flying
-apart. Revision 2 addresses this within the same isolated boss preview and
-awaits phone review. The campaign remains v0.29.0 with three levels. Full
-Level 4 integration and Breakwater's new music remain later stages.
+Latest decision: B — Glacier Coast, the approved detailed scenery revision 2,
+compact regular-enemy revision 3 and original hero/bullets remain preserved.
+The owner approved the separate Breakwater preview, then requested changes to
+its design, destruction and difficulty. The sharp icebreaker and ten-part
+breakup remain in revision 3. The owner now requested removal of **the boss's
+laser**, approved Hunter Torpedoes and wants new attacks and tactics with each
+phase. Revision 3 replaces that beam, introduces 2/3/4 missile salvos, responsive
+phase-2 attacks and two phase-3 combinations, with shorter rests. Preserve the
+player's own laser and every original weapon. This approved work stays in the
+separate preview; full Level 4 and new music remain later stages. Await phone
+review after delivery.
 
 ---
 
@@ -95,6 +95,9 @@ Level 4 integration and Breakwater's new music remain later stages.
 ## 2. Gameplay taste (learned the hard way)
 
 **Difficulty**
+- Breakwater must introduce new attacks and tactics in each phase, alongside
+  greater aggression. A speed increase alone does not establish a new phase.
+- The owner requested removing the boss laser; their own laser weapon remains.
 - Breakwater revision 1 was "a piece of cake"; the Glacier Warden's demanding
   fight was frustrating in a fun way. Use that as the difficulty reference.
 - Wants it **hard**. "Classic" was "far too easy"; Rockjaw had to become a
@@ -614,6 +617,28 @@ fewer rounds are needed.
   All 164 focused and 220 existing checks pass (384 total); portable fights
   finish at both phone sizes without external requests. The owner's phone
   review remains the deciding step before a new stage.
+- Boss preview revision 3: the owner approved replacing the boss beam with
+  Hunter Torpedoes and distinct phase escalation. Keep 250 HP and the chosen
+  compact hull/breakup. Seven base attacks remain, plus two linked sequences.
+  Missiles are 7×4 with 2 HP, turn for a limited period then lock, and are
+  shootable while emerging before they can ram. Salvos grow 2/3/4. Phase 2
+  responds to high/low positions with darts/ice; phase 3 first introduces a
+  rush with a safe flak gap above the hull and a two-missile sequence followed
+  by ice. Delay the ice warning until every surviving missile has committed,
+  so it cannot home into the newly promised route. Test complete no-hit flights
+  at close/mid/far boss positions, real gun counters, rotating visible contact
+  areas, rest timing and cancellation of pending salvos on phase/death/loss.
+  After introductions use position-aware selection, recent-attack exclusions
+  and combination cooldowns. Guarantee recurring combinations after at most
+  four ordinary attacks so a random sequence cannot starve the final tactics.
+  Preserve every player weapon, especially the player's own laser. All 214
+  focused and 220 existing checks pass (434 total). Stationary phase damage
+  counts are not monotonic because knockback, invulnerability and pattern
+  choices affect them; do not present those counts as proof of phase difficulty.
+  Both portable phone layouts win without external requests or browser errors;
+  original drawing-call counts are unchanged. Review physical-phone performance
+  separately from cloud drawing samples.
+  Phone difficulty review remains the next decision.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a
@@ -748,6 +773,12 @@ rock, pickups reachable) before the first hand-over.
 - One new system per release where possible.
 
 ## 8. Recipe for future games (reusable)
+
+**Escalating boss phases**: introduce a new tactic before adding it to varied
+selection, then bound both repeats and how long a defining combination can be
+absent. In linked attacks, finish homing before warning a new escape route.
+Verify complete no-hit routes with normal movement at several boss positions;
+stationary damage counts alone cannot establish human difficulty.
 
 **Making a game presentable** (the order that worked here): opening
 screen with a strong logo (tap to continue) → main menu (continue / new

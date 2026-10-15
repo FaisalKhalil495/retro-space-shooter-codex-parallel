@@ -104,6 +104,20 @@ rates. Revision 2 passes 164 focused plus 220 existing checks; both portable
 phone layouts complete with no external requests. Await phone review after
 completing these revisions.
 
+The owner requested removing **Breakwater's laser** and making each phase
+more aggressive with new attacks and tactics, then explicitly approved the
+plan at `docs/concepts/level-4-enemies/boss-escalation-plan.md`. Revision 3 is
+authorized: Hunter Torpedoes (2/3/4 per salvo), position-aware phase-2 ice/darts,
+phase-3 rush-with-flak and torpedoes-then-ice, varied selection with cooldowns,
+and rests of 0.45/0.30/0.18 s. Keep 250 HP, the same 58×24 hull art and exact
+ten-part destruction. The **player's laser must remain available**. Preserve
+all original player weapons, hero/bullets, controls, supplies, saves and earlier
+levels. Complete this approved revision without asking again, then await phone
+review. Its current tuning supersedes revision 2 above. Campaign integration
+and new boss music remain separate stages.
+Revision 3 passes 214 focused and 220 existing checks (434 total), including
+complete no-hit routes through the new combined patterns at three boss positions.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already

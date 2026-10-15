@@ -10,7 +10,7 @@ try{
  const p=await browser.newPage({viewport:{width:915,height:412}});await p.goto(base+'demos/glacier-boss/');await p.waitForFunction(()=>window.__boss?.artworkReady);await p.evaluate(()=>window.__boss.frozen=true);
  const metrics=await p.evaluate(async()=>{
   const {makePilot}=await import('/tools/boss-review-pilot.js');
-  const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=2');const {Game}=await import('/js/game.js?v=0.29.0');const {useDetail}=await import('/js/detail.js?v=0.29.0');
+  const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=3');const {Game}=await import('/js/game.js?v=0.29.0');const {useDetail}=await import('/js/detail.js?v=0.29.0');
   const fights=[];
   for(const specials of [false,true])for(const type of ['breakwater','warden']){
    const g=type==='breakwater'?new BossGame():new Game({level:3,startAt:'checkpoint'});g.rand=()=>.45;g.weapons.reset();g.health=1000000;g.player.invuln=0;
@@ -24,9 +24,18 @@ try{
    if(g.state!=='clear')throw new Error(type+' comparison did not finish');
    fights.push({type,specials,totalSeconds:g.time,fightSeconds:g.time-first,damageBlocks:damage,damageBlocksPerMinute:60*damage/(g.time-first),openFraction:opens/steps,phases});
   }
+  const phasePressure=[];
+  for(const phase of [1,2,3]){
+   const g=new BossGame();g.runner={update(){}};g.rand=()=>.45;g.health=100000;
+   Object.assign(g.player,{x:26,y:115,entering:0,invuln:0});const b=g.spawnEnemy('breakwater',214,0);
+   // Hold one phase for a controlled minute, with the normal gun firing.
+   Object.assign(b,{x:130,mode:'fight',phase,idle:0,hp:100000,maxHp:100000});
+   for(let i=0;i<120*60;i++)g.update(1/120,{dx:0,dy:0,fire:true});
+   phasePressure.push({phase,seconds:g.time,damageBlocks:100000-g.health,
+    choices:g.audit.filter(a=>a.kind==='chosen').map(a=>a.attack)});
+  }
   const reactive=[];
   for(const dice of [.25,.45,.75])for(const type of ['breakwater','warden']){
-   if(type==='breakwater'&&dice!==.45)continue; // This boss's attacks use no dice.
    const g=type==='breakwater'?new BossGame():new Game({level:3,startAt:'checkpoint'});
    g.rand=()=>dice;g.weapons.reset();const pilot=makePilot();let lastBoss=null,losses=[];
    const hurt=g.hurtPlayer.bind(g);let damage=0;
@@ -47,10 +56,13 @@ try{
   const sample=v=>{const t=performance.now();for(let i=0;i<60;i++)v.draw(ctx,x=>Math.round(x*6)/6);ctx.getImageData(0,0,1,1);return performance.now()-t;};
   sample(baseline);sample(g);const a=[],d=[];for(let i=0;i<3;i++){a.push(sample(baseline));d.push(sample(g));}
   const median=v=>v.sort((a,b)=>a-b)[1];
+  for(let i=0;i<4;i++)g.spawnEnemy('hunterTorpedo',65+i*25,40+i*15,{angle:-2.9,phase:3,byBoss:true});
+  for(let y=14;y<120;y+=9)g.fireShot(120,y,Math.PI,104,'icicle',true);
+  const activeDraw=[sample(g),sample(g),sample(g)];
   g.startBossDeath(b);for(let i=0;i<340;i++)g.update(1/120,{dx:0,dy:0,fire:false});
   const deathDraw=[sample(g),sample(g),sample(g)];
   const deathFx={parts:b.wreck.pieces.length,fires:g.blasts.fires.length,puffs:g.blasts.puffs.length,gibs:g.gore.gibs.length};
-  return {seed:'constant simulation dice; reactive pilots use .25, .45, .75',fights,reactive,draw:{frames:60,baselineMedianMs:median(a),bossMedianMs:median(d),deathMedianMs:median(deathDraw),deathFx}};
+  return {seed:'constant simulation dice; reactive pilots use .25, .45, .75',fights,phasePressure,reactive,draw:{frames:60,baselineMedianMs:median(a),bossMedianMs:median(d),activeMedianMs:median(activeDraw),deathMedianMs:median(deathDraw),deathFx}};
  });
  await writeFile(join(out,'metrics.json'),JSON.stringify(metrics,null,2)+'\n');console.log(JSON.stringify(metrics,null,2));
 }finally{await browser.close();server.close();}

@@ -4,8 +4,9 @@ import { PAL } from '../../js/config.js?v=0.29.0';
 import { drawText } from '../../js/font.js?v=0.29.0';
 import { CoastBackground, COAST_FLOOR, coastReady } from '../glacier-coast/coast.js?demo=2';
 import { LOCAL_TYPES, spawnLocal } from '../glacier-combat/enemies.js?combat=3';
-import { BREAKWATER, SKIP_SHELL, clearThreats, log } from './boss.js?boss=2';
-import { beginBreakup, updateBreakup, drawBreakup } from './wreck.js?boss=2';
+import { BREAKWATER, SKIP_SHELL, clearThreats, log } from './boss.js?boss=3';
+import { beginBreakup, updateBreakup, drawBreakup } from './wreck.js?boss=3';
+import { HUNTER_TORPEDO } from './torpedo.js?boss=3';
 export { coastReady };
 const SCENE={number:4,name:'BREAKWATER PREVIEW',floor:COAST_FLOOR,background:{sun:false,dust:false},events:[[Number.MAX_SAFE_INTEGER,'end']]};
 export class BossGame extends Game{
@@ -30,7 +31,7 @@ export class BossGame extends Game{
       }
       return e;
     }
-    const T=type==='breakwater'?BREAKWATER:type==='skipShell'?SKIP_SHELL:null;
+    const T=type==='breakwater'?BREAKWATER:type==='skipShell'?SKIP_SHELL:type==='hunterTorpedo'?HUNTER_TORPEDO:null;
     if(!T){const e=super.spawnEnemy(type,x,y,opts);
       if(type==='carrier')this.audit.push({time:this.time,kind:'supply',drop:opts.drop});return e;}
     const e={type,T,x,y,hp:T.hp,maxHp:T.hp,t:0,flash:0,id:++this.nextId,...opts};
