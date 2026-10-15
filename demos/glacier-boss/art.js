@@ -117,4 +117,3 @@ export function hullContact(e,x,y,w,h){
   const y0=Math.max(0,Math.floor((y-e.y)*2)),y1=Math.min(HEIGHT*2,Math.ceil((y+h-e.y)*2));
   for(let yy=y0;yy<y1;yy++)for(let xx=x0;xx<x1;xx++)if(p.mask[yy*WIDTH*2+xx])return 'hit';return null;
 }
-export const SHELL=(()=>{const {canvas,ctx:c}=detailCanvas(6,6);poly(c,[[2,0],[4,0],[6,2],[6,4],[4,6],[2,6],[0,4],[0,2]],P.ink);panel(c,1,1,4,4,P.copper);rect(c,2,1.5,2,.5,P.light);return canvas;})();

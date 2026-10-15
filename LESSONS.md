@@ -31,6 +31,11 @@ until killed. Preserve the broadside exactly. Keep two fighters maximum, replace
 only missing lanes, retain survivor damage across phases/respawns and stagger
 their fire without making the boss wait for them. The approved plan is
 `docs/concepts/level-4-enemies/boss-pursuit-plan.md`.
+The owner then rejected skipping shells as easy to destroy and icicles as
+underwhelming. Revision 5 is explicitly approved: rear-gun Cluster Mortars,
+faster repeated Ice Lance walls and tall retargeted Glacier Ruptures, preserving
+the accepted broadside, torpedoes and fighters. See
+`docs/concepts/level-4-enemies/boss-heavy-weapons-plan.md`.
 
 ---
 
@@ -101,6 +106,9 @@ their fire without making the boss wait for them. The approved plan is
 ## 2. Gameplay taste (learned the hard way)
 
 **Difficulty**
+- The owner found one-hit skipping shells and small icicles underwhelming.
+  Approved replacements should require repeated maneuvers and give distinct
+  threats: armored airburst shells, changing lance gaps and tall ground strikes.
 - The owner specifically likes Breakwater's broadside: fast and lethal. Keep
   that attack unchanged while tuning torpedoes to demand angled maneuvers and
   direction changes. A distinct roof launcher makes its weapon roles visible.
@@ -670,6 +678,29 @@ fewer rounds are needed.
   requests or browser errors; existing drawing-call counts are unchanged.
   The short video selects phase 3 with two fighters and normal health, rather
   than claiming an earned full fight. Phone review remains next.
+- Boss preview revision 5: the owner approved replacing skipping shells and
+  weak icicles while preserving the other accepted attacks. Rear mortars have
+  3 HP, 2/3/4 locked launches, six fragments and a three-block blast/contact.
+  Lance walls repeat 1/2/3 times with distinct warnings and changed gaps, using
+  native projectile defenses and two-block hits. Ruptures repeat 2/3 times,
+  marking anew only for each warning, reaching the top flight area and dealing
+  three blocks once before collapsing. The torpedo combination uses two
+  ruptures after homing ends. An early test found that `hurtPlayer` itself
+  does not check invulnerability or state: native collision callers do that.
+  Custom hazard callers must explicitly guard state, entry and hit protection.
+  A rupture records its hit so one column spends only one shield charge.
+  Verify fatal-burst cleanup, no late fragments after shootdown, phase cleanup,
+  real damage and counter values, and visible contact pixels. Complete no-hit
+  maneuvers cover close/mid/far boss positions with both fighters alive and
+  follow-up shots. New hazard art stays cached and local; earlier game systems
+  remain untouched. All 312 focused plus 220 existing checks pass (532 total),
+  including 21 complete no-hit scenarios with both fighters alive. The visual
+  review also checks that cached hit flashes use the high-detail canvas and
+  warning circles restore line settings, preventing blank hit frames and
+  drawing-state leaks. Both portable phone layouts win with no external
+  requests or browser errors; earlier drawing-call counts stay unchanged.
+  The video selects phase-3 attacks with normal health and native touches;
+  it is not an earned full fight. Phone review remains next.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a
@@ -816,6 +847,12 @@ completion checks, or a boss can wait forever. Preserve their HP across safe
 pauses, cap occupied slots and replace only vacancies. Pause new firing through
 dangerous patterns with full warnings on resume. Test complete maneuvers with
 escorts alive and retain the original behavior for non-boss uses.
+
+**Custom hazard damage**: inspect the native caller's guards before invoking a
+damage helper directly. State, entry and invulnerability checks may live in
+collision code, not the helper. Test actual damage, shield charges, fatal-hit
+cleanup and cached updates after a phase clears a hazard. Stronger attacks
+need locked warnings and complete escape routes, alongside visible hurt areas.
 
 **Making a game presentable** (the order that worked here): opening
 screen with a strong logo (tap to continue) → main menu (continue / new

@@ -1,13 +1,16 @@
 // Review helper: original movement/fire inputs only; no health or position edits.
 export function makePilot(){
- let specialAt=-10;
+ let specialAt=-10,clusterAttack=null,clusterPoint=0;
  return g=>{
   const p=g.player,b=g.boss,a=b?.attack;let tx=26,ty=b?Math.max(11,Math.min(118,g.aimPoint(b).y-6)):115;
   const cx=p.x+9.5;
   const bands=[];
   if(['flak','rushFlak'].includes(a?.name))ty=a.gap-5.5;
   if(a?.name==='rush'&&a.stage!=='recover')ty=b.y-p.h-8;
-  else if(a?.marks&&a.stage!=='recover')tx=(a.marks[0]+a.marks[1])/2-9.5;
+  else if(a?.marks&&a.stage!=='recover'){
+   if(a.marks.length===1){tx=a.marks[0]<35?45:2;ty=p.y;}
+   else tx=(a.marks[0]+a.marks[1])/2-9.5;
+  }
   if(a?.name==='broadside'&&(a.stage==='warn'||a.stage==='active'&&a.volleys<5)){
    for(let i=0;i<5;i++){
     const angle=a.angle+(i-2)*.22,dx=Math.cos(angle);
@@ -36,6 +39,12 @@ export function makePilot(){
    const options=spaces.filter(([lo,hi])=>hi-lo>=5).map(([lo,hi])=>({center:Math.max(lo+2.5,Math.min(hi-2.5,ty+5.5)),lo,hi}));
    options.sort((a,b)=>Math.abs(a.center-(p.y+5.5))-Math.abs(b.center-(p.y+5.5)));
    if(options.length)ty=options[0].center-5.5;
+  }
+  if(a?.name==='clusters'){
+   if(clusterAttack!==a){clusterAttack=a;clusterPoint=0;}
+   const route=[[45,95],[45,12],[2,12],[2,95]];let point=route[clusterPoint%4];
+   if(Math.abs(p.x-point[0])<2&&Math.abs(p.y-point[1])<2){clusterPoint++;point=route[clusterPoint%4];}
+   [tx,ty]=point;
   }
   const special=!!b?.T.isVulnerable?.(b)&&Math.abs(p.y+5.5-(b.y+15))<5&&!!g.weapons.kind&&g.time-specialAt>.95;
   if(special)specialAt=g.time;

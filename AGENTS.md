@@ -134,6 +134,23 @@ Earlier levels, regular combat flights and all player systems stay unchanged.
 Revision 4 passes 256 focused plus 220 existing checks (476 total), including
 no-hit routes with both persistent fighters alive at three boss positions.
 
+The owner rejected the easy skipping shell and underwhelming icicles and
+explicitly approved **revision 5**; see
+`docs/concepts/level-4-enemies/boss-heavy-weapons-plan.md`. Replace the shell
+with rear-gun Cluster Mortars: 3 HP, six fast fragments, three-block direct/core
+damage and 2/3/4 staggered shots. Upgrade flak to two-block Ice Lances in 1/2/3
+separately warned walls with changing gaps. Replace small upward ice shots with
+three-block tall temporary Glacier Ruptures: 2/3 strikes in phases 2/3, each
+reacquiring only at a new warning. The torpedo combination uses two ruptures
+after guidance ends. Preserve broadside, torpedo guidance/roof launcher,
+persistent fighters, 250 HP, hull scale and exact destruction. Respect native
+shields, hit protection, respawn and phase cleanup; test no-hit routes with both
+fighters alive. Finish this approved revision, checks, playable copy and video
+without asking again, then await phone review. Earlier content and campaign
+integration boundaries remain unchanged.
+Revision 5 passes 312 focused plus 220 existing checks (532 total), including
+21 complete no-hit scenarios with both fighters alive and native-defense checks.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already

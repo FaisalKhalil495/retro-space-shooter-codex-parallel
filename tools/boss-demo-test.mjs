@@ -36,12 +36,12 @@ try{
   check(phone.name+': app interruption pauses',await page.evaluate(()=>window.__boss.mode==='paused'));
   await tap('#restart');check(phone.name+': restart clears the whole encounter',await page.evaluate(()=>{const g=window.__boss.game;return g.time===0&&g.bg.t===0&&!g.boss&&g.enemies.length===0&&g.enemyShots.length===0&&g.pickups.length===0&&g.health===5&&g.lives===3&&g.weapons.kind===null&&g.audit.length===0&&g.wreck===null;}));
   const result=await page.evaluate(async()=>{
-   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=4');
-   const {BREAKWATER,beginAttack,clearThreats,MOVES,chooseAttack,REST}=await import('/demos/glacier-boss/boss.js?boss=4');
-   const {HULLS}=await import('/demos/glacier-boss/art.js?boss=4');
-   const {HUNTER_TORPEDO,TORPEDO_ART}=await import('/demos/glacier-boss/torpedo.js?boss=4');
+   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=5');
+   const {BREAKWATER,beginAttack,clearThreats,MOVES,chooseAttack,REST}=await import('/demos/glacier-boss/boss.js?boss=5');
+   const {HULLS}=await import('/demos/glacier-boss/art.js?boss=5');
+   const {HUNTER_TORPEDO,TORPEDO_ART}=await import('/demos/glacier-boss/torpedo.js?boss=5');
    const {useDetail}=await import('/js/detail.js?v=0.29.0');
-   const {BREAKUP_SECONDS}=await import('/demos/glacier-boss/wreck.js?boss=4');
+   const {BREAKUP_SECONDS}=await import('/demos/glacier-boss/wreck.js?boss=5');
    const {Game}=await import('/js/game.js?v=0.29.0');const {ENEMY_TYPES}=await import('/js/enemies.js?v=0.29.0');const {LEVELS}=await import('/js/levels.js?v=0.29.0');
    const make=()=>{const g=new BossGame();g.runner={update(){}};g.rand=()=>.45;Object.assign(g.player,{x:26,y:115,entering:0,invuln:100});const b=g.spawnEnemy('breakwater',214,0);Object.assign(b,{x:130,mode:'fight',idle:99});return {g,b};};
    const tick=(g,s,input={dx:0,dy:0,fire:false})=>{for(let i=0;i<Math.round(s*120);i++)g.update(1/120,input);};
@@ -59,7 +59,7 @@ try{
    tick(phase.g,2.4);expose(phase.b);phase.g.damage(phase.b,84);const p3=phase.b.phase===3&&phase.b.mode==='transition'&&bonuses.join(',')==='2,3'&&phase.g.score===3000&&phase.g.pickups.filter(p=>p.magnet).length>0;
    const talk=make();talk.g.say(talk.b,'HOLD YOUR FIRE', 'talk',2);talk.b.idle=0;const blockedStart=!beginAttack(talk.b,talk.g,'broadside');tick(talk.g,1.5);const noTalkShots=!talk.g.audit.some(a=>a.kind==='fire');
    const attacks=[];
-   for(const name of ['broadside','skip','darts','ice','rush','flak','torpedoes','pursuit','rushFlak']){
+   for(const name of ['broadside','clusters','darts','ice','rush','flak','torpedoes','pursuit','rushFlak']){
     const {g,b}=make();b.phase=3;b.moveIndex=0;beginAttack(b,g,name);const angle=b.attack.angle,marks=JSON.stringify(b.attack.marks),path=JSON.stringify(b.attack.path);g.player.y=25;
     let maxDarts=0,maxTorps=0,maxShots=0,maxEscortShots=0,minY=130,maxX=0,minX=208,overlap=false;
     for(let i=0;i<12*120;i++){
@@ -74,14 +74,14 @@ try{
       if(ev.kind==='fire'){volleyCount++;allWarnings&&=!!lastWarning&&ev.time-lastWarning.time>=lastWarning.duration-.01;}
     }
     const fire=g.audit.find(a=>a.id===b.id&&a.kind==='fire'),warn=g.audit.find(a=>a.id===b.id&&a.kind==='warn');
-    attacks.push({name,warned:!!fire&&fire.time-warn.time>=warn.duration-.01&&allWarnings&&volleyCount===(name==='broadside'?5:name==='pursuit'?2:1),locked:!!fire&&Math.abs(fire.angle-angle)<1e-8,maxDarts,maxTorps,maxShots,maxEscortShots,ground:Math.abs(b.y+b.h-130)<.01,onscreen:minX>=29.9&&maxX<=208,overlap,clean:!b.attack&&!g.enemies.some(e=>['skipShell','hunterTorpedo'].includes(e.type))&&(name!=='darts'||g.enemies.filter(e=>e.persistentEscort&&!e.dead).length===2),marks,path});
+    attacks.push({name,warned:!!fire&&fire.time-warn.time>=warn.duration-.01&&allWarnings&&volleyCount===(name==='broadside'?5:name==='pursuit'?3:name==='clusters'?4:name==='flak'||name==='ice'?3:1),locked:!!fire&&Math.abs(fire.angle-angle)<1e-8,maxDarts,maxTorps,maxShots,maxEscortShots,ground:Math.abs(b.y+b.h-130)<.01,onscreen:minX>=29.9&&maxX<=208,overlap,clean:!b.attack&&!g.enemies.some(e=>['clusterShell','clusterBurst','glacierRupture','hunterTorpedo'].includes(e.type))&&(name!=='darts'||g.enemies.filter(e=>e.persistentEscort&&!e.dead).length===2),marks,path});
    }
    let iceMarksSeparate=true;
    for(const x of [30,64,104,130,144])for(const px of [2,26,100,170,188]){
     const {g,b}=make();b.x=x;b.phase=3;g.player.x=px;beginAttack(b,g,'ice');const marks=b.attack.marks;
-    iceMarksSeparate&&=marks.length===2&&marks.every(m=>Number.isFinite(m)&&m>=14&&m<=190&&(m<=b.x-9||m>=b.x+b.w+9))&&Math.abs(marks[0]-marks[1])>=44;
+    iceMarksSeparate&&=marks.length===1&&marks.every(m=>Number.isFinite(m)&&m>=14&&m<=190&&(m<=b.x-9||m>=b.x+b.w+9));
    }
-   const shell=make();const s=shell.g.spawnEnemy('skipShell',110,123,{sx:113,tx:34,amp:64,byBoss:true});shell.g.damage(s,1);tick(shell.g,3);const shellSafe=!shell.g.audit.some(a=>a.kind==='shellBurst')&&s.dead;
+   const shell=make();const s=shell.g.spawnEnemy('clusterShell',110,123,{sx:114,sy:90,tx:34,ty:60,phase:3,byBoss:true});shell.g.damage(s,3);tick(shell.g,3);const shellSafe=!shell.g.audit.some(a=>a.kind==='clusterBurst')&&s.dead;
    const owned=make();owned.g.spawnEnemy('twinDart',145,55,{byBoss:true});tick(owned.g,1.3);const ownedShot=owned.g.enemyShots[0];
    const tagged=!!ownedShot?.byBoss;if(ownedShot)owned.g.hurtPlayer(99,ownedShot);
    const bossDartOwnership=tagged&&owned.g.isSpeaking(owned.b)&&owned.b.T.killLines.includes(owned.g.quip)&&owned.g.enemyShots.length===0;
@@ -89,8 +89,8 @@ try{
    const carrier=cleaned.g.spawnEnemy('carrier',190,24,{drop:'smart'});cleaned.g.weapons.collect('rockets');cleaned.g.weapons.fire();const guided=cleaned.g.weapons.rockets[0];guided.target=removed;
    clearThreats(cleaned.g);tick(cleaned.g,.025);
    const retargetAfterCleanup=removed.dead&&!cleaned.g.enemies.includes(removed)&&cleaned.g.enemies.includes(carrier)&&!carrier.dead&&guided.target===cleaned.b;
-   const expired=make(),late=expired.g.spawnEnemy('skipShell',90,123,{sx:93,tx:35,amp:40,byBoss:true});late.t=2.09;expired.g.damage(late,1);tick(expired.g,.05);
-   const lateShellSafe=!expired.g.audit.some(a=>a.kind==='shellBurst');
+   const expired=make(),late=expired.g.spawnEnemy('clusterShell',90,123,{sx:94,sy:90,tx:35,ty:60,phase:3,byBoss:true});late.t=.84;expired.g.damage(late,3);tick(expired.g,.05);
+   const lateShellSafe=!expired.g.audit.some(a=>a.kind==='clusterBurst');
    const rush=make();rush.b.phase=3;beginAttack(rush.b,rush.g,'rush');tick(rush.g,1.4);rush.g.player.invuln=0;rush.g.health=5;rush.g.killPlayer(rush.b);
    const killedClear=rush.g.enemyShots.length===0&&!rush.b.attack&&!rush.b.open&&rush.g.isSpeaking(rush.b);tick(rush.g,1.6);const respawn=rush.g.state==='playing'&&rush.g.lives===2&&rush.g.health===5;
    const pushes=[];for(const x of [30,104,144])for(const side of ['front','rear','top','rush']){
@@ -106,18 +106,9 @@ try{
     pockets.push({x,y,hurt:10000-g.health});
    }
    let dodges=true;
-   for(const name of ['rush','ice','skip','flak','rushFlak']){
-    const {g,b}=make();g.health=10000;g.player.invuln=0;b.phase=3;if(name==='skip')g.player.y=97;beginAttack(b,g,name);
-    const start=g.time;
-    for(let i=0;i<12*120;i++){
-      const elapsed=g.time-start;
-      const goal=name==='ice'?(b.attack?.marks?.[0]+b.attack?.marks?.[1])/2-9:26;
-      const dx=name==='ice'&&Number.isFinite(goal)&&Math.abs(g.player.x-goal)>1?Math.sign(goal-g.player.x):0;
-      const goalY=['flak','rushFlak'].includes(name)?b.attack?.gap-5.5:null;
-      const dy=Number.isFinite(goalY)?Math.abs(g.player.y-goalY)>1?Math.sign(goalY-g.player.y):0:name==='ice'?0:elapsed<1?-1:0;
-      g.update(1/120,{dx,dy,fire:false});
-      if(!b.attack)break;
-    }
+   for(const name of ['rush']){
+    const {g,b}=make();g.health=10000;g.player.invuln=0;b.phase=3;beginAttack(b,g,name);
+    for(let i=0;i<12*120;i++){g.update(1/120,{dx:0,dy:i<120?-1:0,fire:false});if(!b.attack)break;}
     dodges&&=g.health===10000;
    }
    // Repeated volleys must lock to each new position, then retain that
@@ -178,8 +169,8 @@ try{
    const combosRecur=choices.every((n,i)=>i<6||choices.slice(i-4,i+1).some(combo));
    let restEscalates=true;
    for(const phase of [1,2,3]){
-    const {g,b}=make();b.phase=phase;beginAttack(b,g,'skip');
-    for(let i=0;i<120*10&&b.attack;i++)g.update(1/120,{dx:0,dy:0,fire:false});
+    const {g,b}=make();b.phase=phase;beginAttack(b,g,'clusters');
+    for(let i=0;i<120*20&&b.attack;i++)g.update(1/120,{dx:0,dy:0,fire:false});
     const ended=g.time;for(let i=0;i<120&&!b.attack;i++)g.update(1/120,{dx:0,dy:0,fire:false});
     restEscalates&&=Math.abs(g.time-ended-[0,.45,.30,.18][phase])<.02;
    }
@@ -189,17 +180,26 @@ try{
    // two seconds of their follow-up shots after the complete boss pattern.
    const routes=[
     {"bx":76,"name":"torpedoes","right":90,"top":65,"bottom":95,"reverse":false,"offset":2},
-    {"bx":76,"name":"pursuit","right":90,"top":12,"bottom":95,"reverse":false,"offset":1},
-    {"bx":76,"name":"rushFlak","right":45,"top":12,"bottom":115,"reverse":false,"offset":3},
     {"bx":76,"name":"broadside","right":45,"top":45,"bottom":115,"reverse":false,"offset":0},
     {"bx":110,"name":"torpedoes","right":65,"top":12,"bottom":115,"reverse":false,"offset":0},
-    {"bx":110,"name":"pursuit","right":45,"top":12,"bottom":95,"reverse":false,"offset":3},
-    {"bx":110,"name":"rushFlak","right":45,"top":25,"bottom":115,"reverse":false,"offset":2},
     {"bx":110,"name":"broadside","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":144,"name":"torpedoes","right":45,"top":12,"bottom":95,"reverse":true,"offset":1},
-    {"bx":144,"name":"pursuit","right":45,"top":12,"bottom":95,"reverse":false,"offset":3},
-    {"bx":144,"name":"rushFlak","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
-    {"bx":144,"name":"broadside","right":45,"top":12,"bottom":95,"reverse":true,"offset":0}
+    {"bx":144,"name":"broadside","right":45,"top":12,"bottom":95,"reverse":true,"offset":0},
+    {"bx":76,"name":"clusters","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":76,"name":"flak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":76,"name":"ice","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
+    {"bx":76,"name":"pursuit","strategy":"reactive","right":65,"top":25,"bottom":95,"reverse":false,"offset":3},
+    {"bx":76,"name":"rushFlak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":110,"name":"clusters","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":110,"name":"flak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":110,"name":"ice","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
+    {"bx":110,"name":"pursuit","strategy":"reactive","right":45,"top":25,"bottom":115,"reverse":false,"offset":0},
+    {"bx":110,"name":"rushFlak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":144,"name":"clusters","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":144,"name":"flak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":144,"name":"ice","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
+    {"bx":144,"name":"pursuit","strategy":"reactive","right":45,"top":12,"bottom":115,"reverse":false,"offset":3},
+    {"bx":144,"name":"rushFlak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0}
    ];
    for(const r of routes){
     const {g,b}=make();b.x=r.bx;b.phase=3;g.player.invuln=0;
@@ -210,7 +210,12 @@ try{
      const a=b.attack;
      if(a?.iceWarnAt!==undefined)iceAfterCommit&&=!g.enemies.some(t=>t.type==='hunterTorpedo'&&!t.dead&&t.mode==='hunt');
      const [x,y]=route[k%4],p=g.player;if(Math.abs(p.x-x)<2&&Math.abs(p.y-y)<2)k++;
-     g.update(1/120,{dx:Math.abs(p.x-x)>1?Math.sign(x-p.x):0,dy:Math.abs(p.y-y)>1?Math.sign(y-p.y):0,fire:false});
+     let tx=x,ty=y;
+     if(r.strategy==='reactive'&&a){
+      if(['flak','rushFlak'].includes(r.name)&&a.stage!=='recover'){tx=2;ty=a.gap-5.5;}
+      if(r.name==='ice'&&a.stage==='warn'||r.name==='pursuit'&&a.iceWarning){tx=a.marks[0]<35?45:2;ty=p.y;}
+     }
+     g.update(1/120,{dx:Math.abs(p.x-tx)>1?Math.sign(tx-p.x):0,dy:Math.abs(p.y-ty)>1?Math.sign(ty-p.y):0,fire:false});
      if(!b.attack){if(ended===null)ended=g.time;b.idle=99;}
      if(ended!==null&&g.time>ended+2)break;
     }
@@ -238,7 +243,7 @@ try{
     for(let y=-1.4;y<=1.4;y+=.2)for(let x=-1.4;x<=1.4;x+=.2)if(x*x+y*y<1.96)missileContactVisible&&=pixels[(Math.floor((8+y)*4)*64+Math.floor((8+x)*4))*4+3]>0;
    }
    // Revision 4: timing, predictive guidance, roof origins and cached masks.
-   const {LAUNCHER_HULLS,picture,launcherPort}=await import('/demos/glacier-boss/art.js?boss=4');
+   const {LAUNCHER_HULLS,picture,launcherPort}=await import('/demos/glacier-boss/art.js?boss=5');
    let longerTracking=true,tighterTurns=true,predictsMovement=true,roofOrigins=true,roofRaises=true,raisedMasks=true,raisedBreakup=true,broadsidePreserved=true;
    for(const phase of [1,2,3]){
     const {g,b}=make();b.phase=phase;
@@ -303,6 +308,97 @@ try{
    const emerging=emergence.g.enemies.find(e=>e.persistentEscort),hiddenLaunch=!!emerging?.launch&&!emerging.T.shotTest(emerging,emerging.x,emerging.y,11,8)&&!emerging.T.hitTest(emerging,emerging.x,emerging.y,11,8);
    expose(emergence.b);emergence.g.damage(emergence.b,170);tick(emergence.g,1);
    const pendingFighterSafe=emergence.g.enemies.filter(e=>e.persistentEscort).length===1&&emerging&&!emerging.dead&&!!emerging.launch;
+   // Revision 5: new hazards use native defenses and bounded, locked patterns.
+   const {CLUSTER_ART,CLUSTER_SHELL,LANCE_ART,GLACIER_RUPTURE,CLUSTER_BURST,ruptureRect,drawLances}=await import('/demos/glacier-boss/hazards.js?boss=5');
+   let mortarCounts=true,mortarOrigins=true,mortarBounded=true,lanceCounts=true,lanceValues=true,lanceGapsChange=true,ruptureCounts=true,ruptureRetargets=true,committedTargets=true;
+   for(const phase of [1,2,3]){
+    const {g,b}=make();b.phase=phase;beginAttack(b,g,'clusters');let maxShells=0,maxFragments=0;
+    for(let i=0;i<120*20&&b.attack;i++){
+     maxShells=Math.max(maxShells,g.enemies.filter(e=>!e.dead&&e.type==='clusterShell').length);maxFragments=Math.max(maxFragments,g.enemyShots.filter(s=>s.cluster).length);
+     g.update(1/120,{dx:0,dy:0,fire:false});
+    }
+    const fires=g.audit.filter(a=>a.kind==='fire'&&a.attack==='clusters'),warns=g.audit.filter(a=>a.kind==='warn'&&a.attack==='clusters');
+    mortarCounts&&=!b.attack&&fires.length===phase+1&&g.audit.filter(a=>a.kind==='clusterBurst').length===phase+1;
+    mortarOrigins&&=fires.every(a=>a.mx===130+56&&a.my===106+8)&&warns.every(a=>a.path.length===19);
+    mortarBounded&&=maxShells<=1&&maxFragments<=12;
+    const f=make();f.b.phase=phase;const rounds=[],fire=f.g.fireShot.bind(f.g);f.g.fireShot=(...args)=>{const s=fire(...args);rounds.push(s);return s;};
+    beginAttack(f.b,f.g,'flak');for(let i=0;i<120*20&&f.b.attack;i++)tick(f.g,1/120);
+    const fw=f.g.audit.filter(a=>a.kind==='warn'&&a.attack==='flak'),ff=f.g.audit.filter(a=>a.kind==='fire'&&a.attack==='flak');
+    lanceCounts&&=!f.b.attack&&fw.length===phase&&ff.length===phase;
+    lanceValues&&=rounds.length>0&&rounds.every(s=>s.iceLance&&s.dmg===2&&Math.abs(Math.hypot(s.vx,s.vy)-[0,120,132,144][phase])<.001)&&fw.every(w=>w.duration===1.15);
+    lanceGapsChange&&=fw.every((w,i)=>!i||Math.abs(w.gap-fw[i-1].gap)>=20);
+    if(phase>=2){
+     const z=make();z.b.phase=phase;beginAttack(z.b,z.g,'ice');let lastMark=z.b.attack.marks[0];
+     for(let i=0;i<120*15&&z.b.attack;i++){
+      const a=z.b.attack;
+      const saved=a.marks[0],wasWarn=a.stage==='warn';
+      if(wasWarn)z.g.player.x=saved<60?100:26;
+      tick(z.g,1/120);if(wasWarn&&z.b.attack===a)committedTargets&&=a.marks[0]===saved;
+     }
+     const zw=z.g.audit.filter(a=>a.kind==='warn'&&a.attack==='ice'),zf=z.g.audit.filter(a=>a.kind==='fire'&&a.attack==='ice');
+     ruptureCounts&&=!z.b.attack&&zw.length===phase&&zf.length===phase;
+     ruptureRetargets&&=new Set(zw.map(w=>w.marks[0])).size>=2;
+    }
+   }
+   const ml=make();ml.b.phase=3;beginAttack(ml.b,ml.g,'clusters');const frozenPath=JSON.stringify(ml.b.attack.path),lockedTarget=[ml.b.attack.tx,ml.b.attack.ty];
+   tick(ml.g,.4,{dx:1,dy:-1,fire:false});const heldPath=JSON.stringify(ml.b.attack.path)===frozenPath;
+   tick(ml.g,.4,{dx:0,dy:-1,fire:false});const launched=ml.g.enemies.find(e=>e.type==='clusterShell');
+   const mortarTargetLocked=heldPath&&!!launched&&launched.tx===lockedTarget[0]&&launched.ty===lockedTarget[1];
+   const armorShell=make(),cs=armorShell.g.spawnEnemy('clusterShell',120,60,{sx:124,sy:63,tx:35,ty:63,phase:3,byBoss:true});
+   armorShell.g.strike(cs,cs.x+3,cs.y+2,2,2,1);const firstArmor=cs.hp===2&&!cs.dead;
+   armorShell.g.strike(cs,cs.x+3,cs.y+2,2,2,1);const secondArmor=cs.hp===1&&!cs.dead;
+   armorShell.g.strike(cs,cs.x+3,cs.y+2,2,2,1);tick(armorShell.g,1.2);
+   const threeHitCounter=firstArmor&&secondArmor&&cs.dead&&armorShell.g.score===10&&!armorShell.g.audit.some(a=>a.kind==='clusterBurst');
+   const bombCounter=make(),bc=bombCounter.g.spawnEnemy('clusterShell',110,60,{sx:114,sy:63,tx:35,ty:63,phase:3,byBoss:true});
+   bombCounter.g.weapons.collect('bomb');bombCounter.g.weapons.fire();tick(bombCounter.g,1.2);
+   const bombCancelsCluster=bc.dead&&!bombCounter.g.audit.some(a=>a.kind==='clusterBurst');
+   const centerHit=make();centerHit.g.player.invuln=0;centerHit.g.player.y=65;const pc=centerHit.g.playerCenter();
+   const hc=centerHit.g.spawnEnemy('clusterShell',100,60,{sx:104,sy:63,tx:pc.x,ty:pc.y,phase:3,byBoss:true});hc.t=.849;tick(centerHit.g,.1);
+   const coreDamage=centerHit.g.health===2&&centerHit.g.lives===3&&centerHit.g.enemyShots.filter(s=>s.cluster).length===6;
+   const protectedHit=make();protectedHit.g.player.y=65;const pp=protectedHit.g.playerCenter();
+   const ph=protectedHit.g.spawnEnemy('clusterShell',100,60,{sx:104,sy:63,tx:pp.x,ty:pp.y,phase:3,byBoss:true});ph.t=.849;tick(protectedHit.g,.1);
+   const coreRespectsProtection=protectedHit.g.health===5;
+   const lanceHit=make();lanceHit.g.player.invuln=0;const lp=lanceHit.g.playerCenter();
+   Object.assign(lanceHit.g.fireShot(lp.x,lp.y,0,0,'icicle',true),{iceLance:true,dmg:2});lanceHit.g.collide();lanceHit.g.collide();
+   const lanceDamage=lanceHit.g.health===3&&lanceHit.g.lives===3;
+   let ruptureDamage=true,ruptureProtection=true,ruptureLifetime=true;
+   for(const y of [11,50,115]){
+    const {g,b}=make();g.player.y=y;g.player.invuln=0;const m=g.playerCenter(),r=g.spawnEnemy('glacierRupture',m.x-5,11,{byBoss:true});
+    tick(g,.6);ruptureDamage&&=g.health===2&&g.lives===3;tick(g,.1);ruptureLifetime&&=r.dead&&!g.enemies.includes(r)&&g.terrain.spires.length===0;
+    const p=make();p.g.player.y=y;const q=p.g.playerCenter();p.g.spawnEnemy('glacierRupture',q.x-5,11,{byBoss:true});tick(p.g,.6);ruptureProtection&&=p.g.health===5;
+   }
+   const shield=make();shield.g.player.invuln=0;shield.g.powerups.collect('shield');const charges=shield.g.powerups.shieldHits,sp=shield.g.playerCenter();
+   shield.g.spawnEnemy('glacierRupture',sp.x-5,11,{byBoss:true});tick(shield.g,.6);
+   const oneShieldCharge=shield.g.health===5&&shield.g.powerups.shieldHits===charges-1;
+   const lethal=make();lethal.g.player.invuln=0;lethal.g.health=1;lethal.g.lives=1;const dp=lethal.g.playerCenter();
+   for(let i=0;i<2;i++)lethal.g.spawnEnemy('glacierRupture',dp.x-5,11,{byBoss:true});tick(lethal.g,2);
+   const fatalRuptureSafe=lethal.g.lives===0&&lethal.g.state==='gameover'&&lethal.g.health===0&&!lethal.g.enemies.some(e=>e.type==='glacierRupture');
+   const fatalCore=make();fatalCore.g.player.invuln=0;fatalCore.g.health=1;fatalCore.g.lives=1;const fp=fatalCore.g.playerCenter();
+   const fc=fatalCore.g.spawnEnemy('clusterShell',100,60,{sx:104,sy:63,tx:fp.x,ty:fp.y,phase:3,byBoss:true});fc.t=.849;tick(fatalCore.g,.1);
+   const fatalCoreNoFragments=fatalCore.g.lives===0&&fatalCore.g.enemyShots.length===0&&!fatalCore.g.enemies.some(e=>['clusterShell','clusterBurst'].includes(e.type));
+   const cancelCluster=make();beginAttack(cancelCluster.b,cancelCluster.g,'clusters');tick(cancelCluster.g,1.2);expose(cancelCluster.b);cancelCluster.g.damage(cancelCluster.b,85);const cancelAt=cancelCluster.g.time;tick(cancelCluster.g,1.2);
+   const phaseCancelsCluster=!cancelCluster.g.enemies.some(e=>['clusterShell','clusterBurst'].includes(e.type))&&!cancelCluster.g.audit.some(a=>a.kind==='clusterBurst'&&a.time>cancelAt);
+   const cancelIce=make();cancelIce.b.phase=2;beginAttack(cancelIce.b,cancelIce.g,'ice');tick(cancelIce.g,.95);const priorRuptures=cancelIce.g.enemies.filter(e=>e.type==='glacierRupture');expose(cancelIce.b);cancelIce.g.damage(cancelIce.b,170);tick(cancelIce.g,.1);
+   const phaseCancelsRuptures=priorRuptures.length===1&&priorRuptures.every(e=>e.dead)&&!cancelIce.g.enemies.some(e=>e.type==='glacierRupture');
+   // Transparent canvases check actual contact pixels, not landscape opacity.
+   const vis=document.createElement('canvas');vis.width=832;vis.height=576;const vc=useDetail(vis.getContext('2d'));vc.scale(4,4);vc.imageSmoothingEnabled=false;
+   let lanceContactVisible=true,ruptureContactVisible=true,blastContactVisible=true;
+   for(let i=0;i<32;i++){
+    vc.clearRect(0,0,208,144);const angle=i*Math.PI/16;
+    drawLances({enemyShots:[{x:80,y:70,vx:Math.cos(angle),vy:Math.sin(angle),iceLance:true}]},vc,v=>v);
+    const d=vc.getImageData(0,0,832,576).data;
+    for(const x of [-1.49,1.49])for(const y of [-1.49,1.49])lanceContactVisible&&=d[(Math.floor((70+y)*4)*832+Math.floor((80+x)*4))*4+3]>0;
+   }
+   for(const t of [.04,.12,.3]){
+    vc.clearRect(0,0,208,144);const e={x:60,y:11,t};GLACIER_RUPTURE.draw(e,vc,v=>Math.round(v*2)/2);const r=ruptureRect(e),d=vc.getImageData(0,0,832,576).data;
+    for(let y=r.y+.5;y<r.y+r.h-.5;y+=1)for(let x=r.x+.25;x<r.x+r.w;x+=.5)ruptureContactVisible&&=d[(Math.floor(y*4)*832+Math.floor(x*4))*4+3]>0;
+   }
+   vc.clearRect(0,0,208,144);CLUSTER_BURST.draw({x:70,y:60,t:0},vc,v=>v);const bp=vc.getImageData(0,0,832,576).data;
+   for(let y=-7.5;y<=7.5;y+=.5)for(let x=-7.5;x<=7.5;x+=.5)if(x*x+y*y<56.25)blastContactVisible&&=bp[(Math.floor((69+y)*4)*832+Math.floor((79+x)*4))*4+3]>0;
+   vc.clearRect(0,0,208,144);vc.lineWidth=2.5;CLUSTER_SHELL.draw({x:60,y:60,tx:90,ty:90,t:.1,flash:.06},vc,v=>v);
+   const flashPixels=vc.getImageData(0,0,832,576).data,normalPixels=CLUSTER_ART.hi.getContext('2d').getImageData(0,0,16,12).data;
+   const mortarFlashVisible=vc.lineWidth===2.5&&normalPixels.every((v,i)=>i%4!==3||!v||flashPixels[(Math.floor((60+Math.floor(i/4/16)/2+.25)*4)*832+Math.floor((60+(Math.floor(i/4)%16)/2+.25)*4))*4+3]>0);
+   const hazardArt=CLUSTER_ART.width===8&&CLUSTER_ART.height===6&&CLUSTER_ART.hi.width===16&&LANCE_ART.width===16&&LANCE_ART.hi.height===12;
    // Actual destruction: all pixels partitioned, staged launch, angular and
    // ballistic motion, floor impacts, harmless finale, one score award.
    const death=make();expose(death.b);death.g.player.invuln=0;
@@ -328,7 +424,7 @@ try{
    const noSafePockets=pockets.every(p=>p.hurt>0);
    const art=HULLS.every(a=>Object.values(a).every(p=>p.width===58&&p.height===24&&p.hi.width===116&&p.hi.height===48&&p.mask.some(Boolean)&&p.flash.hi.width===116));
    const masks=HULLS.every((a,index)=>Object.entries(a).every(([state,p])=>{const e={x:0,y:0,phase:index+1,open:state==='open',mode:'fight'};return p.mask.every((v,i)=>Boolean(v)===Boolean(BREAKWATER.hitTest(e,(i%116)/2+.1,Math.floor(i/116)/2+.1,.2,.2)));}));
-   return {longerTracking,tighterTurns,predictsMovement,roofOrigins,roofRaises,raisedMasks,raisedBreakup,broadsidePreserved,persistentFighters,warnedFighters,fullSlots,bossContinues,phaseTwoKeeps,phaseQuiet,phaseThreeKeeps,missingOnly,respawnKeeps,enteringQuiet,deathClearsFighters,hiddenLaunch,pendingFighterSafe,closed,frontPath,hullBlocks,ordinaryHits,...weapon,p2,p3,blockedStart,noTalkShots,iceMarksSeparate,shellSafe,lateShellSafe,retargetAfterCleanup,bossDartOwnership,killedClear,respawn,knockback:pushes.every(Boolean),nativeDamage,retargeted,eachVolleyLocked,volleyEscape,noBossLaser,salvoSizes,limitedHoming,commitsStraight,earlyShot,shootable,missileExpires,huntsHigh,flushesLow,noImmediateRepeat,escalation,cooldowns,combosRecur,restEscalates,missileArt,newEscapes,iceAfterCommit,normalGunCountersMissile,phaseClearsMissiles,noQueuedLaunchAfterPhase,deathClearsSalvo,missileKillSafe,missileContactVisible,exactBreakup,deathSafe,heldInitially,stagedBreakup,allLaunched,beforeFinish,oneAward,fallingParts,harmlessWreck,persistentWreck,resetWreck,noSafePockets,dodges,art,masks,isolated:LEVELS.length===3&&!ENEMY_TYPES.breakwater,attacks};
+   return {mortarFlashVisible,mortarTargetLocked,mortarCounts,mortarOrigins,mortarBounded,lanceCounts,lanceValues,lanceGapsChange,ruptureCounts,ruptureRetargets,committedTargets,threeHitCounter,bombCancelsCluster,coreDamage,coreRespectsProtection,lanceDamage,ruptureDamage,ruptureProtection,ruptureLifetime,oneShieldCharge,fatalRuptureSafe,fatalCoreNoFragments,phaseCancelsCluster,phaseCancelsRuptures,lanceContactVisible,ruptureContactVisible,blastContactVisible,hazardArt,longerTracking,tighterTurns,predictsMovement,roofOrigins,roofRaises,raisedMasks,raisedBreakup,broadsidePreserved,persistentFighters,warnedFighters,fullSlots,bossContinues,phaseTwoKeeps,phaseQuiet,phaseThreeKeeps,missingOnly,respawnKeeps,enteringQuiet,deathClearsFighters,hiddenLaunch,pendingFighterSafe,closed,frontPath,hullBlocks,ordinaryHits,...weapon,p2,p3,blockedStart,noTalkShots,iceMarksSeparate,shellSafe,lateShellSafe,retargetAfterCleanup,bossDartOwnership,killedClear,respawn,knockback:pushes.every(Boolean),nativeDamage,retargeted,eachVolleyLocked,volleyEscape,noBossLaser,salvoSizes,limitedHoming,commitsStraight,earlyShot,shootable,missileExpires,huntsHigh,flushesLow,noImmediateRepeat,escalation,cooldowns,combosRecur,restEscalates,missileArt,newEscapes,iceAfterCommit,normalGunCountersMissile,phaseClearsMissiles,noQueuedLaunchAfterPhase,deathClearsSalvo,missileKillSafe,missileContactVisible,exactBreakup,deathSafe,heldInitially,stagedBreakup,allLaunched,beforeFinish,oneAward,fallingParts,harmlessWreck,persistentWreck,resetWreck,noSafePockets,dodges,art,masks,isolated:LEVELS.length===3&&!ENEMY_TYPES.breakwater,attacks};
   });
   for(const [key,value]of Object.entries(result))if(key!=='attacks')check(phone.name+': '+key,value,result);
   for(const a of result.attacks){check(phone.name+': '+a.name+' warned and locked',a.warned&&a.locked,a);check(phone.name+': '+a.name+' bounded, grounded and clears',a.maxDarts<=2&&a.maxTorps<=4&&a.maxShots<=20&&a.maxEscortShots<=2&&a.ground&&a.onscreen&&!a.overlap&&a.clean,a);}
@@ -353,7 +449,7 @@ try{
   await tap('#action');await page.evaluate(()=>{const h=window.__boss;h.game.player.invuln=100;h.advance(30);});
   check(phone.name+': fight continues beyond the old 30-second limit',await page.evaluate(()=>window.__boss.mode==='playing'&&window.__boss.game.time>29.9&&window.__boss.game.boss?.hp>0));
   await page.screenshot({path:join(out,phone.name+'-fight.png')});
-  await page.evaluate(()=>{const g=window.__boss.game;g.spawnEnemy('skipShell',130,123,{sx:133,tx:40,amp:50});g.weapons.collect('laser');g.weapons.fire();g.boss.open=true;g.damage(g.boss,g.boss.hp);window.__boss.advance(1.2);});
+  await page.evaluate(()=>{const g=window.__boss.game;g.spawnEnemy('clusterShell',130,123,{sx:134,sy:90,tx:40,ty:60,phase:3});g.weapons.collect('laser');g.weapons.fire();g.boss.open=true;g.damage(g.boss,g.boss.hp);window.__boss.advance(1.2);});
   await tap('#pause');
   const deathFrozen=await page.evaluate(()=>JSON.stringify(window.__boss.game.wreck.wreck));await page.evaluate(()=>window.__boss.advance(3));
   check(phone.name+': pause freezes flying wreckage',await page.evaluate(before=>JSON.stringify(window.__boss.game.wreck.wreck)===before,deathFrozen));

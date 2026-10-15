@@ -1,18 +1,19 @@
 import { VIEW_W, HUD_H, PAL } from '../../js/config.js?v=0.29.0';
 import { clamp, rectsOverlap } from '../../js/util.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
-import { picture, hullContact, WIDTH, HEIGHT, SHELL, launcherPort } from './art.js?boss=4';
-import { updateBreakup, drawBreakup } from './wreck.js?boss=4';
-import { escorts } from './escorts.js?boss=4';
+import { picture, hullContact, WIDTH, HEIGHT, launcherPort } from './art.js?boss=5';
+import { updateBreakup, drawBreakup } from './wreck.js?boss=5';
+import { escorts } from './escorts.js?boss=5';
+import { drawMortarMark, mortarPoint } from './hazards.js?boss=5';
 import { target } from '../glacier-combat/art.js?combat=3';
-export const MOVES=[null,['broadside','torpedoes','flak','skip'],
-  ['ice','darts','broadside','torpedoes','flak','skip'],
-  ['rushFlak','pursuit','rush','torpedoes','broadside','ice','darts','flak','skip']];
+export const MOVES=[null,['broadside','torpedoes','flak','clusters'],
+  ['ice','darts','broadside','torpedoes','flak','clusters'],
+  ['rushFlak','pursuit','rush','torpedoes','broadside','ice','darts','flak','clusters']];
 export const REST=[0,.45,.30,.18];
 const LEFT=[0,104,90,76],INTRO=[0,4,2,2];
 export const log=(g,e,kind,extra={})=>g.audit.push({time:g.time,id:e.id,kind,phase:e.phase,...extra});
 const muzzle=e=>({x:e.x+1,y:e.y+15});
-const localThreat=e=>e.type==='twinDart'||e.type==='skipShell'||e.type==='hunterTorpedo';
+const localThreat=e=>e.type==='twinDart'||['clusterShell','clusterBurst','glacierRupture'].includes(e.type)||e.type==='hunterTorpedo';
 export function clearThreats(g,keepFighters=false){
   g.enemyShots=[];g.enemies=g.enemies.filter(e=>{if(!localThreat(e))return true;
     if(keepFighters&&e.persistentEscort){e.passive=true;e.mode='wait';e.timer=.6+e.lane*.4;e.charge=0;return true;}
@@ -24,10 +25,11 @@ const rushing=a=>a.name==='rush'||a.name==='rushFlak';
 function set(e,mode){e.mode=mode;e.timer=0;}
 function saySafe(g,e,text,style='talk'){clearThreats(g,true);g.say(e,text,style);}
 function markedX(x,e){x=clamp(x,14,190);if(x>e.x-9&&x<e.x+e.w+9)return clamp(e.x-20,14,190);return x;}
-function iceMarks(e,g){
-  const first=markedX(g.playerCenter().x,e);
-  const alternatives=[first+48,first-48,190,14].map(x=>markedX(clamp(x,14,190),e));
-  return [first,alternatives.find(x=>Math.abs(first-x)>=44)];
+function iceMarks(e,g){return [markedX(g.playerCenter().x,e)];}
+function flakGap(e,g){return clamp(g.playerCenter().y+(g.playerCenter().y>72?-32:32),30,e.attack?.name==='rushFlak'?88:111);}
+function mortarMark(e,g,a){
+  const p=g.playerCenter();a.sx=e.x+56;a.sy=e.y+8;a.tx=clamp(p.x,14,194);a.ty=clamp(p.y,24,111);
+  a.mx=a.sx;a.my=a.sy;a.angle=Math.atan2(a.ty-a.sy,a.tx-a.sx);a.path=Array.from({length:19},(_,i)=>mortarPoint(a,i/18));
 }
 // Introduce each phase's new tools first; afterwards respond to position,
 // avoiding the last two attacks and keeping combined attacks three apart.
@@ -50,16 +52,13 @@ export function beginAttack(e,g,name){
   if(name==='darts'&&escorts(g).length>=2)return false;
   if(!MOVES[e.phase].includes(name)||g.state!=='playing'||!g.bossMayAttack(e)||threats(g))return false;
   const p=g.playerCenter(),m=muzzle(e);
-  const a=e.attack={name,t:0,stage:'warn',warn:name==='rushFlak'||name==='flak'?1.15:name==='rush'||name==='skip'?1:[0,.95,.85,.75][e.phase]};
+  const a=e.attack={name,t:0,stage:'warn',warn:name==='rushFlak'||name==='flak'?1.15:name==='rush'||name==='clusters'?1:[0,.95,.85,.75][e.phase]};
   a.rear=p.x>e.x+e.w/2;a.mx=a.rear?e.x+e.w-2:m.x;a.my=a.rear?e.y+8:m.y;
   a.angle=Math.atan2(p.y-a.my,p.x-a.mx);
   if(name==='torpedoes'||name==='pursuit'){a.count=name==='pursuit'?2:e.phase+1;a.sent=0;const port=launcherPort(e,0,2);a.mx=port.x;a.my=port.y;a.warn=[0,1,.85,.7][e.phase];}
-  if(name==='flak'||name==='rushFlak'){a.gap=clamp(p.y+(p.y>72?-32:32),30,name==='rushFlak'?88:111);a.wallX=e.x-4;}
-  if(name==='skip'){
-    a.sx=e.x-3;a.tx=clamp(p.x-18,12,188);a.amp=clamp(126-p.y,28,88);
-    a.path=Array.from({length:25},(_,i)=>skipPoint(a,i/24));
-  }
-  if(name==='ice')a.marks=iceMarks(e,g);
+  if(name==='flak'||name==='rushFlak'){a.gap=flakGap(e,g);a.wallX=e.x-4;a.gapSize=GAP_SIZE[e.phase];a.waves=0;a.waveCount=name==='rushFlak'?1:e.phase;}
+  if(name==='clusters'){a.warn=[0,.95,.85,.75][e.phase];a.sent=0;a.count=e.phase+1;mortarMark(e,g,a);}
+  if(name==='ice'){a.marks=iceMarks(e,g);a.strikes=0;a.strikeCount=e.phase;}
   if(rushing(a)){a.left=clamp(p.x-18,30,72);a.home=144;}
   const intro=e.introIndex||0;if(intro<INTRO[e.phase]&&MOVES[e.phase][intro]===name)e.introIndex=intro+1;
   e.recent=[...(e.recent||[]),name].slice(-4);
@@ -67,18 +66,27 @@ export function beginAttack(e,g,name){
   log(g,e,'warn',{attack:name,duration:a.warn,angle:a.angle,mx:a.mx,my:a.my,marks:a.marks,path:a.path,gap:a.gap,wallX:a.wallX,count:a.count});
   sfx.charge(a.warn);return true;
 }
-export function skipPoint(a,k){return {x:a.sx+(a.tx-a.sx)*k,y:126-Math.abs(Math.sin(k*Math.PI*2))*a.amp};}
 function broadside(e,g,a){
   for(let i=0;i<5;i++)g.fireShot(a.mx,a.my,a.angle+(i-2)*.22,89+e.phase*9,i===2?'shell':'orb',true).dmg=i===2?2:1;
   sfx.cannon();
 }
+export const LANCE_SPEED=[0,120,132,144],GAP_SIZE=[0,28,26,24];
 function flak(e,g,a){
-  for(let y=14;y<=126;y+=7)if(Math.abs(y-a.gap)>16)g.fireShot(a.wallX,y,Math.PI,86+e.phase*6,'icicle',true);
-  sfx.shatter();
+  for(let y=14;y<=126;y+=8)if(Math.abs(y-a.gap)>GAP_SIZE[e.phase]/2){
+    const s=g.fireShot(a.wallX,y,Math.PI,LANCE_SPEED[e.phase],'icicle',true);s.dmg=2;s.iceLance=true;
+  }
+  a.waves++;sfx.shatter();
 }
 function ice(e,g,a){
-  for(const x of a.marks){g.blasts.blast(x,126,.4);for(let i=0;i<3;i++)g.fireShot(x,125,-Math.PI/2+(i-1)*.10,70+e.phase*3,'icicle',true);}
-  sfx.shatter();
+  const x=a.marks[0];g.spawnEnemy('glacierRupture',x-5,14,{byBoss:true});
+  a.strikes=(a.strikes||0)+1;g.blasts.dust(x,128,.6);sfx.shatter();
+}
+function repeatWarning(e,g,a){
+  a.stage='warn';a.t=0;
+  if(a.name==='clusters')mortarMark(e,g,a);
+  else if(a.name==='flak'){const old=a.gap;a.gap=flakGap(e,g);if(Math.abs(a.gap-old)<20)a.gap=old<70?Math.min(111,old+32):Math.max(30,old-32);a.wallX=e.x-4;}
+  else if(a.name==='ice')a.marks=iceMarks(e,g);
+  log(g,e,'warn',{attack:a.name,duration:a.warn,angle:a.angle,mx:a.mx,my:a.my,marks:a.marks,path:a.path,gap:a.gap,wallX:a.wallX});sfx.charge(a.warn);
 }
 function launchTorpedo(e,g,a){
   const port=launcherPort(e,a.sent%2,2),angle=-Math.PI/2;
@@ -91,7 +99,7 @@ function fire(e,g,a){
   if(a.name==='broadside'){broadside(e,g,a);a.volleys=1;aimAgain(e,g,a);}
   else if(a.name==='flak'||a.name==='rushFlak')flak(e,g,a);
   else if(a.name==='torpedoes'||a.name==='pursuit')launchTorpedo(e,g,a);
-  else if(a.name==='skip'){g.spawnEnemy('skipShell',a.sx-3,123,{sx:a.sx,tx:a.tx,amp:a.amp,byBoss:true});sfx.mortar();}
+  else if(a.name==='clusters'){g.spawnEnemy('clusterShell',a.sx-4,a.sy-3,{sx:a.sx,sy:a.sy,tx:a.tx,ty:a.ty,phase:e.phase,byBoss:true});a.sent++;sfx.mortar();}
   else if(a.name==='darts'){a.dartLanes=[0,1].filter(lane=>!escorts(g).some(d=>d.lane===lane));launchDart(e,g,a.dartLanes.shift());a.pendingDart=a.dartLanes.length>0;sfx.tick();}
   else if(a.name==='ice')ice(e,g,a);
   a.stage=rushing(a)?'dash':'active';a.t=0;
@@ -111,7 +119,7 @@ function updateAttack(e,a,dt,g){
   const salvo=(a.name==='torpedoes'||a.name==='pursuit')&&a.stage==='active';
   e.open=a.stage==='recover'||a.stage==='warn'&&a.t>=a.warn-.4||
     a.stage==='active'&&a.name==='broadside'&&a.volleys<5&&a.t>=a.nextWarn-.3||
-    salvo&&a.t<.38*(a.count-1)+.55||a.iceWarnAt!==undefined&&!a.iceDone&&a.t>=a.iceWarnAt+.5;
+    salvo&&a.t<.38*(a.count-1)+.55||a.iceWarning&&!a.iceDone&&a.t>=a.iceWarnAt+.5;
   if(a.stage==='warn'){if(a.t>=a.warn)fire(e,g,a);}
   else if(a.stage==='dash'){
     e.open=false;if(move(e,a.left,a.name==='rushFlak'?140:124,dt)){a.stage='turn';a.t=0;log(g,e,'returnWarning',{duration:.75});sfx.rumble();}
@@ -125,15 +133,26 @@ function updateAttack(e,a,dt,g){
       if(a.name==='pursuit'){
         if(a.iceWarnAt===undefined){
           if(g.enemies.some(t=>t.type==='hunterTorpedo'&&!t.dead&&t.mode==='hunt'))return;
-          a.marks=iceMarks(e,g);a.iceWarnAt=a.t;
+          a.strikes=0;a.strikeCount=2;a.iceWarning=true;a.marks=iceMarks(e,g);a.iceWarnAt=a.t;
           log(g,e,'warn',{attack:'pursuitIce',duration:.9,marks:a.marks,angle:-Math.PI/2});sfx.charge(.9);return;
         }
         if(!a.iceDone){
-          if(a.t>=a.iceWarnAt+.9){a.iceDone=true;ice(e,g,a);log(g,e,'fire',{attack:'pursuitIce',angle:-Math.PI/2,marks:a.marks});}
+          if(a.iceWarning){
+            if(a.t>=a.iceWarnAt+.9){a.iceWarning=false;ice(e,g,a);log(g,e,'fire',{attack:'pursuitIce',angle:-Math.PI/2,marks:a.marks});if(a.strikes===2)a.iceDone=true;}
+          }else if(!g.enemies.some(t=>t.type==='glacierRupture'&&!t.dead)){
+            a.marks=iceMarks(e,g);a.iceWarnAt=a.t;a.iceWarning=true;
+            log(g,e,'warn',{attack:'pursuitIce',duration:.9,marks:a.marks,angle:-Math.PI/2});sfx.charge(.9);
+          }
           return;
         }
       }
     }
+    if(a.name==='clusters'&&a.sent<a.count){
+      if(!g.enemies.some(t=>!t.dead&&t.type==='clusterShell')&&g.enemyShots.filter(s=>s.cluster&&!s.dead).length<=6)repeatWarning(e,g,a);
+      return;
+    }
+    if(a.name==='flak'&&a.waves<a.waveCount){if(!threats(g))repeatWarning(e,g,a);return;}
+    if(a.name==='ice'&&a.strikes<a.strikeCount){if(!threats(g))repeatWarning(e,g,a);return;}
     if(a.pendingDart&&a.t>=.45){launchDart(e,g,a.dartLanes.shift());a.pendingDart=false;}
     if(a.name==='broadside'&&a.volleys<5){
       if(a.t>=a.nextWarn){log(g,e,'fire',{attack:a.name,angle:a.angle,mx:a.mx,my:a.my});broadside(e,g,a);a.volleys++;a.t=0;if(a.volleys<5)aimAgain(e,g,a);}
@@ -143,7 +162,7 @@ function updateAttack(e,a,dt,g){
   }else if(a.stage==='recover'&&a.t>1.05){e.attack=null;e.open=false;e.idle=REST[e.phase];}
 }
 function drawGap(a,c,snap){
-  c.fillStyle='#e8eee5';for(const y of [a.gap-16,a.gap+16])c.fillRect(2,snap(y),Math.max(1,a.wallX-4),.5);
+  c.fillStyle='#e8eee5';for(const y of [a.gap-a.gapSize/2,a.gap+a.gapSize/2])c.fillRect(2,snap(y),Math.max(1,a.wallX-4),.5);
 }
 export const BREAKWATER={
   boss:true,name:'BREAKWATER',title:'THE COASTBREAKER',hp:250,score:7000,voice:'metal',
@@ -225,26 +244,15 @@ export const BREAKWATER={
           const port=launcherPort(e,0,2);
           for(let d=4;d<17;d+=4)c.fillRect(snap(port.x),snap(port.y-d),1,1);
         }
-        if(a.name==='flak'||a.name==='rushFlak')for(let y=12;y<129;y+=3)if(Math.abs(y-a.gap)>16)c.fillRect(snap(a.wallX),y,1,1);
-        if(a.name==='skip'){for(const p of a.path)c.fillRect(snap(p.x),snap(p.y),1,1);target(c,a.tx,125,snap);}
+        if(a.name==='flak'||a.name==='rushFlak')for(let y=12;y<129;y+=3)if(Math.abs(y-a.gap)>a.gapSize/2)c.fillRect(snap(a.wallX),y,1,1);
+        if(a.name==='clusters'){for(const p of a.path)c.fillRect(snap(p.x),snap(p.y),1,1);drawMortarMark(c,a.tx,a.ty,snap);}
         if(rushing(a))for(let x=a.left;x<e.x;x+=5)c.fillRect(snap(x),e.y+e.h-2,2,.5);
       }
-      if((a.name==='ice'&&a.stage==='warn')||(a.iceWarnAt!==undefined&&!a.iceDone))for(const x of a.marks){target(c,x,122,snap);for(let y=86;y<119;y+=5)c.fillRect(snap(x),y,.5,2);}
+      if((a.name==='ice'&&a.stage==='warn')||(a.iceWarning&&!a.iceDone))for(const x of a.marks){target(c,x,122,snap);for(let y=14;y<119;y+=5)c.fillRect(snap(x),y,.5,2);}
       if((a.name==='flak'||a.name==='rushFlak')&&a.stage!=='recover')drawGap(a,c,snap);
     }
     const p=picture(e);c.drawImage(e.flash>0?p.flash:p,snap(e.x),snap(e.y));
     if(e.launchFlash>0){const port=launcherPort(e,e.launchTube||0,2);c.fillStyle='#f1d69a';c.fillRect(snap(port.x-1),snap(port.y-2),2,2);}
-    if(a&&(['warn','turn'].includes(a.stage)||a.name==='broadside'&&a.stage==='active'&&a.volleys<5)&&Math.floor(e.t*14)%2===0){c.fillStyle='#f1d69a';c.fillRect(snap(e.x+18),snap(e.y+10),1,1);c.fillRect(snap(e.x+41),snap(e.y+13),1,2);}
+    if(a&&(['warn','turn'].includes(a.stage)||a.name==='broadside'&&a.stage==='active'&&a.volleys<5)&&Math.floor(e.t*14)%2===0){c.fillStyle='#f1d69a';if(a.name==='clusters')c.fillRect(snap(e.x+55),snap(e.y+6),2,2);else{c.fillRect(snap(e.x+18),snap(e.y+10),1,1);c.fillRect(snap(e.x+41),snap(e.y+13),1,2);}}
   }
-};
-export const SKIP_SHELL={
-  hp:1,score:10,noTarget:true,ram:1,gore:{metal:2},explodeSize:.3,
-  init(e){e.w=e.h=6;e.mode='hop';},
-  update(e,dt,g){
-    if(e.dead)return;
-    const k=Math.min(1,e.t/2.1),p=skipPoint(e,k);e.x=p.x-3;e.y=p.y-3;
-    if(k>=1){e.dead=true;for(let i=0;i<3;i++)g.fireShot(p.x,p.y-1,-Math.PI/2+(i-1)*.4,58,'orb',true);g.blasts.blast(p.x,p.y,.4);log(g,e,'shellBurst');sfx.explode(.3);}
-  },
-  hitTest(e,x,y,w,h){const dx=Math.max(x-(e.x+3),0,e.x+3-(x+w)),dy=Math.max(y-(e.y+3),0,e.y+3-(y+h));return dx*dx+dy*dy<9?'hit':null;},
-  draw(e,c,snap){const p=skipPoint(e,1);target(c,p.x,125,snap,e.t>1.45);c.drawImage(SHELL,snap(e.x),snap(e.y));}
 };

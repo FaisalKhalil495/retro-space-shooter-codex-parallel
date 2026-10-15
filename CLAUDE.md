@@ -617,6 +617,27 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      The portable HTML wins at both phone sizes without external requests or
      browser errors; existing drawing-call counts are unchanged.
      Look for BREAKWATER 4; await phone review after this approved revision.
+     **Boss preview revision 5 — approved heavy weapons:** the owner found
+     skipping shells and icicles weak and approved Cluster Mortars, Ice Lances
+     and Glacier Ruptures. Rear-gun mortars have 3 HP, 2/3/4 separately aimed
+     launches, six fast fragments, three-block contact/core damage and real
+     shootdown cancellation. Lance walls deal two blocks, move at 120/132/144
+     pixels/s and repeat 1/2/3 times with separate 1.15 s warnings and changing
+     28/26/24-pixel escape gaps. Rush retains an overhead passage. Ruptures
+     replace upward ice shots with tall temporary spikes: two/three separately
+     warned strikes in phases 2/3, three blocks once per eruption, each new
+     warning reacquiring position before locking it. The torpedo sequence uses
+     two ruptures after homing ends. Native shields, hit protection and entry
+     guards apply; phase/death cleanup cancels pending hazards. Broadside,
+     torpedoes, persistent fighters, 250 HP, hull and breakup remain preserved.
+     Exact values and validation are in the boss README and approved plan at
+     `docs/concepts/level-4-enemies/boss-heavy-weapons-plan.md`. Look for
+     BREAKWATER 5. All 312 focused and 220 existing checks pass (532 total),
+     including 21 complete no-hit scenarios with both fighters alive, native
+     defense rules, warning locks and visible contact areas. Portable wins pass
+     at both phone sizes with zero external requests or browser errors, and
+     earlier-game drawing-call counts stay unchanged. Await phone review
+     after this approved revision.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -852,8 +873,8 @@ review now covers seven regular types plus Breakwater. The owner likes the
 new designs and approved the revised two-flight combat-preview plan. Both
 flights are implemented at `demos/glacier-combat/`; the owner accepted revision 3.
 Breakwater's approved boss preview has been revised after the owner rejected
-its first design and difficulty; approved revision 4 adds stronger pursuit,
-a roof launcher and persistent fighters, and awaits phone review. The full level
+its first design and difficulty; approved revision 5 adds heavy mortars,
+lance walls and tall ruptures, and awaits phone review. The full level
 still requires a separately approved implementation stage.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**
@@ -887,7 +908,8 @@ it over. The owner tests on Android; ideally the friend checks iPhone each stage
   campaign or save registration. `wreck.js` handles the staged ten-part
   destruction; `torpedo.js` contains the local guided missiles and their cached
   art; `escorts.js` holds the boss-only persistent Twin Dart behavior. Focused
-  tests cover guidance, all launcher poses, persistent fighters and breakup;
+  tests cover guidance, all launcher poses, persistent fighters and breakup.
+  `hazards.js` contains boss-only mortar, lance and rupture art/behavior;
   `tools/boss-benchmark.mjs` compares Warden timing/pressure and cached drawing;
   `tools/export-boss-demo.mjs <output.html>` makes a portable review copy.
 - `demos/glacier-combat/` — approved standalone combat preview. `scene.js`

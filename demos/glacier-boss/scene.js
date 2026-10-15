@@ -4,10 +4,11 @@ import { PAL } from '../../js/config.js?v=0.29.0';
 import { drawText } from '../../js/font.js?v=0.29.0';
 import { CoastBackground, COAST_FLOOR, coastReady } from '../glacier-coast/coast.js?demo=2';
 import { LOCAL_TYPES, spawnLocal } from '../glacier-combat/enemies.js?combat=3';
-import { BREAKWATER, SKIP_SHELL, clearThreats, log } from './boss.js?boss=4';
-import { beginBreakup, updateBreakup, drawBreakup } from './wreck.js?boss=4';
-import { HUNTER_TORPEDO } from './torpedo.js?boss=4';
-import { ESCORT, escortAwake } from './escorts.js?boss=4';
+import { BREAKWATER, clearThreats, log } from './boss.js?boss=5';
+import { beginBreakup, updateBreakup, drawBreakup } from './wreck.js?boss=5';
+import { HUNTER_TORPEDO } from './torpedo.js?boss=5';
+import { ESCORT, escortAwake } from './escorts.js?boss=5';
+import { CLUSTER_SHELL, CLUSTER_BURST, GLACIER_RUPTURE, drawLances } from './hazards.js?boss=5';
 export { coastReady };
 const SCENE={number:4,name:'BREAKWATER PREVIEW',floor:COAST_FLOOR,background:{sun:false,dust:false},events:[[Number.MAX_SAFE_INTEGER,'end']]};
 export class BossGame extends Game{
@@ -33,7 +34,7 @@ export class BossGame extends Game{
       }
       return e;
     }
-    const T=type==='breakwater'?BREAKWATER:type==='skipShell'?SKIP_SHELL:type==='hunterTorpedo'?HUNTER_TORPEDO:null;
+    const T=type==='breakwater'?BREAKWATER:type==='clusterShell'?CLUSTER_SHELL:type==='clusterBurst'?CLUSTER_BURST:type==='glacierRupture'?GLACIER_RUPTURE:type==='hunterTorpedo'?HUNTER_TORPEDO:null;
     if(!T){const e=super.spawnEnemy(type,x,y,opts);
       if(type==='carrier')this.audit.push({time:this.time,kind:'supply',drop:opts.drop});return e;}
     const e={type,T,x,y,hp:T.hp,maxHp:T.hp,t:0,flash:0,id:++this.nextId,...opts};
@@ -45,6 +46,6 @@ export class BossGame extends Game{
   }}
   startBossDeath(e){super.startBossDeath(e);clearThreats(this);beginBreakup(e,this);e.open=false;log(this,e,'death');}
   update(dt,input){super.update(dt,input);if(this.wreck?.dead){this.wreck.timer+=dt;updateBreakup(this.wreck,dt,this);}}
-  draw(c,snap){super.draw(c,snap);if(this.wreck?.dead){c.save();c.beginPath();c.rect(0,11,208,119);c.clip();drawBreakup(this.wreck,c,snap);c.restore();}}
+  draw(c,snap){super.draw(c,snap);drawLances(this,c,snap);if(this.wreck?.dead){c.save();c.beginPath();c.rect(0,11,208,119);c.clip();drawBreakup(this.wreck,c,snap);c.restore();}}
   drawHud(c){c.fillStyle=PAL.void;c.fillRect(0,0,208,10);super.drawHud(c);if(this.boss)drawText(c,'P'+this.boss.phase,145,2,PAL.amberLight);}
 }
