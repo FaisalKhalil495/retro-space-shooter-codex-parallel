@@ -2,19 +2,20 @@ import { Game } from '../../js/game.js?v=0.29.0';
 import { Terrain } from '../../js/terrain.js?v=0.29.0';
 import { PAL } from '../../js/config.js?v=0.29.0';
 import { drawText } from '../../js/font.js?v=0.29.0';
-import { CoastBackground, COAST_FLOOR, coastReady } from '../glacier-coast/coast.js?demo=2';
+import { BattlefieldBackground, battleReady } from './battlefield.js?battle=1';
 import { LOCAL_TYPES, spawnLocal } from '../glacier-combat/enemies.js?combat=3';
 import { BREAKWATER, clearThreats, log } from './boss.js?boss=6';
 import { beginBreakup, updateBreakup, drawBreakup } from './wreck.js?boss=6';
 import { HUNTER_TORPEDO } from './torpedo.js?boss=6';
 import { ESCORT } from './escorts.js?boss=6';
 import { CLUSTER_SHELL, CLUSTER_BURST, GLACIER_RUPTURE, drawLances } from './hazards.js?boss=6';
-export { coastReady };
+export { battleReady };
+const COAST_FLOOR=14;
 const SCENE={number:4,name:'BREAKWATER PREVIEW',floor:COAST_FLOOR,background:{sun:false,dust:false},events:[[Number.MAX_SAFE_INTEGER,'end']]};
 export class BossGame extends Game{
   get level(){return SCENE;}
   reset(){
-    super.reset();this.bg=this.coast||(this.coast=new CoastBackground());this.bg.t=0;
+    super.reset();this.bg=this.battlefield||(this.battlefield=new BattlefieldBackground());this.bg.t=0;
     this.terrain=new Terrain(COAST_FLOOR);this.terrain.draw=()=>{};
     this.banner=null;this.wreck=null;this.audit=[];this.nextId=0;this.started=false;this.escortShotAt=-10;
     this.runner={update:()=>{if(!this.started&&this.time>=2.5){this.started=true;this.spawnEnemy('breakwater',214,0);}}};

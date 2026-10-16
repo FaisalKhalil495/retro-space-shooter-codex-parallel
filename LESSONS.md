@@ -224,6 +224,17 @@ The approved plan is `docs/concepts/level-4-enemies/boss-reinforcements-plan.md`
 
 ## 3. Look, sound and presentation
 
+- **The ice planet is being invaded:** the owner supplied a daylight glacier
+  image and explicitly requested a vast battle in the distance, with local
+  defenders fighting, burning, breaking up and trailing smoke. The player's
+  battle stays up front. For Breakwater 6.1, preserve that recognizable world
+  using a clean landscape plate plus independent animated fleets/effects.
+  Dark angular ships are invaders, pale fighters are local defenders. Distant
+  ships and gun batteries are scenery, not extra gameplay targets or hazards.
+  Freeze the whole environment on pause; never let its drawing consume the
+  combat dice, paint new canvases mid-fight, cover threats or play extra audio.
+  The requested image supersedes the earlier boss-backdrop appearance, only
+  in the standalone boss preview; accepted scenery/combat demos remain intact.
 - Modern retro **pixel art**, muted warm palette (deep blues, ambers, dusty
   reds). **No neon, no glow.** Original art and sound only (no Nokia assets).
 - **Boss destruction must tear machines apart:** recognizable spinning hull,
@@ -747,6 +758,18 @@ fewer rounds are needed.
   A 24-second video uses actual touches and normal health through selected
   phase-3 rear arrivals, torpedoes and broadside. Phone review decides human
   difficulty; helper deaths and cloud drawing samples do not establish it.
+- Breakwater revision 6.1: an animated battle needs independent moving layers,
+  not duplicated stationary ships left inside a flat image. Edit a clean plate
+  from the owner's supplied landscape and cache original separate ships,
+  smoke, flames, explosions and debris before play. Keep the background fight
+  far away using smaller hazed shapes and short faint tracers, clipped to the
+  sky/horizon and drawn before every foreground threat. Use game time rather
+  than an independently playing GIF so pause/restart work. Thirty-two checks
+  verify animation lifecycle, visible casualty stages, original opaque hero
+  pixels, no live canvas painting/readbacks or RNG calls, and identical full
+  three-phase gameplay with scenery active/inert at both phone layouts. The
+  owner still reviews actual phone readability and performance. Earlier demos
+  retain their approved world; no campaign registration or extra audio.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

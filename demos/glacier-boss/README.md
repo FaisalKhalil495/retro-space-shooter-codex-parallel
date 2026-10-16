@@ -1,9 +1,28 @@
-# Breakwater — separate boss preview, revision 6
+# Breakwater — separate boss preview, revision 6.1
+
+The owner supplied a new icy-world image and requested a distant animated
+invasion behind the playable fight. Revision 6.1 replaces this preview's
+background only: dark angular invader warships exchange fire with pale local
+defenders above the glacier. Local ships take visible hits, burn, descend,
+drop fragments and explode near the cliff; smoke rises and disperses. A
+damaged invader trails smoke too, and the pictured ground batteries fire back.
+Frozen-lake reflections and a slow camera drift add movement below the battle.
+See [asset provenance](assets/README.md) for the supplied reference and clean
+landscape plate. Original coast/combat demos keep their accepted world.
+
+Look for **BREAKWATER 6.1**. Distant combat is decorative and clipped to the
+sky/horizon, with smaller, softer ships and short faint streaks rather than
+foreground-style bullets or warning beams. It cannot damage the hero, be shot
+down, add points, create pickups or change attacks. Everything draws behind
+native gameplay. Animation uses the fixed-step clock, freezes on pause, resets
+on restart, and uses prepainted sprites without extra audio or save writes.
+All revision-6 combat rules, original hero/flame/bullets, compact enemies,
+controls, defenses, floor y=130 and exact ten-part destruction are unchanged.
 
 The owner approved much stronger torpedo pursuit, more broadsides and larger
 fighter groups arriving from behind the boss after a visible retreat. See the
 [approved plan](../../docs/concepts/level-4-enemies/boss-reinforcements-plan.md).
-Look for **BREAKWATER 6**. The campaign stays v0.29.0 with three levels.
+These revision-6 mechanics remain in 6.1. The campaign stays v0.29.0 with three levels.
 Revision 5.1's camera and ship-visibility fixes remain in place: Ice Lances and
 retained wreckage follow screen shake beneath the original hero and bullets.
 
@@ -147,7 +166,7 @@ Standalone rush remains a warned low pass at 124 pixels/s, with a separate
 contact costs three blocks during either pass. Fly above the hull.
 
 The 58×24 icebreaker and eighteen cached hull/launcher poses remain unchanged.
-The same masks, original hero/flame/bullets, coast and compact enemies remain.
+The same masks, original hero/flame/bullets and compact enemies remain.
 `wreck.js` retains the exact ten-part physics: staged release 0.40–2.80 s,
 reactor rupture at 2.80 s, falling/spinning pieces and two snow impacts, one
 score award at 6.40 s and harmless wreckage through victory. No blood or new
@@ -155,12 +174,29 @@ recorded music. Existing synthesized effects and option settings are reused.
 
 ## Validation and delivery
 
-All **444 boss and 220 existing checks pass (664 total)**: 101 combat,
+Revision 6.1 adds **32 battlefield checks** on both phone layouts: animation
+changes with time but repeated draws remain identical, the HUD stays clear,
+canvas state restores, and live drawing creates no canvases/readbacks or RNG
+calls. Tests follow visible hit/burn/fall/impact events and compare complete
+three-phase wins with active versus inert scenery: gameplay snapshots match.
+Opaque hero pixels remain unchanged over the world; pause/resume/restart,
+asset loading and zero extra audio/save/network activity also pass. The
+previous 664 checks remain the combat and earlier-content preservation suite.
+All **696 checks pass**, and earlier-game drawing-call counts are unchanged.
+Same-browser samples compare 120 cached scenery frames against the previous
+coast; timings are recorded in each phone's test metrics, not phone FPS claims.
+The 6.1 portable file also finishes full fights and selected four-fighter rear
+waves at both phone sizes without external resource requests, errors or save
+writes. The 20-second video shows the background behind selected phase-3
+attacks using native touch inputs and normal health; the pilot loses a life
+during broadside. It is a visual review, not an earned full fight or a no-hit run.
+
+Revision 6's **444 boss and 220 existing checks (664 total)** cover 101 combat,
 49 smoke, 35 seeded-level (seed 28) and 35 scenery checks. Twenty-nine complete
 no-hit scenarios cover eight patterns: seven attacks with all four fighters,
 extra broadside positions and first/replacement rear waves. Each includes two
 seconds of follow-up escort fire.
-The portable HTML completes full wins at 915×412 and 874×412 with embedded
+The portable HTML completes full wins at 915×412 and 874×402 with embedded
 artwork, zero external requests and no browser errors or save writes. Separately
 select a native phase-3 rear wave and verify all four fighters in the same copy:
 the fast laser fixture can win before that wave is chosen. The five earlier-game
@@ -194,13 +230,14 @@ physical-phone FPS. The owner's phone review decides.
 source /workspace/.cloud-onboarding/retro-space-shooter/environment.sh
 node tools/boss-demo-test.mjs /tmp/ember-boss-v6-checks
 node tools/boss-reinforcements-test.mjs /tmp/ember-boss-v6-reinforcements
+node tools/battlefield-test.mjs /tmp/ember-invasion-checks
 node tools/boss-benchmark.mjs /tmp/ember-boss-v6-benchmark
 node tools/combat-demo-test.mjs /tmp/ember-combat-checks
 node tools/smoke-test.mjs /tmp/ember-smoke
 SEED=28 node tools/level-test.mjs /tmp/ember-levels
 node tools/coast-demo-test.mjs /tmp/ember-coast
 node tools/speed-test.mjs
-node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v6.html
+node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v6.1.html
 ```
 
 Create smoke/level screenshot directories first and run suites sequentially.

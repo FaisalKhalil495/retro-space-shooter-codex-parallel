@@ -676,6 +676,28 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      phase-3 reinforcements, torpedoes and broadside; it is not an earned full
      fight. Earlier-game drawing-call counts stay unchanged.
      Look for BREAKWATER 6; await phone review before another stage.
+     **Boss preview revision 6.1 — requested animated invasion background:**
+     the owner supplied `1000086541.jpg` and asked to replace the background
+     with this icy world, animated as invaders battling the local army behind
+     the playable fight. Preserve the reference's daylight mountains, blue ice
+     cliff, frozen lake, spires and gun batteries. A generated clean plate
+     removes the baked flying ships so separately cached original pixel-art
+     fleets can move, trade distant fire, take hits, burn, descend, shed debris
+     and leave rising smoke. Dark angular ships are invaders; pale aircraft
+     defend the planet. This is explicitly authorized scenery work in the
+     standalone boss preview only, not campaign integration. All revision-6
+     mechanics, compact enemy art, 250 HP, exact breakup, original hero/flame/
+     bullets, native controls/defenses, audio and saving remain unchanged.
+     The distant fight is clipped to y=11–71 and drawn before gameplay; it
+     creates no gameplay objects, damage, scoring, audio or simulation dice
+     calls. Use cached art and fixed-step time, freezing on pause and resetting
+     on replay. The clean 3:2 plate retains its aspect ratio with cropping;
+     floor y=130 stays safe/solid. Accepted coast and combat demos still use
+     their previous approved landscape. Provenance is recorded beside the
+     two local image assets. Look for BREAKWATER 6.1; phone review remains next.
+     All 32 battlefield and previous 664 checks pass (696 total), including
+     identical full three-phase gameplay with active/inert scenery on both
+     phone layouts. Earlier-game drawing-call counts remain unchanged.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -913,8 +935,10 @@ flights are implemented at `demos/glacier-combat/`; the owner accepted revision 
 Breakwater's approved boss preview has been revised after the owner rejected
 its first design and difficulty; revision 5 adds heavy mortars, lance walls
 and tall ruptures. Approved revision 6 adds faster, tighter pursuit, more
-broadsides and three/four-fighter rear waves after a visible retreat, and now
-awaits phone review. The full level
+broadsides and three/four-fighter rear waves after a visible retreat. The
+owner then requested a supplied icy-world image with an animated distant
+invasion behind that unchanged fight; revision 6.1 implements this separate
+preview background and awaits phone review. The full level
 still requires a separately approved implementation stage.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**

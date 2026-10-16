@@ -178,6 +178,28 @@ without save writes, browser errors or external requests. The normal-health
 touch video shows selected phase-3 rear arrivals, torpedoes and broadside.
 Look for BREAKWATER 6; await the owner's phone review before another stage.
 
+The owner then supplied `1000086541.jpg`, requested that icy background,
+and explicitly asked to see an animated invasion: invaders fighting the
+local army, burning/falling local ships, explosions and smoke behind the
+playable foreground fight. This directly authorizes the separate preview's
+background revision **6.1**. `demos/glacier-boss/battlefield.js` uses a clean
+plate edited from the supplied image, with separate cached original pixel
+ships/effects. Preserve its recognizable daylight mountains, glacier cliff,
+frozen lake and defensive batteries. Dark triangular warships are invaders;
+pale fighters are local defenders. The background battle is scenery only,
+clipped to the distant sky/horizon, drawn before gameplay, with no collisions,
+game RNG, damage, rewards, audio or save writes. Use the fixed-step clock for
+pause/restart, and prepaint artwork before play. Keep all revision-6 attack
+values, player systems, exact breakup and floor y=130 unchanged. This replaces
+the boss preview background only; the accepted coast/combat demos and the
+three-level campaign stay unchanged. Look for **BREAKWATER 6.1** and await
+phone review after delivery; campaign integration and new music remain later
+stages. Asset reference/provenance: `demos/glacier-boss/assets/README.md`.
+Revision 6.1 passes 32 battlefield checks and all previous 664 checks (696
+total), including complete matching three-phase fights with active/inert
+scenery. Earlier-game drawing-call counts remain unchanged. Phone layouts
+do not establish real Android/Safari performance; await the owner's review.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already
