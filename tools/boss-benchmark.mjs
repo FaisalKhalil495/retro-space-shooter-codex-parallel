@@ -10,7 +10,7 @@ try{
  const p=await browser.newPage({viewport:{width:915,height:412}});await p.goto(base+'demos/glacier-boss/');await p.waitForFunction(()=>window.__boss?.artworkReady);await p.evaluate(()=>window.__boss.frozen=true);
  const metrics=await p.evaluate(async()=>{
   const {makePilot}=await import('/tools/boss-review-pilot.js');
-  const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=5.1');const {Game}=await import('/js/game.js?v=0.29.0');const {useDetail}=await import('/js/detail.js?v=0.29.0');
+  const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=6');const {Game}=await import('/js/game.js?v=0.29.0');const {useDetail}=await import('/js/detail.js?v=0.29.0');
   const fights=[];
   for(const specials of [false,true])for(const type of ['breakwater','warden']){
    const g=type==='breakwater'?new BossGame():new Game({level:3,startAt:'checkpoint'});g.rand=()=>.45;g.weapons.reset();g.health=1000000;g.player.invuln=0;
@@ -58,7 +58,7 @@ try{
   const median=v=>v.sort((a,b)=>a-b)[1];
   for(let i=0;i<4;i++)g.spawnEnemy('hunterTorpedo',65+i*25,40+i*15,{angle:-2.9,phase:3,byBoss:true});
   for(let y=14;y<120;y+=9)Object.assign(g.fireShot(120,y,Math.PI,144,'icicle',true),{iceLance:true,dmg:2});
-  for(const lane of [0,1])g.spawnEnemy('twinDart',lane?176:148,lane?52:80,{lane,persistentEscort:true,byBoss:true});
+  for(const [lane,pos] of [{x:148,y:80},{x:176,y:52},{x:146,y:26},{x:176,y:94}].entries())g.spawnEnemy('twinDart',pos.x,pos.y,{lane,persistentEscort:true,byBoss:true});
   g.spawnEnemy('glacierRupture',35,11,{byBoss:true}).t=.2;
   g.spawnEnemy('clusterShell',100,60,{sx:104,sy:63,tx:35,ty:60,phase:3,byBoss:true});
   const activeDraw=[sample(g),sample(g),sample(g)];

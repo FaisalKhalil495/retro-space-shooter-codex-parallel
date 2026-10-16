@@ -1,15 +1,16 @@
 import { VIEW_W, HUD_H, PAL } from '../../js/config.js?v=0.29.0';
 import { clamp, rectsOverlap } from '../../js/util.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
-import { picture, hullContact, WIDTH, HEIGHT, launcherPort } from './art.js?boss=5.1';
-import { updateBreakup, drawBreakup } from './wreck.js?boss=5.1';
-import { escorts } from './escorts.js?boss=5.1';
-import { drawMortarMark, mortarPoint } from './hazards.js?boss=5.1';
+import { picture, hullContact, WIDTH, HEIGHT, launcherPort } from './art.js?boss=6';
+import { updateBreakup, drawBreakup } from './wreck.js?boss=6';
+import { escorts, escortLimit, FORMATION } from './escorts.js?boss=6';
+import { drawMortarMark, mortarPoint } from './hazards.js?boss=6';
 import { target } from '../glacier-combat/art.js?combat=3';
 export const MOVES=[null,['broadside','torpedoes','flak','clusters'],
   ['ice','darts','broadside','torpedoes','flak','clusters'],
   ['rushFlak','pursuit','rush','torpedoes','broadside','ice','darts','flak','clusters']];
 export const REST=[0,.45,.30,.18];
+export const BROADSIDE_VOLLEYS=[0,6,7,8];
 const LEFT=[0,104,90,76],INTRO=[0,4,2,2];
 export const log=(g,e,kind,extra={})=>g.audit.push({time:g.time,id:e.id,kind,phase:e.phase,...extra});
 const muzzle=e=>({x:e.x+1,y:e.y+15});
@@ -34,22 +35,25 @@ function mortarMark(e,g,a){
 // Introduce each phase's new tools first; afterwards respond to position,
 // avoiding the last two attacks and keeping combined attacks three apart.
 export function chooseAttack(e,g){
-  const moves=MOVES[e.phase].filter(n=>n!=='darts'||escorts(g).length<2),recent=e.recent||[],intro=e.introIndex||0;
+  const moves=MOVES[e.phase].filter(n=>n!=='darts'||escorts(g).length<escortLimit(e.phase)),recent=e.recent||[],intro=e.introIndex||0;
   if(intro<INTRO[e.phase]){const name=MOVES[e.phase][intro];if(moves.includes(name))return name;e.introIndex=intro+1;return chooseAttack(e,g);}
   const options=moves.filter(n=>!recent.slice(-2).includes(n)&&
     (!['pursuit','rushFlak'].includes(n)||!recent.slice(-3).some(v=>['pursuit','rushFlak'].includes(v))));
   const p=g.playerCenter();
-  if(e.phase===3&&!recent.some(n=>n==='rushFlak'||n==='pursuit'))return p.y<62?'pursuit':'rushFlak';
+  // Neither positional preferences nor a random streak may starve broadside.
+  if(!recent.slice(-3).includes('broadside'))return 'broadside';
+  // Schedule the combination before it would compete with broadside's deadline.
+  if(e.phase===3&&!recent.slice(-3).some(n=>n==='rushFlak'||n==='pursuit')&&!recent.slice(-2).includes('broadside'))return p.y<62?'pursuit':'rushFlak';
   if(e.phase>=2&&p.y<62&&options.includes('darts'))return 'darts';
   if(e.phase>=2&&p.y>94&&options.includes('ice'))return 'ice';
-  const weighted=options.map(n=>({name:n,weight:1+(p.x<30&&['torpedoes','flak'].includes(n)?2:0)+
+  const weighted=options.map(n=>({name:n,weight:1+(n==='broadside'?2:0)+(p.x<30&&['torpedoes','flak'].includes(n)?2:0)+
     (p.x>e.x-35&&['rush','rushFlak'].includes(n)?2:0)}));
   let pick=g.rand()*weighted.reduce((s,v)=>s+v.weight,0);
   for(const v of weighted){pick-=v.weight;if(pick<=0)return v.name;}
   return weighted.at(-1)?.name||moves.find(n=>n!==recent.at(-1));
 }
 export function beginAttack(e,g,name){
-  if(name==='darts'&&escorts(g).length>=2)return false;
+  if(name==='darts'&&escorts(g).length>=escortLimit(e.phase))return false;
   if(!MOVES[e.phase].includes(name)||g.state!=='playing'||!g.bossMayAttack(e)||threats(g))return false;
   const p=g.playerCenter(),m=muzzle(e);
   const a=e.attack={name,t:0,stage:'warn',warn:name==='rushFlak'||name==='flak'?1.15:name==='rush'||name==='clusters'?1:[0,.95,.85,.75][e.phase]};
@@ -59,6 +63,8 @@ export function beginAttack(e,g,name){
   if(name==='flak'||name==='rushFlak'){a.gap=flakGap(e,g);a.wallX=e.x-4;a.gapSize=GAP_SIZE[e.phase];a.waves=0;a.waveCount=name==='rushFlak'?1:e.phase;}
   if(name==='clusters'){a.warn=[0,.95,.85,.75][e.phase];a.sent=0;a.count=e.phase+1;mortarMark(e,g,a);}
   if(name==='ice'){a.marks=iceMarks(e,g);a.strikes=0;a.strikeCount=e.phase;}
+  if(name==='broadside')a.volleyCount=BROADSIDE_VOLLEYS[e.phase];
+  if(name==='darts'){a.home=clamp(e.x,LEFT[e.phase],144);a.retreat=170;a.warn=.85;}
   if(rushing(a)){a.left=clamp(p.x-18,30,72);a.home=144;}
   const intro=e.introIndex||0;if(intro<INTRO[e.phase]&&MOVES[e.phase][intro]===name)e.introIndex=intro+1;
   e.recent=[...(e.recent||[]),name].slice(-4);
@@ -100,7 +106,7 @@ function fire(e,g,a){
   else if(a.name==='flak'||a.name==='rushFlak')flak(e,g,a);
   else if(a.name==='torpedoes'||a.name==='pursuit')launchTorpedo(e,g,a);
   else if(a.name==='clusters'){g.spawnEnemy('clusterShell',a.sx-4,a.sy-3,{sx:a.sx,sy:a.sy,tx:a.tx,ty:a.ty,phase:e.phase,byBoss:true});a.sent++;sfx.mortar();}
-  else if(a.name==='darts'){a.dartLanes=[0,1].filter(lane=>!escorts(g).some(d=>d.lane===lane));launchDart(e,g,a.dartLanes.shift());a.pendingDart=a.dartLanes.length>0;sfx.tick();}
+  else if(a.name==='darts'){a.stage='withdraw';a.t=0;log(g,e,'withdraw',{from:e.x,to:a.retreat});sfx.rumble();return;}
   else if(a.name==='ice')ice(e,g,a);
   a.stage=rushing(a)?'dash':'active';a.t=0;
 }
@@ -111,17 +117,29 @@ function aimAgain(e,g,a){
   log(g,e,'warn',{attack:a.name,duration:a.nextWarn,angle:a.angle,mx:a.mx,my:a.my});sfx.charge(a.nextWarn);
 }
 function launchDart(e,g,lane){
-  if(lane===undefined||escorts(g).length>=2||escorts(g).some(d=>d.lane===lane))return;
-  g.spawnEnemy('twinDart',e.x+39,e.y+12,{lane,byBoss:true,persistentEscort:true,launch:{sx:e.x+39,sy:e.y+12,tx:lane?176:148,ty:lane?52:80,t:0}});
+  if(lane===undefined||escorts(g).length>=escortLimit(e.phase)||escorts(g).some(d=>d.lane===lane))return;
+  const d=g.spawnEnemy('twinDart',216,FORMATION[lane].y,{lane,byBoss:true,persistentEscort:true,arriving:true});
+  log(g,e,'reinforcement',{fighter:d.id,lane,x:d.x,y:d.y,bossX:e.x});
 }
 function updateAttack(e,a,dt,g){
   a.t+=dt;
   const salvo=(a.name==='torpedoes'||a.name==='pursuit')&&a.stage==='active';
   e.open=a.stage==='recover'||a.stage==='warn'&&a.t>=a.warn-.4||
-    a.stage==='active'&&a.name==='broadside'&&a.volleys<5&&a.t>=a.nextWarn-.3||
+    a.stage==='active'&&a.name==='broadside'&&a.volleys<a.volleyCount&&a.t>=a.nextWarn-.3||
     salvo&&a.t<.38*(a.count-1)+.55||a.iceWarning&&!a.iceDone&&a.t>=a.iceWarnAt+.5;
   if(a.stage==='warn'){if(a.t>=a.warn)fire(e,g,a);}
-  else if(a.stage==='dash'){
+  else if(a.stage==='withdraw'){
+    if(move(e,a.retreat,60,dt)){
+      for(let lane=0;lane<escortLimit(e.phase);lane++)launchDart(e,g,lane);
+      a.stage='arrival';a.t=0;
+    }
+  }else if(a.stage==='arrival'){
+    if(a.t>.35&&!escorts(g).some(d=>d.arriving)){a.stage='regroup';a.t=0;log(g,e,'returnWarning',{duration:.75});sfx.rumble();}
+  }else if(a.stage==='regroup'){
+    if(a.t>=.75){a.stage='advance';a.t=0;log(g,e,'return');}
+  }else if(a.stage==='advance'){
+    if(move(e,a.home,[0,28,36,44][e.phase],dt)){a.stage='recover';a.t=0;}
+  }else if(a.stage==='dash'){
     e.open=false;if(move(e,a.left,a.name==='rushFlak'?140:124,dt)){a.stage='turn';a.t=0;log(g,e,'returnWarning',{duration:.75});sfx.rumble();}
   }else if(a.stage==='turn'){
     if(a.t>=.75){a.stage='return';a.t=0;log(g,e,'return');}
@@ -153,12 +171,11 @@ function updateAttack(e,a,dt,g){
     }
     if(a.name==='flak'&&a.waves<a.waveCount){if(!threats(g))repeatWarning(e,g,a);return;}
     if(a.name==='ice'&&a.strikes<a.strikeCount){if(!threats(g))repeatWarning(e,g,a);return;}
-    if(a.pendingDart&&a.t>=.45){launchDart(e,g,a.dartLanes.shift());a.pendingDart=false;}
-    if(a.name==='broadside'&&a.volleys<5){
-      if(a.t>=a.nextWarn){log(g,e,'fire',{attack:a.name,angle:a.angle,mx:a.mx,my:a.my});broadside(e,g,a);a.volleys++;a.t=0;if(a.volleys<5)aimAgain(e,g,a);}
+    if(a.name==='broadside'&&a.volleys<a.volleyCount){
+      if(a.t>=a.nextWarn){log(g,e,'fire',{attack:a.name,angle:a.angle,mx:a.mx,my:a.my});broadside(e,g,a);a.volleys++;a.t=0;if(a.volleys<a.volleyCount)aimAgain(e,g,a);}
       return;
     }
-    if(a.t>.3&&!a.pendingDart&&!threats(g)){a.stage='recover';a.t=0;log(g,e,'recovery');}
+    if(a.t>.3&&!threats(g)){a.stage='recover';a.t=0;log(g,e,'recovery');}
   }else if(a.stage==='recover'&&a.t>1.05){e.attack=null;e.open=false;e.idle=REST[e.phase];}
 }
 function drawGap(a,c,snap){
@@ -198,7 +215,7 @@ export const BREAKWATER={
         }
       }
     }
-    if(e.sprayT<=0&&(e.mode==='enter'||!e.attack||['dash','return'].includes(e.attack.stage))){
+    if(e.sprayT<=0&&(e.mode==='enter'||!e.attack||['dash','return','withdraw','advance'].includes(e.attack.stage))){
       e.sprayT=.1;g.burst(e.x+e.w-4,128,2,20,['#e8eee5','#a6c9d3']);
     }
   },
@@ -229,11 +246,11 @@ export const BREAKWATER={
       g.blasts.blast(e.x+16,e.y+12,1.2);sfx.crack();g.shake=4;log(g,e,'phase');
     }
   },
-  draw(e,c,snap){
+  draw(e,c,snap,g){
     if(e.mode==='dying'){drawBreakup(e,c,snap);return;}
     const a=e.attack;
     if(a){
-      const warning=a.stage==='warn'||a.name==='broadside'&&a.stage==='active'&&a.volleys<5;
+      const warning=a.stage==='warn'||a.name==='broadside'&&a.stage==='active'&&a.volleys<a.volleyCount;
       c.fillStyle=Math.floor(e.t*10)%2?'#d99b43':'#9b7953';
       if(warning){
         if(a.name==='broadside')for(let d=5;d<240;d+=5){const x=a.mx+Math.cos(a.angle)*d,y=a.my+Math.sin(a.angle)*d;if(x<1||x>207||y<11||y>129)break;c.fillRect(snap(x),snap(y),1,.5);}
@@ -250,9 +267,17 @@ export const BREAKWATER={
       }
       if((a.name==='ice'&&a.stage==='warn')||(a.iceWarning&&!a.iceDone))for(const x of a.marks){target(c,x,122,snap);for(let y=14;y<119;y+=5)c.fillRect(snap(x),y,.5,2);}
       if((a.name==='flak'||a.name==='rushFlak')&&a.stage!=='recover')drawGap(a,c,snap);
+      if(a.name==='darts'&&['warn','withdraw','arrival'].includes(a.stage))for(let lane=0;lane<escortLimit(e.phase);lane++){
+        if(escorts(g).some(d=>d.lane===lane&&!d.arriving))continue;
+        const y=FORMATION[lane].y+4;c.fillStyle='#d99b43';c.fillRect(203,y-2,2,4);c.fillRect(201,y-1,2,2);
+      }
+      if(a.name==='darts'&&['warn','regroup'].includes(a.stage)){
+        const from=a.stage==='warn'?e.x:a.home,to=a.stage==='warn'?a.retreat:e.x;
+        for(let x=from;x<to;x+=5)c.fillRect(snap(x),128,2,.5);
+      }
     }
     const p=picture(e);c.drawImage(e.flash>0?p.flash:p,snap(e.x),snap(e.y));
     if(e.launchFlash>0){const port=launcherPort(e,e.launchTube||0,2);c.fillStyle='#f1d69a';c.fillRect(snap(port.x-1),snap(port.y-2),2,2);}
-    if(a&&(['warn','turn'].includes(a.stage)||a.name==='broadside'&&a.stage==='active'&&a.volleys<5)&&Math.floor(e.t*14)%2===0){c.fillStyle='#f1d69a';if(a.name==='clusters')c.fillRect(snap(e.x+55),snap(e.y+6),2,2);else{c.fillRect(snap(e.x+18),snap(e.y+10),1,1);c.fillRect(snap(e.x+41),snap(e.y+13),1,2);}}
+    if(a&&(['warn','turn','regroup'].includes(a.stage)||a.name==='broadside'&&a.stage==='active'&&a.volleys<a.volleyCount)&&Math.floor(e.t*14)%2===0){c.fillStyle='#f1d69a';if(a.name==='clusters')c.fillRect(snap(e.x+55),snap(e.y+6),2,2);else{c.fillRect(snap(e.x+18),snap(e.y+10),1,1);c.fillRect(snap(e.x+41),snap(e.y+13),1,2);}}
   }
 };

@@ -1,15 +1,11 @@
-# Breakwater — separate boss preview, revision 5.1
+# Breakwater — separate boss preview, revision 6
 
-The owner approved replacing the weak skipping shell and icicle attacks with
-Cluster Mortars, Ice Lances and Glacier Ruptures. See the approved
-[plan](../../docs/concepts/level-4-enemies/boss-heavy-weapons-plan.md).
-Look for **BREAKWATER 5.1**. The campaign remains v0.29.0 with three levels.
-
-Review fix 5.1 keeps the approved fight tuning. Ice Lances and retained boss
-wreckage now follow the world's screen shake and draw beneath the original
-hero, bullets and screen effects. Previously these two layers were painted
-after the completed frame, which could obscure the ship and misalign lances
-during a hit. Full-scene pixel checks reproduce both problems on revision 5.
+The owner approved much stronger torpedo pursuit, more broadsides and larger
+fighter groups arriving from behind the boss after a visible retreat. See the
+[approved plan](../../docs/concepts/level-4-enemies/boss-reinforcements-plan.md).
+Look for **BREAKWATER 6**. The campaign stays v0.29.0 with three levels.
+Revision 5.1's camera and ship-visibility fixes remain in place: Ice Lances and
+retained wreckage follow screen shake beneath the original hero and bullets.
 
 ## Phone review
 
@@ -26,14 +22,16 @@ during a hit. Full-scene pixel checks reproduce both problems on revision 5.
 5. Move sideways away from each marked ice crack. Ruptures reach the top of
    the flight area and cost three blocks. They collapse quickly; shooting
    cannot break them. Each later strike acquires a new position, then locks it.
-6. Roof torpedoes still track briefly, lead your movement, then commit straight.
-   Two hits destroy one. Twin Darts stay until killed, with two fighters maximum.
-   Surviving fighters retain damage across phases and respawns.
-7. Defeat the boss for the same ten spinning hull sections, chain reaction,
+6. Roof torpedoes now travel much faster, turn sharply and track longer before
+   committing straight. Two hits destroy one; use angled dodges and reversals.
+7. When Breakwater reverses, watch for a group arriving from the right edge
+   behind it. Three fighters can stay in phase 2, four in phase 3. They remain
+   until killed, keep their damage across phases/respawns and fill only vacancies.
+8. Defeat the boss for the same ten spinning hull sections, chain reaction,
    reactor blast and snow impacts. Pause, replay and loss handling remain.
 
 Review whether the new attacks require repeated maneuvers without becoming
-unavoidable with both fighters alive. Physical Android Chrome and Safari
+unavoidable with all four fighters alive. Physical Android Chrome and Safari
 performance still needs owner review; Chromium phone layouts do not establish it.
 
 ## Phase rules
@@ -41,21 +39,25 @@ performance still needs owner review; Chromium phone layouts do not establish it
 250 HP, 7,000 points, breaks at 66% and 33%, native quiet stage rewards, safe
 speech, alternating survival/weapon supplies. Patrol limits x=104/90/76 to 144;
 speeds 28/36/44 pixels/s. Low players draw the vessel forward from phase 2.
-Positions hold during warnings and attacks. Recovery stays 1.05 s for original
+Positions hold during stationary warnings and attacks; reinforcement calls use
+the warned retreat/return described below. Recovery stays 1.05 s for original
 curved rockets to reach the chamber; additional rests are 0.45/0.30/0.18 s.
 
 | Phase | Attack progression |
 | --- | --- |
-| 1 | Broadside, two torpedoes, one lance wall, two Cluster Mortars. |
-| 2 | Introduce two ruptures and persistent Twin Darts; three torpedoes, two lance walls and three mortars. |
-| 3 | Introduce rush with lances and torpedoes then two ruptures; four standalone torpedoes, three lance walls, four mortars and three standalone ruptures. |
+| 1 | Six-volley broadside, two torpedoes, one lance wall, two Cluster Mortars. |
+| 2 | Introduce two ruptures and a three-fighter rear wave; seven-volley broadside, three torpedoes, two lance walls and three mortars. |
+| 3 | Introduce rush with lances and torpedoes then two ruptures; eight-volley broadside, up to four fighters, four standalone torpedoes, three lance walls, four mortars and three standalone ruptures. |
 
 After introductions, selection excludes the last two attacks, reacts to high/low
 positions and gives combinations a three-attack cooldown. A combination recurs
 after at most four ordinary attacks. The two phase-3 introductions are an
 exception to that cooldown. Occupied fighter slots select another attack.
+After introductions, broadside has extra selection weight and is forced after
+three other attacks. Schedule a phase-3 combination early when necessary so
+neither its existing recurrence guarantee nor the broadside deadline is starved.
 
-## New weapons
+## Heavy weapons retained from revision 5
 
 - **Cluster Mortars:** 8×6, 3 HP, 10 points, ignored by homing rockets as hazards.
   The rear gun at x=boss.x+56, y=boss.y+8 marks a target and quadratic flight arc.
@@ -85,39 +87,60 @@ exception to that cooldown. Occupied fighter slots select another attack.
   eruption, including only one shield charge. Native hit protection, state
   and entry guards apply. These are temporary unshootable hazards, not solid
   terrain, and never leave persistent obstacles.
-- **Torpedoes then ruptures:** two missiles with the unchanged phase-3 guidance.
+- **Torpedoes then ruptures:** two missiles with the stronger phase-3 guidance.
   Wait for every surviving missile to commit before marking the first column.
   Each of two ruptures gets a separate 0.90 s warning. The second reacquires
   after the first collapses. Missiles cannot home into the newly warned route.
 
 Transient patterns clear before the next; persistent fighters and at most two
-escort rounds do not block boss selection. Limits: four torpedoes, two fighters,
+escort rounds do not block boss selection. Limits: four torpedoes, four fighters,
 one mortar, twelve cluster fragments, one rupture and twenty boss-pattern
 rounds plus two escort rounds. Different transient patterns only overlap inside
 explicit combinations. Phase dialogue/player deaths clear transient hazards
 and retain harmless fighters. Boss defeat and restart clear all fighters too.
 
-## Preserved attacks and art
+## Revised pursuit, broadsides and reinforcements
 
-**Broadside is unchanged:** five volleys of five rounds, with new aim then a
-locked warning for each. Initial warnings 0.95/0.85/0.75 s; subsequent warnings
-1.10/1.00/0.95 s. Speeds 98/107/116 pixels/s. Center costs two blocks, others one.
-The chamber opens 0.30 s before repeat volleys. Its original escape cases remain.
+**Broadside:** 6/7/8 volleys of five rounds, with a new aim and locked warning
+for each. Preserve initial warnings 0.95/0.85/0.75 s, subsequent warnings
+1.10/1.00/0.95 s, speeds 98/107/116 pixels/s, 0.22-radian spread and center/outer
+damage of two/one blocks. The chamber opens 0.30 s before repeat volleys.
 
-**Hunter Torpedoes are unchanged:** 7×4, 2 HP, 15 points, two-block contact;
+**Hunter Torpedoes:** unchanged 7×4, 2 HP, 15 points and two-block contact;
 2/3/4 standalone missiles, two in the linked pattern, 0.38 s apart after warnings
-of 1.00/0.85/0.70 s. Roof tubes rise before launch. Emerging missiles are
-shootable but cannot ram for 0.22 s. Guidance lasts another 1.2/1.4/1.6 s, with
-2.6/2.9/3.2 rad/s turn limits and 0.10/0.13/0.16 s motion lead. Hunt speeds
-74/80/86, committed speeds 112/120/128 pixels/s; lifetime at most 3.6 s.
+of 1.00/0.85/0.70 s. Keep the roof launcher. Shootable immediately, no contact
+for the first 0.12 s while clearing the roof. Then use these guidance values:
 
-**Twin Darts are unchanged:** 11×8, 2 HP, 30 points, two separated patrol lanes,
-missing-slot replacement and retained damage across phases/respawns. Their
-0.45 s locked warnings take turns during recovery, idle or deployment, at
-82 pixels/s, with at least 1.15 s rest per fighter and 1.10 s between shots.
-At most two escort rounds survive. Pending warnings cancel during dangerous
-boss patterns and restart fully. Dialogue/respawn hold fighters harmless;
-emerging fighters cannot ram or be shot until clear of the hull.
+| Phase | Tracking speed | Turn limit | Tracking duration | Prediction | Straight speed |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 120 px/s | 5.5 rad/s | 2.0 s | 0.14 s | 148 px/s |
+| 2 | 138 px/s | 6.3 rad/s | 2.3 s | 0.17 s | 166 px/s |
+| 3 | 156 px/s | 7.2 rad/s | 2.6 s | 0.20 s | 184 px/s |
+
+This raises tracking speed by 62/73/81% and more than doubles turning strength.
+Guidance remains finite; afterward the missile commits straight. Lifetime is
+at most 4.5 s; leaving the flight area or shooting one down ends it earlier.
+Rupture follow-up warnings still wait for every surviving missile to commit.
+
+**Rear reinforcements:** 11×8, 2 HP, 30 points, three slots in phase 2 and four
+in phase 3. Warn 0.85 s with right-edge arrival arrows and a ground movement
+mark. Reverse at 60 px/s to x=170, leaving 38 pixels of bow visible. Only then
+spawn missing lanes together at x=216, flying left at 72 px/s above the hull.
+Patrol centers are (148,80), (176,52), (146,26), (176,94); bob 6 px horizontally
+and 3 vertically. Arrival motion has no contact damage, becomes shootable once
+fully on-screen and pauses during safe dialogue/respawn. Settle before warning
+and firing. Never create more than the current phase cap, including arrivals.
+After the group settles, warn 0.75 s, then return to the starting patrol position
+at the phase's normal speed before opening the chamber for recovery.
+
+Surviving fighters keep their HP across phases and respawns. Every replacement
+uses the same retreat and rear approach and fills only missing lanes. No fighters
+launch from the ship. The 0.45 s locked firing warnings, 82 px/s rounds, 1.15 s
+individual rest, minimum 1.10 s between shots and two-round escort cap remain.
+Give the longest-waiting ready fighter its turn so all four get to fire. Cancel
+warnings through dangerous boss patterns and restart them fully afterward.
+
+## Preserved art and systems
 
 Standalone rush remains a warned low pass at 124 pixels/s, with a separate
 0.75 s return warning and 82 pixels/s return. Rush with lances uses 140/100;
@@ -132,22 +155,31 @@ recorded music. Existing synthesized effects and option settings are reused.
 
 ## Validation and delivery
 
-All **320 focused and 220 existing checks pass (540 total)**: 101 combat,
-49 smoke, 35 seeded-level (seed 28) and 35 scenery checks. Twenty-one complete
-no-hit scenarios cover seven attack patterns at three boss positions, with
-both persistent fighters alive and two seconds of follow-up escort fire.
+All **444 boss and 220 existing checks pass (664 total)**: 101 combat,
+49 smoke, 35 seeded-level (seed 28) and 35 scenery checks. Twenty-nine complete
+no-hit scenarios cover eight patterns: seven attacks with all four fighters,
+extra broadside positions and first/replacement rear waves. Each includes two
+seconds of follow-up escort fire.
 The portable HTML completes full wins at 915×412 and 874×412 with embedded
-artwork, zero external requests and no browser errors. The five earlier-game
+artwork, zero external requests and no browser errors or save writes. Separately
+select a native phase-3 rear wave and verify all four fighters in the same copy:
+the fast laser fixture can win before that wave is chosen. The five earlier-game
 speed scenarios retain their drawing-call counts.
 
 Focused checks cover real thumbs, safe areas, pause/replay, armor and all player
 specials, supplies, warning locks, phase escalation, bounded threats, native
-counters and complete no-hit routes with both persistent fighters alive. New
-checks cover 3-HP mortar counters, target locks, 2/3/4 counts, six-fragment
+counters and complete no-hit routes with all four persistent fighters alive.
+Heavy-weapon checks cover 3-HP mortar counters, target locks, 2/3/4 counts, six-fragment
 bursts and fatal-burst cancellation; 1/2/3 lance walls, speed/damage/changed
 gaps; 2/3 ruptures, retargeting, one-hit/shield rules, ceiling coverage, lifetime,
 phase cleanup and visible contact pixels. Existing hero/save/audio preservation,
 all launcher masks, exact destruction, loss races and earlier suites remain.
+The 124 reinforcement checks cover independent guidance/velocity values,
+actual gun counters, three/four-slot caps, six full retreat/arrival cases,
+separation, all four firing turns, replacement HP, cancellation at each maneuver
+stage, real pause/restart, frequency guarantees and phase-3 combination scheduling.
+Replacing only the missile module with the prior source makes the new speed
+check fail, proving it detects the old behavior.
 Full-scene checks also verify that lances and retained wreckage translate with
 the camera and cannot paint over opaque hero pixels.
 
@@ -160,14 +192,15 @@ physical-phone FPS. The owner's phone review decides.
 
 ```sh
 source /workspace/.cloud-onboarding/retro-space-shooter/environment.sh
-node tools/boss-demo-test.mjs /tmp/ember-boss-v5.1-checks
-node tools/boss-benchmark.mjs /tmp/ember-boss-v5.1-benchmark
+node tools/boss-demo-test.mjs /tmp/ember-boss-v6-checks
+node tools/boss-reinforcements-test.mjs /tmp/ember-boss-v6-reinforcements
+node tools/boss-benchmark.mjs /tmp/ember-boss-v6-benchmark
 node tools/combat-demo-test.mjs /tmp/ember-combat-checks
 node tools/smoke-test.mjs /tmp/ember-smoke
 SEED=28 node tools/level-test.mjs /tmp/ember-levels
 node tools/coast-demo-test.mjs /tmp/ember-coast
 node tools/speed-test.mjs
-node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v5.1.html
+node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v6.html
 ```
 
 Create smoke/level screenshot directories first and run suites sequentially.

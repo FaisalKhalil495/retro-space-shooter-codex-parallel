@@ -36,12 +36,13 @@ try{
   check(phone.name+': app interruption pauses',await page.evaluate(()=>window.__boss.mode==='paused'));
   await tap('#restart');check(phone.name+': restart clears the whole encounter',await page.evaluate(()=>{const g=window.__boss.game;return g.time===0&&g.bg.t===0&&!g.boss&&g.enemies.length===0&&g.enemyShots.length===0&&g.pickups.length===0&&g.health===5&&g.lives===3&&g.weapons.kind===null&&g.audit.length===0&&g.wreck===null;}));
   const result=await page.evaluate(async()=>{
-   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=5.1');
-   const {BREAKWATER,beginAttack,clearThreats,MOVES,chooseAttack,REST}=await import('/demos/glacier-boss/boss.js?boss=5.1');
-   const {HULLS}=await import('/demos/glacier-boss/art.js?boss=5.1');
-   const {HUNTER_TORPEDO,TORPEDO_ART}=await import('/demos/glacier-boss/torpedo.js?boss=5.1');
+   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=6');
+   const {BREAKWATER,beginAttack,clearThreats,MOVES,chooseAttack,REST}=await import('/demos/glacier-boss/boss.js?boss=6');
+   const {HULLS}=await import('/demos/glacier-boss/art.js?boss=6');
+   const {FORMATION}=await import('/demos/glacier-boss/escorts.js?boss=6');
+   const {HUNTER_TORPEDO,TORPEDO_ART}=await import('/demos/glacier-boss/torpedo.js?boss=6');
    const {useDetail}=await import('/js/detail.js?v=0.29.0');
-   const {BREAKUP_SECONDS}=await import('/demos/glacier-boss/wreck.js?boss=5.1');
+   const {BREAKUP_SECONDS}=await import('/demos/glacier-boss/wreck.js?boss=6');
    const {Game}=await import('/js/game.js?v=0.29.0');const {ENEMY_TYPES}=await import('/js/enemies.js?v=0.29.0');const {LEVELS}=await import('/js/levels.js?v=0.29.0');
    const make=()=>{const g=new BossGame();g.runner={update(){}};g.rand=()=>.45;Object.assign(g.player,{x:26,y:115,entering:0,invuln:100});const b=g.spawnEnemy('breakwater',214,0);Object.assign(b,{x:130,mode:'fight',idle:99});return {g,b};};
    const tick=(g,s,input={dx:0,dy:0,fire:false})=>{for(let i=0;i<Math.round(s*120);i++)g.update(1/120,input);};
@@ -65,7 +66,7 @@ try{
     for(let i=0;i<12*120;i++){
      g.update(1/120,{dx:0,dy:0,fire:false});maxDarts=Math.max(maxDarts,g.enemies.filter(e=>e.type==='twinDart').length);maxTorps=Math.max(maxTorps,g.enemies.filter(e=>e.type==='hunterTorpedo').length);maxShots=Math.max(maxShots,g.enemyShots.filter(s=>!s.escort).length);maxEscortShots=Math.max(maxEscortShots,g.enemyShots.filter(s=>s.escort).length);
      minY=Math.min(minY,b.y);minX=Math.min(minX,b.x);maxX=Math.max(maxX,b.x+b.w);
-     const darts=g.enemies.filter(e=>e.type==='twinDart');if(darts.length===2){const [a,c]=darts;overlap ||= a.x<c.x+c.w&&a.x+a.w>c.x&&a.y<c.y+c.h&&a.y+a.h>c.y;}
+     const darts=g.enemies.filter(e=>e.type==='twinDart');overlap ||= darts.some((a,i)=>darts.slice(i+1).some(c=>a.x<c.x+c.w&&a.x+a.w>c.x&&a.y<c.y+c.h&&a.y+a.h>c.y));
      if(!b.attack)break;
     }
     let lastWarning=null,allWarnings=true,volleyCount=0;
@@ -74,7 +75,7 @@ try{
       if(ev.kind==='fire'){volleyCount++;allWarnings&&=!!lastWarning&&ev.time-lastWarning.time>=lastWarning.duration-.01;}
     }
     const fire=g.audit.find(a=>a.id===b.id&&a.kind==='fire'),warn=g.audit.find(a=>a.id===b.id&&a.kind==='warn');
-    attacks.push({name,warned:!!fire&&fire.time-warn.time>=warn.duration-.01&&allWarnings&&volleyCount===(name==='broadside'?5:name==='pursuit'?3:name==='clusters'?4:name==='flak'||name==='ice'?3:1),locked:!!fire&&Math.abs(fire.angle-angle)<1e-8,maxDarts,maxTorps,maxShots,maxEscortShots,ground:Math.abs(b.y+b.h-130)<.01,onscreen:minX>=29.9&&maxX<=208,overlap,clean:!b.attack&&!g.enemies.some(e=>['clusterShell','clusterBurst','glacierRupture','hunterTorpedo'].includes(e.type))&&(name!=='darts'||g.enemies.filter(e=>e.persistentEscort&&!e.dead).length===2),marks,path});
+    attacks.push({name,warned:!!fire&&fire.time-warn.time>=warn.duration-.01&&allWarnings&&volleyCount===(name==='broadside'?8:name==='pursuit'?3:name==='clusters'?4:name==='flak'||name==='ice'?3:1),locked:!!fire&&Math.abs(fire.angle-angle)<1e-8,maxDarts,maxTorps,maxShots,maxEscortShots,ground:Math.abs(b.y+b.h-130)<.01,onscreen:minX>=29.9&&maxX<=(name==='darts'?228:208),overlap,clean:!b.attack&&!g.enemies.some(e=>['clusterShell','clusterBurst','glacierRupture','hunterTorpedo'].includes(e.type))&&(name!=='darts'||g.enemies.filter(e=>e.persistentEscort&&!e.dead).length===4),marks,path});
    }
    let iceMarksSeparate=true;
    for(const x of [30,64,104,130,144])for(const px of [2,26,100,170,188]){
@@ -115,30 +116,18 @@ try{
    // warning's angle while the player moves before the next shot.
    const tracking=make();tracking.b.phase=3;beginAttack(tracking.b,tracking.g,'broadside');
    let lastVolley=0;
-   for(let i=0;i<10*120&&tracking.b.attack;i++){
+   for(let i=0;i<16*120&&tracking.b.attack;i++){
      const a=tracking.b.attack;
      const count=a.volleys||0;
      if(count!==lastVolley){lastVolley=count;tracking.g.player.y=[25,65,115][count%3];}
      tracking.g.update(1/120,{dx:0,dy:0,fire:false});
    }
    const tw=tracking.g.audit.filter(a=>a.kind==='warn'),tf=tracking.g.audit.filter(a=>a.kind==='fire');
-   const retargeted=tf.length===5&&new Set(tf.map(a=>a.angle.toFixed(3))).size>=3;
+   const retargeted=tf.length===8&&new Set(tf.map(a=>a.angle.toFixed(3))).size>=3;
    const eachVolleyLocked=tf.every((f,i)=>Math.abs(f.angle-tw[i].angle)<1e-9&&f.time-tw[i].time>=tw[i].duration-.01);
    let volleyEscape=true;
-   // Concrete no-hit flights using ordinary movement, including the closest
-   // and furthest patrol positions. These cover complete five-volley attacks.
-   for(const [name,bx,left,right,top,bottom]of [
-    ['broadside',90,2,65,25,118],['broadside',110,26,85,12,108],
-    ['broadside',130,26,85,12,108],['broadside',144,26,85,12,108]]){
-    const {g,b}=make();b.x=bx;b.phase=3;g.player.invuln=0;beginAttack(b,g,name);
-    const route=[[right,bottom],[right,top],[left,top],[left,bottom]];let k=0;
-    for(let i=0;i<12*120&&b.attack;i++){
-     const [x,y]=route[k%4],p=g.player;
-     if(Math.abs(p.x-x)<2&&Math.abs(p.y-y)<2)k++;
-     g.update(1/120,{dx:Math.abs(p.x-x)>1?Math.sign(x-p.x):0,dy:Math.abs(p.y-y)>1?Math.sign(y-p.y):0,fire:false});
-    }
-    volleyEscape&&=g.health===5;
-   }
+   // Complete eight-volley escapes at five positions are checked below
+   // together with all four fighters and their follow-up shots.
    const removedBeam=make();const noBossLaser=MOVES.slice(1).every(m=>!m.includes('beam'))&&!beginAttack(removedBeam.b,removedBeam.g,'beam');
    const capResults=[];
    for(const phase of [1,2,3]){
@@ -147,17 +136,17 @@ try{
    }
    const salvoSizes=capResults.every(Boolean);
    const missile=make(),t=missile.g.spawnEnemy('hunterTorpedo',115,70,{angle:-2.8,phase:2,byBoss:true});
-   missile.g.player.y=65;const initialAngle=t.angle;tick(missile.g,.5);
-   const limitedHoming=t.mode==='hunt'&&Math.abs(t.angle-initialAngle)>0&&Math.abs(t.angle-initialAngle)<=2.9*(.5-.22)+.02;
-   tick(missile.g,1.15);const locked=t.mode==='locked',lockedAngle=t.angle;
+   Object.assign(missile.g.player,{x:90,y:65});const initialAngle=t.angle;tick(missile.g,.5);
+   const limitedHoming=t.mode==='hunt'&&Math.abs(t.angle-initialAngle)>0&&Math.abs(t.angle-initialAngle)<=6.3*(.5-.12+1/120)+.00001;
+   tick(missile.g,1.95);const locked=t.mode==='locked',lockedAngle=t.angle;
    missile.g.player.y=20;tick(missile.g,.15);const commitsStraight=locked&&t.angle===lockedAngle;
    const shoot=make(),st=shoot.g.spawnEnemy('hunterTorpedo',110,60,{angle:Math.PI,phase:1,byBoss:true});
    const earlyShot=st.T.shotTest(st,st.x+2,st.y+1,2,2)==='hit'&&!st.T.hitTest(st,st.x+2,st.y+1,2,2);
    shoot.g.strike(st,st.x+2,st.y+1,2,2,1);const twoHits=st.hp===1&&!st.dead;shoot.g.strike(st,st.x+2,st.y+1,2,2,1);tick(shoot.g,4);
    const shootable=twoHits&&st.dead&&!shoot.g.audit.some(a=>a.kind==='torpedoLock');
-   const expiry=make(),et=expiry.g.spawnEnemy('hunterTorpedo',110,65,{angle:Math.PI,phase:1,byBoss:true});et.t=3.59;tick(expiry.g,.025);
+   const expiry=make(),et=expiry.g.spawnEnemy('hunterTorpedo',110,65,{angle:Math.PI,phase:1,byBoss:true});et.t=4.49;tick(expiry.g,.025);
    const missileExpires=et.dead;
-   const priorities=make();priorities.b.phase=2;priorities.b.introIndex=2;priorities.g.player.y=20;
+   const priorities=make();priorities.b.phase=2;priorities.b.introIndex=2;priorities.b.recent=['broadside'];priorities.g.player.y=20;
    const huntsHigh=chooseAttack(priorities.b,priorities.g)==='darts';priorities.g.player.y=115;
    const flushesLow=chooseAttack(priorities.b,priorities.g)==='ice';priorities.b.recent=['ice'];
    const noImmediateRepeat=chooseAttack(priorities.b,priorities.g)!=='ice';
@@ -176,34 +165,42 @@ try{
    }
    const missileArt=TORPEDO_ART.width===7&&TORPEDO_ART.height===4&&TORPEDO_ART.hi.width===14&&TORPEDO_ART.hi.height===8;
    let newEscapes=true,iceAfterCommit=true;
-   // Ordinary no-fire movement with both persistent fighters alive, including
+   // Ordinary no-fire movement with all four persistent fighters alive, including
    // two seconds of their follow-up shots after the complete boss pattern.
    const routes=[
-    {"bx":76,"name":"torpedoes","right":90,"top":65,"bottom":95,"reverse":false,"offset":2},
-    {"bx":76,"name":"broadside","right":45,"top":45,"bottom":115,"reverse":false,"offset":0},
-    {"bx":110,"name":"torpedoes","right":65,"top":12,"bottom":115,"reverse":false,"offset":0},
-    {"bx":110,"name":"broadside","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
-    {"bx":144,"name":"torpedoes","right":45,"top":12,"bottom":95,"reverse":true,"offset":1},
-    {"bx":144,"name":"broadside","right":45,"top":12,"bottom":95,"reverse":true,"offset":0},
+    {"bx":76,"name":"torpedoes","strategy":"reactive","right":45,"top":45,"bottom":95,"reverse":false,"offset":2},
+    {"bx":76,"name":"broadside","strategy":"reactive","right":65,"top":45,"bottom":95,"reverse":true,"offset":2},
     {"bx":76,"name":"clusters","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":76,"name":"flak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":76,"name":"ice","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
-    {"bx":76,"name":"pursuit","strategy":"reactive","right":65,"top":25,"bottom":95,"reverse":false,"offset":3},
+    {"bx":76,"name":"pursuit","strategy":"reactive","right":45,"top":25,"bottom":95,"reverse":true,"offset":0},
     {"bx":76,"name":"rushFlak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":110,"name":"torpedoes","strategy":"reactive","right":45,"top":25,"bottom":95,"reverse":true,"offset":2},
+    {"bx":110,"name":"broadside","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":true,"offset":0},
     {"bx":110,"name":"clusters","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":110,"name":"flak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":110,"name":"ice","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
-    {"bx":110,"name":"pursuit","strategy":"reactive","right":45,"top":25,"bottom":115,"reverse":false,"offset":0},
+    {"bx":110,"name":"pursuit","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":true,"offset":0},
     {"bx":110,"name":"rushFlak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":144,"name":"torpedoes","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
+    {"bx":144,"name":"broadside","strategy":"reactive","right":90,"top":45,"bottom":115,"reverse":true,"offset":1},
     {"bx":144,"name":"clusters","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":144,"name":"flak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":144,"name":"ice","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
-    {"bx":144,"name":"pursuit","strategy":"reactive","right":45,"top":12,"bottom":115,"reverse":false,"offset":3},
-    {"bx":144,"name":"rushFlak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0}
+    {"bx":144,"name":"pursuit","strategy":"reactive","right":45,"top":12,"bottom":115,"reverse":true,"offset":3},
+    {"bx":144,"name":"rushFlak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":90,"name":"broadside","strategy":"reactive","right":45,"top":12,"bottom":115,"reverse":false,"offset":3},
+    {"bx":130,"name":"broadside","strategy":"reactive","right":65,"top":12,"bottom":115,"reverse":false,"offset":0},
+    {"bx":76,"name":"darts","initialFighters":0,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":76,"name":"darts","initialFighters":2,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":3},
+    {"bx":110,"name":"darts","initialFighters":0,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":110,"name":"darts","initialFighters":2,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":3},
+    {"bx":144,"name":"darts","initialFighters":0,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":144,"name":"darts","initialFighters":2,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":3}
    ];
    for(const r of routes){
     const {g,b}=make();b.x=r.bx;b.phase=3;g.player.invuln=0;
-    for(const lane of [0,1])g.spawnEnemy('twinDart',lane?176:148,lane?52:80,{lane,byBoss:true,persistentEscort:true});
+    for(const [lane,pos] of FORMATION.slice(0,r.initialFighters??4).entries())g.spawnEnemy('twinDart',pos.x,pos.y,{lane,byBoss:true,persistentEscort:true});
     beginAttack(b,g,r.name);let k=r.offset,ended=null;
     const route=r.reverse?[[2,r.top],[r.right,r.top],[r.right,r.bottom],[2,r.bottom]]:[[r.right,r.bottom],[r.right,r.top],[2,r.top],[2,r.bottom]];
     for(let i=0;i<15*120;i++){
@@ -219,7 +216,8 @@ try{
      if(!b.attack){if(ended===null)ended=g.time;b.idle=99;}
      if(ended!==null&&g.time>ended+2)break;
     }
-    newEscapes&&=g.health===5&&g.lives===3&&!b.attack&&g.enemies.filter(e=>e.persistentEscort&&!e.dead).length===2&&g.audit.some(a=>a.type==='twinDart'&&a.kind==='fire');
+    const escaped=g.health===5&&g.lives===3&&!b.attack&&g.enemies.filter(e=>e.persistentEscort&&!e.dead).length===4&&g.audit.some(a=>a.type==='twinDart'&&a.kind==='fire');
+    newEscapes&&=escaped;if(r.name==='broadside')volleyEscape&&=escaped;
    }
    const realGun=make(),rg=realGun.g.spawnEnemy('hunterTorpedo',110,119,{angle:Math.PI,phase:1,byBoss:true});tick(realGun.g,1,{dx:0,dy:0,fire:true});
    const normalGunCountersMissile=rg.dead&&realGun.g.score>=15;
@@ -243,17 +241,17 @@ try{
     for(let y=-1.4;y<=1.4;y+=.2)for(let x=-1.4;x<=1.4;x+=.2)if(x*x+y*y<1.96)missileContactVisible&&=pixels[(Math.floor((8+y)*4)*64+Math.floor((8+x)*4))*4+3]>0;
    }
    // Revision 4: timing, predictive guidance, roof origins and cached masks.
-   const {LAUNCHER_HULLS,picture,launcherPort}=await import('/demos/glacier-boss/art.js?boss=5.1');
-   let longerTracking=true,tighterTurns=true,predictsMovement=true,roofOrigins=true,roofRaises=true,raisedMasks=true,raisedBreakup=true,broadsidePreserved=true;
+   const {LAUNCHER_HULLS,picture,launcherPort}=await import('/demos/glacier-boss/art.js?boss=6');
+   let longerTracking=true,tighterTurns=true,predictsMovement=true,roofOrigins=true,roofRaises=true,raisedMasks=true,raisedBreakup=true,broadsideExpanded=true;
    for(const phase of [1,2,3]){
     const {g,b}=make();b.phase=phase;
     Object.assign(g.player,{x:26,y:50});
-    const t=g.spawnEnemy('hunterTorpedo',200,55,{angle:Math.PI,phase,byBoss:true});
-    const hunt=[0,1.2,1.4,1.6][phase];tick(g,hunt+.20);longerTracking&&=t.mode==='hunt'&&!t.dead;
-    tick(g,.04);longerTracking&&=t.mode==='locked'&&!t.dead&&Math.abs(t.lockAt-hunt-.22)<.02;
+    g.player.x=90;const t=g.spawnEnemy('hunterTorpedo',150,55,{angle:Math.PI,phase,byBoss:true});
+    const hunt=[0,2,2.3,2.6][phase];tick(g,hunt+.10);longerTracking&&=t.mode==='hunt'&&!t.dead;
+    tick(g,.04);longerTracking&&=t.mode==='locked'&&!t.dead&&Math.abs(t.lockAt-hunt-.12)<.02;
     const turn=make(),u=turn.g.spawnEnemy('hunterTorpedo',100,80,{angle:-Math.PI/2,phase,byBoss:true});let maxTurn=0,turnBound=true;
-    for(let i=0;i<95&&!u.dead;i++){const angle=u.angle;tick(turn.g,1/120);const delta=Math.abs(Math.atan2(Math.sin(u.angle-angle),Math.cos(u.angle-angle)));maxTurn=Math.max(maxTurn,delta*120);turnBound&&=delta<=[0,2.6,2.9,3.2][phase]/120+.00001;}
-    tighterTurns&&=turnBound&&maxTurn>1.81;
+    for(let i=0;i<95&&!u.dead;i++){const angle=u.angle;tick(turn.g,1/120);const delta=Math.abs(Math.atan2(Math.sin(u.angle-angle),Math.cos(u.angle-angle)));maxTurn=Math.max(maxTurn,delta*120);turnBound&&=delta<=[0,5.5,6.3,7.2][phase]/120+.00001;}
+    tighterTurns&&=turnBound&&Math.abs(maxTurn-[0,5.5,6.3,7.2][phase])<.01;
     const lead=make(),v=lead.g.spawnEnemy('hunterTorpedo',170,60,{angle:Math.PI,phase,byBoss:true});lead.g.player.y=35;
     tick(lead.g,.5,{dx:1,dy:1,fire:false});const center=lead.g.playerCenter();
     predictsMovement&&=v.aimX>center.x+3&&v.aimY>center.y+3&&v.aimX-center.x<15&&v.aimY-center.y<15;
@@ -264,9 +262,9 @@ try{
     // Independent golden values for the approved broadside's actual shots.
     const broad=make();broad.b.phase=phase;const shots=[],fire=broad.g.fireShot.bind(broad.g);
     broad.g.fireShot=(...args)=>{const s=fire(...args);shots.push(s);return s;};
-    beginAttack(broad.b,broad.g,'broadside');for(let i=0;i<120*10&&broad.b.attack;i++)tick(broad.g,1/120);
+    beginAttack(broad.b,broad.g,'broadside');for(let i=0;i<120*16&&broad.b.attack;i++)tick(broad.g,1/120);
     const warns=broad.g.audit.filter(a=>a.kind==='warn');
-    broadsidePreserved&&=shots.length===25&&warns.length===5&&Math.abs(warns[0].duration-[0,.95,.85,.75][phase])<1e-8&&warns.slice(1).every(w=>w.duration===[0,1.1,1,.95][phase])&&shots.every((s,i)=>Math.abs(Math.hypot(s.vx,s.vy)-(89+phase*9))<1e-7&&(s.dmg||1)===(i%5===2?2:1));
+    broadsideExpanded&&=shots.length===(phase+5)*5&&warns.length===phase+5&&Math.abs(warns[0].duration-[0,.95,.85,.75][phase])<1e-8&&warns.slice(1).every(w=>w.duration===[0,1.1,1,.95][phase])&&shots.every((s,i)=>Math.abs(Math.hypot(s.vx,s.vy)-(89+phase*9))<1e-7&&(s.dmg||1)===(i%5===2?2:1));
    }
    for(let stage=0;stage<3;stage++)for(let phase=1;phase<=3;phase++)for(const open of [false,true]){
     const p=LAUNCHER_HULLS[stage][phase-1][open?'open':'closed'],e={x:0,y:0,phase,open,launcherLift:stage/2,mode:'fight'};
@@ -278,11 +276,11 @@ try{
     raisedBreakup&&=b.wreck.pieces.length===10&&restored.every((v,i)=>v===source[i]);
    }
    const formation=make(),fg=formation.g,fb=formation.b;fb.phase=2;
-   const fighters=[0,1].map(lane=>fg.spawnEnemy('twinDart',lane?176:148,lane?52:80,{lane,byBoss:true,persistentEscort:true}));
+   const fighters=FORMATION.slice(0,3).map((p,lane)=>fg.spawnEnemy('twinDart',p.x,p.y,{lane,byBoss:true,persistentEscort:true}));
    let separated=true,visible=true,shotCap=true;
    for(let i=0;i<60*120;i++){
-    fb.idle=99;tick(fg,1/120);const [a,b]=fighters;
-    separated&&=!(a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y);
+    fb.idle=99;tick(fg,1/120);
+    separated&&=fighters.every((a,i)=>fighters.slice(i+1).every(b=>!(a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y)));
     visible&&=fighters.every(d=>d.x>=2&&d.x+d.w<=206&&d.y>=11&&d.y+d.h<106);
     shotCap&&=fg.enemyShots.filter(s=>s.escort).length<=2;
    }
@@ -297,19 +295,19 @@ try{
    const quietAt=tg.time;tick(tg,1.5);const phaseQuiet=!tg.audit.some(a=>a.type==='twinDart'&&a.kind==='fire'&&a.time>quietAt)&&kept.every(d=>!d.T.hitTest(d,d.x,d.y,11,8));
    tick(tg,1);expose(tb);tg.damage(tb,84);const phaseThreeKeeps=tb.phase===3&&kept.every(d=>!d.dead&&tg.enemies.includes(d))&&kept[0].hp===1;
    tick(tg,2.4);clearThreats(tg,true);tb.mode='fight';tb.attack=null;tb.idle=99;tg.speech.reset();tg.damage(kept[1],2);tick(tg,.02);
-   const survivingId=kept[0].id;beginAttack(tb,tg,'darts');tick(tg,2.5);
+   const survivingId=kept[0].id;beginAttack(tb,tg,'darts');tick(tg,5.5);
    const replacements=tg.enemies.filter(e=>e.persistentEscort&&!e.dead);
-   const missingOnly=replacements.length===2&&replacements.some(d=>d.id===survivingId&&d.hp===1)&&replacements.filter(d=>d.lane===0).length===1&&replacements.filter(d=>d.lane===1).length===1&&tg.score===3030;
+   const missingOnly=replacements.length===4&&replacements.some(d=>d.id===survivingId&&d.hp===1)&&replacements.filter(d=>d.lane===0).length===1&&replacements.filter(d=>d.lane===1).length===1&&tg.score===3030;
    tg.killPlayer(replacements[1]);const lossAt=tg.time;tick(tg,1.5);
    const respawnKeeps=replacements.every(d=>!d.dead&&tg.enemies.includes(d))&&tg.state==='playing'&&tg.player.entering>0&&!tg.audit.some(a=>a.type==='twinDart'&&a.kind==='fire'&&a.time>lossAt);
    const hpBefore=replacements.map(d=>d.hp);tick(tg,.3);const enteringQuiet=replacements.every((d,i)=>d.hp===hpBefore[i]&&d.passive);
    tg.startBossDeath(tb);tick(tg,.1);const deathClearsFighters=!tg.enemies.some(d=>d.persistentEscort)&&replacements.every(d=>d.dead);
-   const emergence=make();emergence.b.phase=2;beginAttack(emergence.b,emergence.g,'darts');tick(emergence.g,.9);
-   const emerging=emergence.g.enemies.find(e=>e.persistentEscort),hiddenLaunch=!!emerging?.launch&&!emerging.T.shotTest(emerging,emerging.x,emerging.y,11,8)&&!emerging.T.hitTest(emerging,emerging.x,emerging.y,11,8);
+   const emergence=make();emergence.b.phase=2;beginAttack(emergence.b,emergence.g,'darts');tick(emergence.g,1.55);
+   const emerging=emergence.g.enemies.find(e=>e.persistentEscort),hiddenLaunch=!!emerging?.arriving&&!emerging.T.shotTest(emerging,emerging.x,emerging.y,11,8)&&!emerging.T.hitTest(emerging,emerging.x,emerging.y,11,8);
    expose(emergence.b);emergence.g.damage(emergence.b,170);tick(emergence.g,1);
-   const pendingFighterSafe=emergence.g.enemies.filter(e=>e.persistentEscort).length===1&&emerging&&!emerging.dead&&!!emerging.launch;
+   const pendingFighterSafe=emergence.g.enemies.filter(e=>e.persistentEscort).length===3&&emerging&&!emerging.dead&&!!emerging.arriving;
    // Revision 5: new hazards use native defenses and bounded, locked patterns.
-   const {CLUSTER_ART,CLUSTER_SHELL,LANCE_ART,GLACIER_RUPTURE,CLUSTER_BURST,ruptureRect,drawLances}=await import('/demos/glacier-boss/hazards.js?boss=5.1');
+   const {CLUSTER_ART,CLUSTER_SHELL,LANCE_ART,GLACIER_RUPTURE,CLUSTER_BURST,ruptureRect,drawLances}=await import('/demos/glacier-boss/hazards.js?boss=6');
    let mortarCounts=true,mortarOrigins=true,mortarBounded=true,lanceCounts=true,lanceValues=true,lanceGapsChange=true,ruptureCounts=true,ruptureRetargets=true,committedTargets=true;
    for(const phase of [1,2,3]){
     const {g,b}=make();b.phase=phase;beginAttack(b,g,'clusters');let maxShells=0,maxFragments=0;
@@ -444,10 +442,10 @@ try{
     const i=(y*832+x)*4;if(heroFrame[i+3]===255){checked++;for(let k=0;k<4;k++)if(frame[i+k]!==heroFrame[i+k])return false;}
    }return checked>100;};
    const heroAboveLances=heroVisible(lanceFrame),heroAboveWreck=heroVisible(wreckFrame);
-   return {lancesFollowShake,wreckFollowsShake,heroAboveLances,heroAboveWreck,mortarFlashVisible,mortarTargetLocked,mortarCounts,mortarOrigins,mortarBounded,lanceCounts,lanceValues,lanceGapsChange,ruptureCounts,ruptureRetargets,committedTargets,threeHitCounter,bombCancelsCluster,coreDamage,coreRespectsProtection,lanceDamage,ruptureDamage,ruptureProtection,ruptureLifetime,oneShieldCharge,fatalRuptureSafe,fatalCoreNoFragments,phaseCancelsCluster,phaseCancelsRuptures,lanceContactVisible,ruptureContactVisible,blastContactVisible,hazardArt,longerTracking,tighterTurns,predictsMovement,roofOrigins,roofRaises,raisedMasks,raisedBreakup,broadsidePreserved,persistentFighters,warnedFighters,fullSlots,bossContinues,phaseTwoKeeps,phaseQuiet,phaseThreeKeeps,missingOnly,respawnKeeps,enteringQuiet,deathClearsFighters,hiddenLaunch,pendingFighterSafe,closed,frontPath,hullBlocks,ordinaryHits,...weapon,p2,p3,blockedStart,noTalkShots,iceMarksSeparate,shellSafe,lateShellSafe,retargetAfterCleanup,bossDartOwnership,killedClear,respawn,knockback:pushes.every(Boolean),nativeDamage,retargeted,eachVolleyLocked,volleyEscape,noBossLaser,salvoSizes,limitedHoming,commitsStraight,earlyShot,shootable,missileExpires,huntsHigh,flushesLow,noImmediateRepeat,escalation,cooldowns,combosRecur,restEscalates,missileArt,newEscapes,iceAfterCommit,normalGunCountersMissile,phaseClearsMissiles,noQueuedLaunchAfterPhase,deathClearsSalvo,missileKillSafe,missileContactVisible,exactBreakup,deathSafe,heldInitially,stagedBreakup,allLaunched,beforeFinish,oneAward,fallingParts,harmlessWreck,persistentWreck,resetWreck,noSafePockets,dodges,art,masks,isolated:LEVELS.length===3&&!ENEMY_TYPES.breakwater,attacks};
+   return {lancesFollowShake,wreckFollowsShake,heroAboveLances,heroAboveWreck,mortarFlashVisible,mortarTargetLocked,mortarCounts,mortarOrigins,mortarBounded,lanceCounts,lanceValues,lanceGapsChange,ruptureCounts,ruptureRetargets,committedTargets,threeHitCounter,bombCancelsCluster,coreDamage,coreRespectsProtection,lanceDamage,ruptureDamage,ruptureProtection,ruptureLifetime,oneShieldCharge,fatalRuptureSafe,fatalCoreNoFragments,phaseCancelsCluster,phaseCancelsRuptures,lanceContactVisible,ruptureContactVisible,blastContactVisible,hazardArt,longerTracking,tighterTurns,predictsMovement,roofOrigins,roofRaises,raisedMasks,raisedBreakup,broadsideExpanded,persistentFighters,warnedFighters,fullSlots,bossContinues,phaseTwoKeeps,phaseQuiet,phaseThreeKeeps,missingOnly,respawnKeeps,enteringQuiet,deathClearsFighters,hiddenLaunch,pendingFighterSafe,closed,frontPath,hullBlocks,ordinaryHits,...weapon,p2,p3,blockedStart,noTalkShots,iceMarksSeparate,shellSafe,lateShellSafe,retargetAfterCleanup,bossDartOwnership,killedClear,respawn,knockback:pushes.every(Boolean),nativeDamage,retargeted,eachVolleyLocked,volleyEscape,noBossLaser,salvoSizes,limitedHoming,commitsStraight,earlyShot,shootable,missileExpires,huntsHigh,flushesLow,noImmediateRepeat,escalation,cooldowns,combosRecur,restEscalates,missileArt,newEscapes,iceAfterCommit,normalGunCountersMissile,phaseClearsMissiles,noQueuedLaunchAfterPhase,deathClearsSalvo,missileKillSafe,missileContactVisible,exactBreakup,deathSafe,heldInitially,stagedBreakup,allLaunched,beforeFinish,oneAward,fallingParts,harmlessWreck,persistentWreck,resetWreck,noSafePockets,dodges,art,masks,isolated:LEVELS.length===3&&!ENEMY_TYPES.breakwater,attacks};
   });
   for(const [key,value]of Object.entries(result))if(key!=='attacks')check(phone.name+': '+key,value,result);
-  for(const a of result.attacks){check(phone.name+': '+a.name+' warned and locked',a.warned&&a.locked,a);check(phone.name+': '+a.name+' bounded, grounded and clears',a.maxDarts<=2&&a.maxTorps<=4&&a.maxShots<=20&&a.maxEscortShots<=2&&a.ground&&a.onscreen&&!a.overlap&&a.clean,a);}
+  for(const a of result.attacks){check(phone.name+': '+a.name+' warned and locked',a.warned&&a.locked,a);check(phone.name+': '+a.name+' bounded, grounded and clears',a.maxDarts<=4&&a.maxTorps<=4&&a.maxShots<=20&&a.maxEscortShots<=2&&a.ground&&a.onscreen&&!a.overlap&&a.clean,a);}
   // Real encounter starts empty: no test laser or supply bypass. Ordinary
   // simulation runs to victory with original weapons, phase rewards and pods.
   const run=await page.evaluate(()=>{
@@ -463,7 +461,7 @@ try{
   check(phone.name+': complete victory through original weapons and rewards',run.mode==='won'&&run.phases.join(',')==='1,2,3'&&run.score>=10000&&!run.boss,run);
   check(phone.name+': about 90–120 seconds with phase rewards',run.time>=85&&run.time<=125,run.time);
   check(phone.name+': new torpedo and phase-three tactics occur in complete fight',['torpedoes','ice','darts','rushFlak'].every(n=>run.audit.some(a=>a.attack===n&&a.kind==='fire')),run.audit.filter(a=>a.kind==='fire').map(a=>[a.phase,a.attack]));
-  check(phone.name+': full encounter keeps threats bounded and speech safe',run.maxDarts<=2&&run.maxTorps<=4&&run.maxShots<=20&&run.maxEscortShots<=2&&run.ground&&!run.pausedAttack,run);
+  check(phone.name+': full encounter keeps threats bounded and speech safe',run.maxDarts<=4&&run.maxTorps<=4&&run.maxShots<=20&&run.maxEscortShots<=2&&run.ground&&!run.pausedAttack,run);
   const supplies=run.audit.filter(a=>a.kind==='supply').map(a=>a.drop);check(phone.name+': actual survival and weapon supplies alternate',supplies.length>=3&&supplies.every((s,i)=>s===(i%2?'weapon':'smart')),supplies);
   const done=await page.evaluate(()=>window.__boss.game.time);await page.evaluate(()=>window.__boss.advance(4));check(phone.name+': victory freezes until replay',await page.evaluate(t=>window.__boss.game.time===t,done));
   await tap('#action');await page.evaluate(()=>{const h=window.__boss;h.game.player.invuln=100;h.advance(30);});

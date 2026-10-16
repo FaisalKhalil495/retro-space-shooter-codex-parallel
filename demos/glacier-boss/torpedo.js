@@ -22,7 +22,8 @@ const circle=(e,x,y,w,h)=>{
   const dx=Math.max(x-cx,0,cx-x-w),dy=Math.max(y-cy,0,cy-y-h);
   return dx*dx+dy*dy<2.25?'hit':null;
 };
-export const HUNT=[0,1.2,1.4,1.6],TURN=[0,2.6,2.9,3.2],LEAD=[0,.10,.13,.16];
+export const HUNT=[0,2,2.3,2.6],TURN=[0,5.5,6.3,7.2],LEAD=[0,.14,.17,.20];
+export const HUNT_SPEED=[0,120,138,156],LOCK_SPEED=[0,148,166,184],EJECT=.12,LIFETIME=4.5;
 export const HUNTER_TORPEDO={
  hp:2,score:15,noTarget:true,ram:2,gore:{metal:2},explodeSize:.3,
  init(e,g){e.w=7;e.h=4;e.mode='hunt';e.trail=0;e.phase=e.phase||1;e.hunt=e.hunt??HUNT[e.phase];e.lastPlayer=g.playerCenter();},
@@ -31,8 +32,8 @@ export const HUNTER_TORPEDO={
   const p=g.playerCenter(),last=e.lastPlayer||p;
   const vx=clamp((p.x-last.x)/dt,-PLAYER.speed,PLAYER.speed),vy=clamp((p.y-last.y)/dt,-PLAYER.speed,PLAYER.speed);
   e.lastPlayer=p;
-  if(e.mode==='hunt'&&e.t>.22){
-   if(e.t<e.hunt+.22){
+  if(e.mode==='hunt'&&e.t>EJECT){
+   if(e.t<e.hunt+EJECT){
     const tx=clamp(p.x+vx*LEAD[e.phase],8,200),ty=clamp(p.y+vy*LEAD[e.phase],16,123);
     const want=Math.atan2(ty-e.y-2,tx-e.x-3.5);
     e.aimX=tx;e.aimY=ty;
@@ -43,14 +44,14 @@ export const HUNTER_TORPEDO={
     g.audit.push({time:g.time,id:e.id,kind:'torpedoLock',phase:e.phase,angle:e.angle});sfx.tick();
    }
   }
-  const speed=e.mode==='hunt'?68+e.phase*6:104+e.phase*8;
+  const speed=e.mode==='hunt'?HUNT_SPEED[e.phase]:LOCK_SPEED[e.phase];
   e.vx=Math.cos(e.angle)*speed;e.vy=Math.sin(e.angle)*speed;
   e.x+=e.vx*dt;e.y+=e.vy*dt;
   if((e.trail-=dt)<=0){e.trail=.10;g.burst(e.x+3.5-Math.cos(e.angle)*4,e.y+2-Math.sin(e.angle)*4,1,5,['#9b7953','#d99b43']);}
-  if(e.t>=3.6||e.y+2>=128||e.y+2<11||e.x<-9||e.x>210){e.dead=true;g.blasts.blast(e.x+3.5,e.y+2,.18);}
+  if(e.t>=LIFETIME||e.y+2>=128||e.y+2<11||e.x<-9||e.x>210){e.dead=true;g.blasts.blast(e.x+3.5,e.y+2,.18);}
  },
- // Emerging missiles are shootable immediately, but don't ram for 0.22s.
- shotTest:circle,hitTest:(e,...r)=>e.t>=.22?circle(e,...r):null,
+ // The short upward ejection clears the roof before guidance/contact starts.
+ shotTest:circle,hitTest:(e,...r)=>e.t>=EJECT?circle(e,...r):null,
  draw(e,c,snap){
   c.save();c.translate(snap(e.x+3.5),snap(e.y+2));c.rotate(e.angle-Math.PI);
   c.drawImage(e.flash>0?TORPEDO_FLASH:TORPEDO_ART,-3.5,-2);

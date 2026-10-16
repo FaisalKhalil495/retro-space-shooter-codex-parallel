@@ -1,5 +1,5 @@
 // Local mechanical destruction. Cached hull fragments, no new hitboxes or blood.
-import { picture } from './art.js?boss=5.1';
+import { picture } from './art.js?boss=6';
 import { METAL } from '../../js/gore.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
 export const BREAKUP_SECONDS=6.4;

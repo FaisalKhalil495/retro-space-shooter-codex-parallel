@@ -647,6 +647,35 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      validation is 320 focused plus 220 existing checks (540 total), including
      camera translation and opaque hero-pixel checks. Look for BREAKWATER 5.1;
      full Level 4 and new music remain separate stages after phone review.
+     **Boss preview revision 6 — approved stronger pursuit and rear waves:**
+     the owner found missiles still too slow and forgiving, requested more
+     broadsides and asked for fighters arriving from behind a retreating boss.
+     Their explicit approval supersedes the old exact-speed/five-volley/two-
+     fighter rules. Torpedo tracking speeds are 120/138/156 pixels/s, turns
+     5.5/6.3/7.2 radians/s and motion lead 0.14/0.17/0.20 s. Clear the roof for
+     0.12 s, then guide for 2/2.3/2.6 s, followed by straight flight at
+     148/166/184 pixels/s; lifetime at most 4.5 s. Keep two-hit shootdown,
+     two-block contact, 7×4 size, 2/3/4 missiles and the roof launcher.
+     Broadside grows to 6/7/8 separately aimed volleys; preserve each volley's
+     speed, spread, damage and warnings. After introductions, no more than
+     three other attacks may separate broadsides. Schedule combinations early
+     enough to preserve their existing recurrence and cooldowns too.
+     Reinforcements warn, retreat right at 60 pixels/s to x=170 with the bow
+     visible, then enter together from x=216 above the hull into three phase-2
+     slots or four phase-3 slots. Return after a separate 0.75 s movement
+     warning. Keep compact 11×8 art, two HP, survivor damage, missing-slot
+     replacement and safe dialogue/respawn holds. Every fighter gets a firing
+     turn; keep warned staggered shots and the two-round escort cap. Native
+     weapons, 250 HP, coast, hull, exact breakup and all earlier content remain.
+     Approved plan: `docs/concepts/level-4-enemies/boss-reinforcements-plan.md`.
+     Current validation and phone review steps are in the boss README.
+     All 320 boss, 124 reinforcement and 220 existing checks pass (664 total),
+     including 29 complete no-hit scenarios. Portable full wins and explicit
+     four-fighter waves pass at both phone sizes without external requests,
+     save writes or browser errors. The short normal-health touch video selects
+     phase-3 reinforcements, torpedoes and broadside; it is not an earned full
+     fight. Earlier-game drawing-call counts stay unchanged.
+     Look for BREAKWATER 6; await phone review before another stage.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -882,8 +911,10 @@ review now covers seven regular types plus Breakwater. The owner likes the
 new designs and approved the revised two-flight combat-preview plan. Both
 flights are implemented at `demos/glacier-combat/`; the owner accepted revision 3.
 Breakwater's approved boss preview has been revised after the owner rejected
-its first design and difficulty; approved revision 5 adds heavy mortars,
-lance walls and tall ruptures, and awaits phone review. The full level
+its first design and difficulty; revision 5 adds heavy mortars, lance walls
+and tall ruptures. Approved revision 6 adds faster, tighter pursuit, more
+broadsides and three/four-fighter rear waves after a visible retreat, and now
+awaits phone review. The full level
 still requires a separately approved implementation stage.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**
@@ -912,12 +943,14 @@ it over. The owner tests on Android; ideally the friend checks iPhone each stage
 
 - `demos/glacier-boss/` — approved separate Breakwater fight, with local boss
   and shootable-shell definitions, cached double-detail hull/flash/mask art,
-  launch animations using accepted Twin Darts, opening-chamber collision rules,
+  rear reinforcement arrivals using accepted Twin Darts, opening-chamber rules,
   phase rewards, native supplies, safe speech, victory/loss and replay. No
   campaign or save registration. `wreck.js` handles the staged ten-part
   destruction; `torpedo.js` contains the local guided missiles and their cached
   art; `escorts.js` holds the boss-only persistent Twin Dart behavior. Focused
   tests cover guidance, all launcher poses, persistent fighters and breakup.
+  `tools/boss-reinforcements-test.mjs` checks the larger rear waves, native gun
+  counters, firing fairness, movement/selection bounds and interruption cleanup.
   `hazards.js` contains boss-only mortar, lance and rupture art/behavior;
   `tools/boss-benchmark.mjs` compares Warden timing/pressure and cached drawing;
   `tools/export-boss-demo.mjs <output.html>` makes a portable review copy.

@@ -39,6 +39,12 @@ the accepted broadside, torpedoes and fighters. See
 The owner then requested a review and improvements if necessary. Review fix
 5.1 corrects lance/wreck layering and camera alignment, preserving revision-5
 mechanics and difficulty. Full Level 4 and new music remain later stages.
+The owner then found torpedoes still slow and insufficiently aggressive,
+requested more broadsides and fighters arriving from behind a retreating boss,
+and explicitly approved revision 6. Increase actual speed and turn strength
+together, guide longer, use 6/7/8 broadsides and three/four fighter positions in
+phases 2/3. This supersedes the earlier exact broadside and two-fighter limits.
+The approved plan is `docs/concepts/level-4-enemies/boss-reinforcements-plan.md`.
 
 ---
 
@@ -112,11 +118,13 @@ mechanics and difficulty. Full Level 4 and new music remain later stages.
 - The owner found one-hit skipping shells and small icicles underwhelming.
   Approved replacements should require repeated maneuvers and give distinct
   threats: armored airburst shells, changing lance gaps and tall ground strikes.
-- The owner specifically likes Breakwater's broadside: fast and lethal. Keep
-  that attack unchanged while tuning torpedoes to demand angled maneuvers and
-  direction changes. A distinct roof launcher makes its weapon roles visible.
-- Boss-released Twin Darts should stay until killed; keep survivors and their
-  damage, with a two-fighter cap and no extra copies filling occupied lanes.
+- The owner likes Breakwater's fast, lethal broadside and now approved more
+  volleys and greater frequency. Preserve each volley's speed, damage, spread
+  and warning while growing to 6/7/8. Torpedoes must be visibly faster and demand
+  angled maneuvers, with sharper steering and longer guidance from the roof.
+- Twin Darts should stay until killed and retain damage. Revision 6 replaces
+  ship launches with rear arrivals after the boss retreats, with three/four
+  phase-2/3 slots. Fill only vacancies and keep the compact approved artwork.
 - Breakwater must introduce new attacks and tactics in each phase, alongside
   greater aggression. A speed increase alone does not establish a new phase.
 - The owner requested removing the boss laser; their own laser weapon remains.
@@ -261,6 +269,8 @@ mechanics and difficulty. Full Level 4 and new music remain later stages.
 |---|---|
 | Breakwater revision 1 had comparable stationary damage numbers but was effortless for the owner; its fixed repeated aim and long passive waits were easy to exploit | Stationary damage is not dodging difficulty. Test re-aiming, movement and pressure against evasive play, preserve explicit escape routes, and let phone feedback decide the final difficulty. Do not fix a passive fight by only increasing HP. |
 | Making repeat volleys faster and denser closed comfortable routes near the screen edge | Test the full volley sequence with normal movement at several boss positions. Give each new aim a readable locked warning; difficulty must not rely on an unavoidable projectile overlap. |
+| Adding more persistent fighters let array order give the first fighters every firing opportunity | Schedule the longest-waiting ready fighter and verify each member fires repeatedly, not only that the group produces bullets. |
+| Increasing speed alone would make homing missiles turn in wider circles | Increase speed and steering together; test actual prediction, guidance duration, shootdown counters and complete angled escape routes. |
 | v0.5.0 rework rejected as boring | Change one system at a time; let the owner feel each change before adding the next. Cheap reverts (each merge is a save point) made recovery easy — keep it that way. |
 | Boss supply pods almost never gave weapons | Priority chains starve later items when an earlier condition is almost always true (shield lasts 10 s, pods come every 20 s). Simulate real timings, not just the rule on paper. |
 | Tests missed the supply-pod bug | The test shortcut (`?start=boss`) handed the player a laser, hiding the bug. Test the real path the player takes, not only shortcuts. |
@@ -714,6 +724,29 @@ fewer rounds are needed.
   focused plus 220 existing checks (540). Preserve the ten-part breakup physics,
   original ship/bullets, earlier levels, audio, controls and saving. The owner
   reviews BREAKWATER 5.1 before another development stage.
+- Breakwater revision 6: the owner approved substantially faster and tighter
+  pursuit, more broadside volleys/frequency and external reinforcements after
+  a visible retreat. Raise both missile speed and steering, begin guidance
+  sooner and keep it finite; independent values and actual normal-gun counters
+  enforce the change. Replacing the missile module with revision 5.1 makes the
+  new speed check fail. Broadside's 6/7/8 volleys retain original individual
+  shots and warnings, while a scheduling deadline prevents long absences.
+  Schedule combinations before they would compete with that deadline.
+  The boss backs right, then three/four compact fighters enter from off-screen
+  above its hull. Fill only missing lanes and retain survivor damage. A test
+  found that the first fighters could monopolize firing slots; give the
+  longest-waiting ready fighter the next warned turn. Verify all four fire.
+  Rear waves have movement warnings, no entry contact damage, shootdown
+  counters and safe cancellation at retreat, arrival, regroup and return.
+  29 complete no-hit scenarios include all-four-fighter patterns and first/
+  replacement waves; 444 boss plus 220 existing checks pass (664 total).
+  Earlier levels and exact breakup remain preserved. Portable full wins and
+  explicit four-fighter waves pass on both layouts with no external requests,
+  browser errors or save writes. Check the full native path and a chosen wave
+  separately: a fast laser fixture can finish before the phase-3 wave is chosen.
+  A 24-second video uses actual touches and normal health through selected
+  phase-3 rear arrivals, torpedoes and broadside. Phone review decides human
+  difficulty; helper deaths and cloud drawing samples do not establish it.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

@@ -11,7 +11,7 @@ export function makePilot(){
    if(a.marks.length===1){tx=a.marks[0]<35?45:2;ty=p.y;}
    else tx=(a.marks[0]+a.marks[1])/2-9.5;
   }
-  if(a?.name==='broadside'&&(a.stage==='warn'||a.stage==='active'&&a.volleys<5)){
+  if(a?.name==='broadside'&&(a.stage==='warn'||a.stage==='active'&&a.volleys<(a.volleyCount||5))){
    for(let i=0;i<5;i++){
     const angle=a.angle+(i-2)*.22,dx=Math.cos(angle);
     if(Math.abs(dx)>.1){const t=(cx-a.mx)/dx;if(t>0){const y=a.my+Math.sin(angle)*t;const pad=i===2?7.5:6;bands.push([y-pad,y+pad]);}}

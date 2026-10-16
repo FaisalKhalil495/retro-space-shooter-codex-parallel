@@ -160,6 +160,24 @@ the fixes. Current validation: 320 focused plus 220 existing checks (540 total).
 The preview label and local module queries are 5.1; the campaign stays v0.29.0.
 Review fix 5.1 is complete; await phone feedback before a new stage.
 
+The owner explicitly approved **revision 6**, recorded in
+`docs/concepts/level-4-enemies/boss-reinforcements-plan.md`: materially faster,
+tighter torpedo pursuit lasting 2/2.3/2.6 seconds; 6/7/8 broadside volleys and
+no more than three other attacks between broadsides after introductions;
+visible retreat before fighters arrive from off-screen right behind the boss,
+with three phase-2 positions and four phase-3 positions. This supersedes the
+older exact torpedo-speed, five-volley and two-fighter limits. Retain survivors,
+their HP and compact art; fill only missing positions. Preserve phase tactics,
+native defenses, original content and exact destruction. Finish this approved
+work, tests, playable copy and labeled demonstration without asking again,
+then await phone review. Campaign integration and new music remain separate.
+Revision 6 is complete: 320 boss checks, 124 reinforcement checks and 220
+existing checks pass (664 total), including 29 complete no-hit scenarios.
+Portable full wins and explicit four-fighter waves pass at both phone sizes
+without save writes, browser errors or external requests. The normal-health
+touch video shows selected phase-3 rear arrivals, torpedoes and broadside.
+Look for BREAKWATER 6; await the owner's phone review before another stage.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already
