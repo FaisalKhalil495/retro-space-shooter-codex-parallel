@@ -200,6 +200,23 @@ total), including complete matching three-phase fights with active/inert
 scenery. Earlier-game drawing-call counts remain unchanged. Phone layouts
 do not establish real Android/Safari performance; await the owner's review.
 
+The owner rejected revision 6.1's aerial animation as ghostlike and requested
+less motion or buildings/bases with smoke. This directly authorizes revision
+**6.2**: replace the moving background fleets, tracers and sky blasts with
+three solid arctic base clusters planted on the glacier rim. Keep the chosen
+icy landscape; two damaged roofs emit restrained billowing smoke and small
+fires, with one brief roof flare every 18 seconds. The sky and world camera
+stay still. Bases are fully opaque scenery in a new plate edited from the
+previous landscape; smoke alone fades naturally. These directions supersede
+6.1's hazed aerial battle. Preserve all revision-6 fight mechanics, original
+hero/flame/bullets, audio/saving, the safe floor and exact destruction. Keep
+the coast/combat demos and three-level campaign unchanged. Look for
+**BREAKWATER 6.2**, then await the owner's phone review.
+Revision 6.2 passes 32 updated background checks plus the 664 preserved
+checks (696 total). Raster checks at six times, including a roof flare,
+allow movement only within the two roof regions above the scrolling floor.
+Full active/inert three-phase simulations match on both phone layouts.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already

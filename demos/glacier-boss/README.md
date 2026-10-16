@@ -1,28 +1,29 @@
-# Breakwater — separate boss preview, revision 6.1
+# Breakwater — separate boss preview, revision 6.2
 
-The owner supplied a new icy-world image and requested a distant animated
-invasion behind the playable fight. Revision 6.1 replaces this preview's
-background only: dark angular invader warships exchange fire with pale local
-defenders above the glacier. Local ships take visible hits, burn, descend,
-drop fragments and explode near the cliff; smoke rises and disperses. A
-damaged invader trails smoke too, and the pictured ground batteries fire back.
-Frozen-lake reflections and a slow camera drift add movement below the battle.
-See [asset provenance](assets/README.md) for the supplied reference and clean
-landscape plate. Original coast/combat demos keep their accepted world.
+The owner rejected revision 6.1's animated fleets as ghostlike and requested
+less motion or buildings/bases with smoke. Revision 6.2 replaces the aerial
+battle with three opaque base clusters seated on the glacier rim: a radar/
+communications bunker, damaged generator station and damaged double-door
+hangar with a control tower. The detailed icy mountains, cliff and frozen
+lake remain. No background aircraft, tracers or free-sky explosions remain.
+See [asset provenance](assets/README.md) for the edited landscape. Original
+coast/combat demos keep their accepted world.
 
-Look for **BREAKWATER 6.1**. Distant combat is decorative and clipped to the
-sky/horizon, with smaller, softer ships and short faint streaks rather than
-foreground-style bullets or warning beams. It cannot damage the hero, be shot
-down, add points, create pickups or change attacks. Everything draws behind
-native gameplay. Animation uses the fixed-step clock, freezes on pause, resets
-on restart, and uses prepainted sprites without extra audio or save writes.
+Look for **BREAKWATER 6.2**. Two damaged roofs have slow smoke plumes and small
+fires, plus one localized 0.4-second flare every 18 seconds. The world camera,
+sky and lake stay still; the native snow floor keeps scrolling. Buildings
+are fully opaque; only the smoke thins as it rises. The environment cannot
+damage the hero, be shot down, add points, create pickups or change attacks.
+Everything draws behind gameplay. Animation uses the fixed-step clock,
+freezes on pause, resets on restart, and uses prepainted shared sprites
+without extra audio or save writes.
 All revision-6 combat rules, original hero/flame/bullets, compact enemies,
 controls, defenses, floor y=130 and exact ten-part destruction are unchanged.
 
 The owner approved much stronger torpedo pursuit, more broadsides and larger
 fighter groups arriving from behind the boss after a visible retreat. See the
 [approved plan](../../docs/concepts/level-4-enemies/boss-reinforcements-plan.md).
-These revision-6 mechanics remain in 6.1. The campaign stays v0.29.0 with three levels.
+These revision-6 mechanics remain in 6.2. The campaign stays v0.29.0 with three levels.
 Revision 5.1's camera and ship-visibility fixes remain in place: Ice Lances and
 retained wreckage follow screen shake beneath the original hero and bullets.
 
@@ -174,22 +175,22 @@ recorded music. Existing synthesized effects and option settings are reused.
 
 ## Validation and delivery
 
-Revision 6.1 adds **32 battlefield checks** on both phone layouts: animation
+Revision 6.2 updates the **32 battlefield checks** on both phone layouts: animation
 changes with time but repeated draws remain identical, the HUD stays clear,
 canvas state restores, and live drawing creates no canvases/readbacks or RNG
-calls. Tests follow visible hit/burn/fall/impact events and compare complete
+calls. Raster checks restrict changes to two roof regions, enforce fixed
+smoke anchors and rare localized flares, and compare complete
 three-phase wins with active versus inert scenery: gameplay snapshots match.
 Opaque hero pixels remain unchanged over the world; pause/resume/restart,
 asset loading and zero extra audio/save/network activity also pass. The
 previous 664 checks remain the combat and earlier-content preservation suite.
-All **696 checks pass**, and earlier-game drawing-call counts are unchanged.
+All **696 checks pass**; the original game files remain unchanged.
 Same-browser samples compare 120 cached scenery frames against the previous
 coast; timings are recorded in each phone's test metrics, not phone FPS claims.
-The 6.1 portable file also finishes full fights and selected four-fighter rear
+The portable file also finishes full fights and selected four-fighter rear
 waves at both phone sizes without external resource requests, errors or save
-writes. The 20-second video shows the background behind selected phase-3
-attacks using native touch inputs and normal health; the pilot loses a life
-during broadside. It is a visual review, not an earned full fight or a no-hit run.
+writes. Review videos show the bases behind selected phase-3 attacks using
+native touch inputs and normal health, rather than an earned full fight.
 
 Revision 6's **444 boss and 220 existing checks (664 total)** cover 101 combat,
 49 smoke, 35 seeded-level (seed 28) and 35 scenery checks. Twenty-nine complete
@@ -200,7 +201,7 @@ The portable HTML completes full wins at 915×412 and 874×402 with embedded
 artwork, zero external requests and no browser errors or save writes. Separately
 select a native phase-3 rear wave and verify all four fighters in the same copy:
 the fast laser fixture can win before that wave is chosen. The five earlier-game
-speed scenarios retain their drawing-call counts.
+speed scenarios are sampled separately from the new background.
 
 Focused checks cover real thumbs, safe areas, pause/replay, armor and all player
 specials, supplies, warning locks, phase escalation, bounded threats, native
@@ -237,7 +238,7 @@ node tools/smoke-test.mjs /tmp/ember-smoke
 SEED=28 node tools/level-test.mjs /tmp/ember-levels
 node tools/coast-demo-test.mjs /tmp/ember-coast
 node tools/speed-test.mjs
-node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v6.1.html
+node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v6.2.html
 ```
 
 Create smoke/level screenshot directories first and run suites sequentially.

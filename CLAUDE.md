@@ -698,6 +698,23 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      All 32 battlefield and previous 664 checks pass (696 total), including
      identical full three-phase gameplay with active/inert scenery on both
      phone layouts. Earlier-game drawing-call counts remain unchanged.
+     **Boss preview revision 6.2 — quieter damaged bases:** the owner rejected
+     6.1's aerial fight as ghostlike and requested reduced animation or bases
+     with smoke. Replace that flying scenery with three opaque, detailed base
+     clusters seated on the glacier rim: communications bunker, damaged
+     generator station and damaged double-door hangar/control tower. A new
+     edited landscape preserves the daylight sky, mountains, cliff and frozen
+     lake. Two damaged roofs have cached smoke plumes and small fires; one
+     localized 0.4 s flare occurs every 18 s. Remove all background aircraft,
+     tracers, free-sky explosions, camera drift and lake shimmer. Keep the
+     native scrolling snow floor. This feedback authorizes the boss preview
+     correction only; all combat values, original sprites, controls, defenses,
+     exact breakup, audio/saving and earlier demos/campaign remain unchanged.
+     Use game time for pause/replay; prepaint and share immutable effect frames.
+     Look for BREAKWATER 6.2; await phone review after delivery.
+     All 32 updated background and 664 existing checks pass (696 total).
+     Raster changes stay within the two roof regions at six sample times;
+     full active/inert three-phase simulations match on both phone layouts.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.

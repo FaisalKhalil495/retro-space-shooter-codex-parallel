@@ -224,6 +224,14 @@ The approved plan is `docs/concepts/level-4-enemies/boss-reinforcements-plan.md`
 
 ## 3. Look, sound and presentation
 
+- **Breakwater 6.1's aerial animation was rejected as ghostlike.** The owner
+  prefers less motion or solid buildings/bases with smoke. Revision 6.2 uses
+  opaque base clusters anchored to the snowy cliff, two localized roof fires
+  and smoke plumes, and rare small roof flares. Remove the flying scenery and
+  roaming gunfire entirely. Keep the chosen detailed icy world and foreground
+  fight. Do not treat fading whole ships as sufficient depth: it made the
+  background feel unreal. Shade overlapping smoke as one plume rather than
+  separate highlighted circles, which look like a string of rings.
 - **The ice planet is being invaded:** the owner supplied a daylight glacier
   image and explicitly requested a vast battle in the distance, with local
   defenders fighting, burning, breaking up and trailing smoke. The player's

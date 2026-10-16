@@ -17,11 +17,11 @@ try{
   page.on('pageerror',e=>errors.push(String(e)));
   page.on('request',r=>{if(!r.url().startsWith(base)&&/^https?:/.test(r.url()))external.push(r.url());if(/\/music\/.*\.mp3/.test(r.url()))music.push(r.url());});
   await page.goto(base+'demos/glacier-boss/'+phone.q);await page.waitForFunction(()=>window.__boss?.artworkReady);await page.evaluate(()=>window.__boss.frozen=true);
-  check(phone.name+': invasion artwork loaded',await page.evaluate(()=>window.__boss.game.bg.loaded&&document.querySelector('.eyebrow').textContent.endsWith(' 6.1')));
+  check(phone.name+': base artwork loaded',await page.evaluate(()=>window.__boss.game.bg.loaded&&document.querySelector('.eyebrow').textContent.endsWith(' 6.2')));
   await page.locator('#action').tap();await page.evaluate(()=>window.__boss.advance(1));
   const result=await page.evaluate(async()=>{
-   const {battleState}=await import('/demos/glacier-boss/battlefield.js?battle=1');
-   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=6.1');
+   const {battleState}=await import('/demos/glacier-boss/battlefield.js?battle=2');
+   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=6.2');
    const {useDetail}=await import('/js/detail.js?v=0.29.0');
    const g=window.__boss.game,bg=g.bg;
    const canvas=document.createElement('canvas');canvas.width=832;canvas.height=576;
@@ -43,10 +43,24 @@ try{
     CanvasRenderingContext2D.prototype.getImageData=()=>{throw new Error('live readback');};
     for(let i=0;i<120;i++){bg.update(1/120);bg.draw(c,v=>Math.round(v*2)/2);}
    }catch{noLivePainting=false;}finally{Math.random=random;document.createElement=create;CanvasRenderingContext2D.prototype.getImageData=read;}
-   const s=battleState(0),hit=battleState(29.05).casualties[0],fall=battleState(1).casualties[0],impact=battleState(3.6).casualties[0];
-   const fleets=s.invaders.length===4&&s.defenders.length===4&&s.casualties.length===3;
-   const events=hit.blast&&hit.burning&&fall.burning&&fall.angle>0&&fall.y>hit.y&&impact.groundBlast&&!impact.visible;
-   const bounded=Array.from({length:360},(_,i)=>battleState(i*.5)).every(s=>s.invaders.every(v=>v.s<=1&&v.y>11&&v.y<60)&&s.defenders.every(v=>v.s<1&&v.y>11&&v.y<60)&&s.casualties.every(v=>v.y<=60));
+   const s=battleState(0);
+   // Changes are restricted to two small roof-smoke regions. Flying fleets,
+   // roaming tracers, sky flashes or a drifting world fail this raster check.
+   let stray=0,smokeChanges=0;
+   for(const time of [0,2,7,14.1,18.1,90]){
+    bg.t=time;const frame=pixels();
+    for(let y=44;y<520;y++)for(let x=0;x<832;x++){
+     const i=(y*832+x)*4;if(before[i]===frame[i]&&before[i+1]===frame[i+1]&&before[i+2]===frame[i+2])continue;
+     const gx=(x+.5)/4,gy=(y+.5)/4;
+     const roof=s.sources.some(a=>gx>=a.x-8-14*a.scale-.5&&gx<=a.x-8+14*a.scale+.5&&gy>=a.y-34*a.scale-.5&&gy<=a.y+2*a.scale+.5);
+     if(roof)smokeChanges++;else stray++;
+    }
+   }
+   const quietSky=stray===0&&smokeChanges>20;
+   const roofAnchors=s.sources.length===2&&s.sources.every(a=>a.x>=100&&a.x<=170&&a.y>=54&&a.y<=58&&a.scale<=.8)&&
+    [6,14,32,97].every(t=>JSON.stringify(battleState(t).sources)===JSON.stringify(s.sources));
+   let flareSamples=0;for(let i=0;i<1800;i++)if(battleState(i/100).flare)flareSamples++;
+   const rareFlare=!s.flare&&battleState(14.1).flare?.source===0&&!battleState(14.5).flare&&flareSamples>=39&&flareSamples<=41;
    const deterministic=JSON.stringify(battleState(37.25))===JSON.stringify(battleState(37.25));
    // Opaque hero / gun / engine pixels always win over the background.
    const originalHud=g.drawHud;
@@ -87,11 +101,11 @@ try{
    sample(old);sample(bg);const oldMs=[],newMs=[];
    for(let i=0;i<5;i++){oldMs.push(sample(old));newMs.push(sample(bg));}
    const median=v=>v.sort((a,b)=>a-b)[2];
-   return {stationary,animated,hudClear,stateRestored,noLivePainting,fleets,events,bounded,deterministic,
+   return {stationary,animated,hudClear,stateRestored,noLivePainting,quietSky,roofAnchors,rareFlare,deterministic,
     heroOnTop:opaque>50&&over===0,opaquePixels:opaque,sameFight,
     timings:{frames:120,previousMedianMs:median(oldMs),invasionMedianMs:median(newMs),note:'same-browser drawing samples; not physical phone FPS'}};
   });
-  for(const name of ['stationary','animated','hudClear','stateRestored','noLivePainting','fleets','events','bounded','deterministic','heroOnTop'])check(phone.name+': '+name,result[name],result);
+  for(const name of ['stationary','animated','hudClear','stateRestored','noLivePainting','quietSky','roofAnchors','rareFlare','deterministic','heroOnTop'])check(phone.name+': '+name,result[name],result);
   check(phone.name+': full three-phase fight identical with scenery active',result.sameFight.isolated&&result.sameFight.won&&result.sameFight.phases.join(',')==='1,2,3',result.sameFight);
   // Reset the UI's own game after the isolation fixtures before testing pause.
   await page.evaluate(()=>{const h=window.__boss;h.game.reset();h.advance(2);});

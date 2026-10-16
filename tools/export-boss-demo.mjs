@@ -31,7 +31,7 @@ const entry = resolve(root, 'demos/glacier-boss/main.js');
 await collect(entry);
 let html = await readFile(resolve(root, 'demos/glacier-boss/index.html'), 'utf8');
 const payload = JSON.stringify(sources).replace(/</g, '\\u003c');
-const art = await readFile(resolve(root, 'demos/glacier-boss/assets/invasion-world.png'));
+const art = await readFile(resolve(root, 'demos/glacier-boss/assets/glacier-bases.png'));
 const bootstrap = `<script>
 globalThis.__battleEmbeddedArt = 'data:image/png;base64,${art.toString('base64')}';
 const sources = ${payload};
@@ -53,7 +53,7 @@ html = html.replace('<a class="back" href="../../">Back to Ember Drift</a>', '')
 // The portable bootstrap supplies its own embedded artwork. Discard the
 // served page's relative image initializer, including for non-file viewers.
 html = html.replace(/\s*<script>globalThis\.__battleEmbeddedArt \|\|=.*?<\/script>/, '');
-html = html.replace('<script type="module" src="main.js?boss=6.1"></script>', bootstrap);
+html = html.replace('<script type="module" src="main.js?boss=6.2"></script>', bootstrap);
 await mkdir(dirname(resolve(output)), { recursive: true });
 await writeFile(output, html);
 console.log(`Exported ${Object.keys(sources).length} modules in one HTML file: ${resolve(output)}`);
