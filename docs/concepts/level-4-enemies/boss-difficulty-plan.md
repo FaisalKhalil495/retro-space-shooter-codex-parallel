@@ -2,7 +2,9 @@
 
 Status: proposed for owner review. The request is to make the current fight
 harder. This document does not record approval of these particular values;
-no runtime tuning changes are included.
+no runtime tuning changes are included. The owner subsequently requested
+unpredictable Ice Lance gaps; that amendment is included below. Approval of
+the complete difficulty pass is still pending.
 
 Scope: the separate Breakwater preview in
 `FaisalKhalil495/retro-space-shooter-codex-parallel` only. Never modify or
@@ -17,13 +19,32 @@ Each slash-separated group below means phase 1 / phase 2 / phase 3.
 | --- | --- | --- |
 | Broadside | 6 / 7 / 8 volleys; 98 / 107 / 116 pixels per second | 7 / 8 / 10 volleys; 106 / 118 / 130 pixels per second |
 | Hunter Torpedoes | Tracking speed 120 / 138 / 156; turning limit 5.5 / 6.3 / 7.2 radians per second | Tracking speed 132 / 152 / 172; turning limit 6.1 / 7.0 / 8.1 radians per second |
-| Ice Lance walls | Speed 120 / 132 / 144 pixels per second | Speed 132 / 148 / 164 pixels per second |
+| Ice Lance walls | Speed 120 / 132 / 144 pixels per second; gap chosen from player height with a predictable opposite-side shift | Speed 132 / 148 / 164 pixels per second; each wall chooses a fresh random reachable gap |
 | Persistent fighters | Shots at 82 pixels per second | Shots at 94 in phase 2 and 104 in phase 3 |
 
 The goal is a clear increase in maneuvering pressure, growing through the
 three phases. Broadsides fire for longer and travel faster; torpedoes turn
 faster as their speed rises; lance walls and fighter shots leave less time
 to react after their warnings. Keep all nine existing attack patterns.
+
+## Requested amendment: unpredictable Ice Lance gaps
+
+- Choose each wall's gap randomly from valid reachable heights when its
+  warning starts, including the first wall of a sequence. Remove the fixed
+  opposite-side rule and predictable high/low alternation.
+- Avoid repeating a recent gap where other reachable choices exist. Vary the
+  jump distance and direction; do not substitute a new fixed cycling pattern.
+- Keep the entire 1.15-second visible warning. Once marked, the gap stays
+  locked through firing and passage of that wall; no last-second relocation
+  or tracking the player after the warning starts.
+- Preserve the phase-dependent 28 / 26 / 24-pixel gap widths and normal player
+  speed. Limit the random choices to gaps reachable from the player's current
+  position with their actual hitbox and sufficient clearance. Fairness takes
+  priority over forcing a minimum change from the previous gap.
+- Apply random selection to rush-with-lances too, but only among reachable
+  overhead gaps that clear the moving hull. Keep the overhead route safe.
+- Use the seeded gameplay dice once when choosing a gap. Rendering must never
+  affect the selection, and pause/resume must preserve the warned position.
 
 ## Preserve
 
@@ -47,6 +68,11 @@ to react after their warnings. Keep all nine existing attack patterns.
 
 Run complete normal-movement no-hit routes for every affected attack and
 combination, with all four fighters alive and at several boss positions.
+For the gap amendment, sample many reproducible seeds and player heights,
+including ceiling/floor and close-to-hull cases. Check variation across and
+within sequences, reachable paths, full warnings, locked rendered gaps and
+the overhead route during the combined rush. A helper must react to the
+actual warning rather than assume the next gap from the previous wall.
 Check actual torpedo guidance and gun counters, locked warnings, projectile
 limits, native defenses and phase/death cleanup. If a proposed speed closes
 the existing escape routes, adjust that speed and report the final value;
