@@ -239,6 +239,21 @@ complete all phases and show the four-fighter wave without external requests,
 errors or save writes. A 14-second video uses a fresh start and native touches,
 with normal health/lives and no skipped entrance or fixture edits.
 
+The owner found revision 6.3's foreground platform too similar to the picture
+and directly requested rocks and ice. Revision **6.4** replaces only that
+scrolling strip with original cached double-detail art: a flat snow cap,
+snow-covered grey slate, fractured blue ice and small hanging ice teeth.
+Every detail stays in y=130–144, beneath the unchanged flat safe floor;
+there are no new obstacles or hazards. Preserve the finished battlefield
+and baked smoke pixel-for-pixel, all three original JPEGs, every combat
+value and original player system. The clean snowfield remains a reference,
+not a runtime dependency; portable review needs only the finished JPEG.
+Look for **BREAKWATER 6.4**, then await phone review. This is authorized
+visual feedback, not full Level 4 integration or new music.
+All 35 background checks and 664 combat/earlier-content checks pass (699 total),
+including intact picture pixels and identical three-phase fights at both phone
+layouts. Original campaign/coast/combat runtime files remain unchanged.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already

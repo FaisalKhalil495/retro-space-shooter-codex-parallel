@@ -738,6 +738,22 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      browser errors or save writes. The 14-second video starts the actual
      preview from the beginning with native touches and normal health/lives;
      no skipped entrance or selected-phase/HP/position fixture is used.
+     **Boss preview revision 6.4 — distinct rock/ice platform:** the owner
+     found the photographic snow strip too similar to the background and
+     requested rocks and ice. Replace only the scrolling floor picture with
+     original cached double-detail art: flat snow cap, grey slate outcrops,
+     blue fractured ice and small hanging ice teeth. Keep every detail in the
+     existing y=130–144 floor strip, with the same flat safe collision surface,
+     speed and gameplay. The completed battlefield and baked smoke stay intact;
+     all three supplied JPEGs remain byte-for-byte. The clean snowfield becomes
+     a reference rather than a runtime dependency; export embeds only the
+     finished battlefield JPEG. All revision-6 mechanics, exact breakup,
+     original hero/flame/bullets, controls, audio/saving and earlier content
+     remain unchanged. Look for BREAKWATER 6.4 and await phone review; campaign
+     integration and new music remain separate stages. All 35 background and
+     664 combat/earlier-content checks pass (699 total); supplied-art pixels,
+     pause/restart, floor scrolling and three-phase gameplay isolation pass
+     at both phone layouts.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.

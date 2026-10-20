@@ -1,20 +1,26 @@
-# Breakwater — separate boss preview, revision 6.3
+# Breakwater — separate boss preview, revision 6.4
 
 The owner supplied a finished icy battlefield, a clean snowfield and a
-matching green-screen wreck layer. Revision 6.3 uses the finished picture
+matching green-screen wreck layer. Since revision 6.3 the finished picture stays
 intact: ringed planet, mountains, defenses, wrecks, fires and detailed smoke.
-The clean snowfield supplies the scrolling foreground snow. The green-screen
-version is preserved as a reference, with no green backing rendered in play.
+Revision 6.4 replaces the matching snowfield strip with an original rocky ice
+shelf: a flat snow cap, grey slate outcrops, fractured blue ice, small hanging
+ice teeth and surface cracks. Both other uploads remain unchanged references;
+no green backing is rendered in play.
 See [asset provenance](assets/README.md) for the three original uploads.
 The accepted coast/combat demos and original campaign keep their own worlds.
 
-Look for **BREAKWATER 6.3**. The owner allowed smoke to stay still if realistic
+Look for **BREAKWATER 6.4**. The owner allowed smoke to stay still if realistic
 animation is difficult. It overlaps wrecks/cliff in these still pictures, so
 it remains exactly as pictured. No procedural plumes, roof flares, added
 flying scenery, tint, camera drift or distortion remain. The 16:9 finished
 picture fits at 208×117 without cropping/stretching, then extends its last
-snow row by two pixels to meet the floor. The native foreground floor scrolls
-using a matching strip from the clean snowfield; collision remains y=130.
+snow row by two pixels to meet the floor. The distinct foreground ledge scrolls
+at the native speed. Every rock and ice detail stays within its existing
+14-pixel strip, at or below the flat collision surface y=130; these details
+add no obstacles, damage or changes to movement. Its double-detail artwork
+is painted once and shared across resets, with continuous strata at the
+scrolling tile boundary.
 Everything renders behind gameplay, with no new damage, targets, points,
 projectiles, audio or save writes. Shared pictures are prepared before play.
 
@@ -24,7 +30,7 @@ controls, defenses, floor y=130 and exact ten-part destruction are unchanged.
 The owner approved much stronger torpedo pursuit, more broadsides and larger
 fighter groups arriving from behind the boss after a visible retreat. See the
 [approved plan](../../docs/concepts/level-4-enemies/boss-reinforcements-plan.md).
-These revision-6 mechanics remain in 6.3. The campaign stays v0.29.0 with three levels.
+These revision-6 mechanics remain in 6.4. The campaign stays v0.29.0 with three levels.
 Revision 5.1's camera and ship-visibility fixes remain in place: Ice Lances and
 retained wreckage follow screen shake beneath the original hero and bullets.
 
@@ -176,10 +182,10 @@ recorded music. Existing synthesized effects and option settings are reused.
 
 ## Validation and delivery
 
-Revision 6.3 updates the background checks for the supplied picture: three
+Revision 6.4 retains the background checks introduced for the supplied picture: three
 independent original-file SHA-256 checks, a full source-to-render pixel
 comparison at the native detail scale, fixed backdrop/smoke at six times,
-no green-screen pixels, foreground snow scrolling, shared cached artwork,
+no green-screen pixels, foreground shelf scrolling, shared cached artwork,
 canvas-state restoration, and no live painting/readbacks or combat RNG calls.
 Original opaque hero pixels stay unchanged over the image. Complete matching
 three-phase fights with active/inert scenery verify gameplay isolation on
@@ -187,8 +193,8 @@ both phone layouts, along with pause/resume/restart and no extra save/audio/
 external-network activity. The 664 combat and earlier-content checks remain.
 Same-browser drawing samples are cloud measurements, not physical phone FPS.
 All **699 checks pass**: 35 picture/background checks plus those 664 existing
-checks. The portable copy embeds both exact runtime JPEGs, completes every
-phase and exercises a four-fighter rear wave on both phone layouts, with no
+checks. The portable copy embeds the exact battlefield JPEG and cached shelf
+painter, completes every phase and exercises a four-fighter rear wave on both phone layouts, with no
 external resource requests, browser errors or save writes. Its progression
 fixture is invulnerable and proves function, not human difficulty. The new
 14-second video is a fresh start using native touch controls and normal
@@ -240,15 +246,15 @@ node tools/smoke-test.mjs /tmp/ember-smoke
 SEED=28 node tools/level-test.mjs /tmp/ember-levels
 node tools/coast-demo-test.mjs /tmp/ember-coast
 node tools/speed-test.mjs
-node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v6.3.html
+node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v6.4.html
 ```
 
 Create smoke/level screenshot directories first and run suites sequentially.
-The portable HTML embeds the modules and both runtime JPEGs; verify full wins on both
-phone layouts without external resource requests or browser errors. Review
+The portable HTML embeds the modules and the finished battlefield JPEG; verify
+full wins on both phone layouts without external resource requests or browser errors. Review
 older video fixtures are labeled as selected phase/attacks with normal health
-and actual touch inputs; 6.3 instead records a fresh start. Videos are silent; the
-playable preview retains the original sound effects.
+and actual touch inputs; the current preview records a fresh start. Videos
+are silent; the playable preview retains the original sound effects.
 
 All runtime changes are local to `demos/glacier-boss/`. Shared ENEMY_TYPES,
 LEVELS, player weapons, controls, saves, menus, audio files, accepted coast and

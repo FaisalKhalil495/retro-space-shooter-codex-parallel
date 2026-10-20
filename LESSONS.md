@@ -224,6 +224,11 @@ The approved plan is `docs/concepts/level-4-enemies/boss-reinforcements-plan.md`
 
 ## 3. Look, sound and presentation
 
+- **Foreground needs its own material and depth.** The owner found the
+  matching photographic platform too similar to the background and requested
+  rocks and ice. Breakwater 6.4 uses a distinct snowy rock/ice shelf, with all
+  detail below the existing flat floor. Keep the supplied backdrop intact;
+  decorative rock/ice must not imply new solid obstacles in the flight area.
 - **Use the owner's supplied art directly.** On 2026-10-20 they supplied a
   finished icy battlefield, a clean snowfield and a green-screen wreck layer,
   allowing smoke to stay still if natural animation is difficult. Revision
@@ -799,6 +804,18 @@ fewer rounds are needed.
   waves with embedded JPEGs and no external requests/errors/save writes.
   The 14-second video records a real fresh start with native touches and
   normal health/lives, with no skipped entrance or selected-phase fixture.
+- Breakwater revision 6.4: direct visual feedback replaces the photographic
+  floor strip with an original cached rocky ice shelf. Snow-capped slate,
+  layered blue ice, cracks and small hanging ice teeth establish a close
+  foreground, while the supplied battlefield and its baked smoke stay intact.
+  All details remain within the native 14-pixel floor: no new collision,
+  hazards or tuning. Preserve all three uploads; remove the unused snowfield
+  from runtime/export. Review at actual phone scale, including scrolling,
+  pause/restart and the boss standing on the same y=130 surface. Lesson:
+  a background-matched crop can erase the foreground's depth; use distinct
+  materials without changing the flight space. All 35 background and 664
+  combat/earlier-content checks pass (699): original picture pixels and
+  three-phase gameplay isolation hold at both phone layouts. Await phone review.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

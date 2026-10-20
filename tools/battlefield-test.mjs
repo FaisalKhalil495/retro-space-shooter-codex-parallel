@@ -22,11 +22,11 @@ try{
   page.on('pageerror',e=>errors.push(String(e)));
   page.on('request',r=>{if(!r.url().startsWith(base)&&/^https?:/.test(r.url()))external.push(r.url());if(/\/music\/.*\.mp3/.test(r.url()))music.push(r.url());});
   await page.goto(base+'demos/glacier-boss/'+phone.q);await page.waitForFunction(()=>window.__boss?.artworkReady);await page.evaluate(()=>window.__boss.frozen=true);
-  check(phone.name+': supplied artwork loaded',await page.evaluate(()=>window.__boss.game.bg.loaded&&document.querySelector('.eyebrow').textContent.endsWith(' 6.3')));
+  check(phone.name+': supplied artwork loaded',await page.evaluate(()=>window.__boss.game.bg.loaded&&document.querySelector('.eyebrow').textContent.endsWith(' 6.4')));
   await page.locator('#action').tap();await page.evaluate(()=>window.__boss.advance(1));
   const result=await page.evaluate(async()=>{
-   const {BattlefieldBackground}=await import('/demos/glacier-boss/battlefield.js?battle=3');
-   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=6.3');
+   const {BattlefieldBackground}=await import('/demos/glacier-boss/battlefield.js?battle=4');
+   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=6.4');
    const {useDetail}=await import('/js/detail.js?v=0.29.0');
    const g=window.__boss.game,bg=g.bg;
    const canvas=document.createElement('canvas');canvas.width=832;canvas.height=576;
@@ -51,7 +51,7 @@ try{
     for(let i=0;i<120;i++){bg.update(1/120);bg.draw(c,v=>Math.round(v*2)/2);}
    }catch{noLivePainting=false;}finally{Math.random=random;document.createElement=create;CanvasRenderingContext2D.prototype.getImageData=read;}
    // The entire supplied backdrop, including its smoke, stays fixed. Only
-   // the native foreground snow strip may scroll; no added plumes/flares.
+   // the native foreground rock/ice shelf may scroll; no added plumes/flares.
    let staticBackdrop=true,noGreenScreen=true;
    for(const time of [0,2,7,14.1,18.1,90]){
     bg.t=time;const frame=pixels();

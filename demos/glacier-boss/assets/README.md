@@ -1,4 +1,4 @@
-# Owner-supplied icy battlefield — revision 6.3
+# Owner-supplied icy battlefield — revision 6.4
 
 On 2026-10-20 the owner supplied three JPEG pictures and asked to use them
 as the background, allowing smoke to remain still if realistic animation
@@ -7,16 +7,20 @@ was difficult. All three files are preserved byte-for-byte:
 | Upload | Repository file | Size | Use |
 | --- | --- | --- | --- |
 | 1000086584.jpg | icy-battlefield.jpg | 1280×720 | Finished battlefield: ringed planet, mountains, defenses, wrecks, smoke and fires. |
-| 1000086605.jpg | icy-snowfield.jpg | 1280×720 | Clean landscape, supplying the scrolling foreground snow strip. |
+| 1000086605.jpg | icy-snowfield.jpg | 1280×720 | Clean landscape, retained reference; used for the floor in 6.3 only. |
 | 1000086606.jpg | icy-wrecks-greenscreen-reference.jpg | 1280×853 | Source/reference only; its wrecks already appear in the finished composite. Never display the green backing. |
 
 No generative image editing, recoloring, crop, warping, replacement smoke or
 extra overlays are applied to the finished picture. The full 16:9 view is
 resampled once at 208×117 game pixels (double-detail canvas), starting y=11.
 Its last snow row extends by two pixels to meet the native solid floor at
-130. The foreground snow strip comes from the bottom of the clean snowfield,
-keeping the source strip's aspect ratio, and scrolls at the native speed.
-Shared cached canvases avoid live painting and decoding during combat.
+130. The owner then requested a platform distinct from this picture, with rocks
+and ice. Revision 6.4 uses original double-detail art painted by `shelf()` in
+`../battlefield.js`: grey snow-capped slate, blue ice facets/cracks, small
+ice teeth, and a continuous flat snow cap. It occupies only y=130–144 and
+scrolls at the native ground speed. No uploaded image is edited. Shared cached
+canvases avoid live painting and decoding during combat; the clean snowfield
+and green-screen reference are no longer runtime/export dependencies.
 
 The smoke is baked over wrecks/cliff in the supplied stills, not a separate
 animation sequence. Preserve its original realistic appearance rather than
