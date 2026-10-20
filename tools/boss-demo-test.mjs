@@ -36,11 +36,11 @@ try{
   check(phone.name+': app interruption pauses',await page.evaluate(()=>window.__boss.mode==='paused'));
   await tap('#restart');check(phone.name+': restart clears the whole encounter',await page.evaluate(()=>{const g=window.__boss.game;return g.time===0&&g.bg.t===0&&!g.boss&&g.enemies.length===0&&g.enemyShots.length===0&&g.pickups.length===0&&g.health===5&&g.lives===3&&g.weapons.kind===null&&g.audit.length===0&&g.wreck===null;}));
   const result=await page.evaluate(async()=>{
-   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=6');
-   const {BREAKWATER,beginAttack,clearThreats,MOVES,chooseAttack,REST}=await import('/demos/glacier-boss/boss.js?boss=6');
+   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=7');
+   const {BREAKWATER,beginAttack,clearThreats,MOVES,chooseAttack,REST}=await import('/demos/glacier-boss/boss.js?boss=7');
    const {HULLS}=await import('/demos/glacier-boss/art.js?boss=6');
-   const {FORMATION}=await import('/demos/glacier-boss/escorts.js?boss=6');
-   const {HUNTER_TORPEDO,TORPEDO_ART}=await import('/demos/glacier-boss/torpedo.js?boss=6');
+   const {FORMATION}=await import('/demos/glacier-boss/escorts.js?boss=7');
+   const {HUNTER_TORPEDO,TORPEDO_ART}=await import('/demos/glacier-boss/torpedo.js?boss=7');
    const {useDetail}=await import('/js/detail.js?v=0.29.0');
    const {BREAKUP_SECONDS}=await import('/demos/glacier-boss/wreck.js?boss=6');
    const {Game}=await import('/js/game.js?v=0.29.0');const {ENEMY_TYPES}=await import('/js/enemies.js?v=0.29.0');const {LEVELS}=await import('/js/levels.js?v=0.29.0');
@@ -75,7 +75,7 @@ try{
       if(ev.kind==='fire'){volleyCount++;allWarnings&&=!!lastWarning&&ev.time-lastWarning.time>=lastWarning.duration-.01;}
     }
     const fire=g.audit.find(a=>a.id===b.id&&a.kind==='fire'),warn=g.audit.find(a=>a.id===b.id&&a.kind==='warn');
-    attacks.push({name,warned:!!fire&&fire.time-warn.time>=warn.duration-.01&&allWarnings&&volleyCount===(name==='broadside'?8:name==='pursuit'?3:name==='clusters'?4:name==='flak'||name==='ice'?3:1),locked:!!fire&&Math.abs(fire.angle-angle)<1e-8,maxDarts,maxTorps,maxShots,maxEscortShots,ground:Math.abs(b.y+b.h-130)<.01,onscreen:minX>=29.9&&maxX<=(name==='darts'?228:208),overlap,clean:!b.attack&&!g.enemies.some(e=>['clusterShell','clusterBurst','glacierRupture','hunterTorpedo'].includes(e.type))&&(name!=='darts'||g.enemies.filter(e=>e.persistentEscort&&!e.dead).length===4),marks,path});
+    attacks.push({name,warned:!!fire&&fire.time-warn.time>=warn.duration-.01&&allWarnings&&volleyCount===(name==='broadside'?10:name==='pursuit'?3:name==='clusters'?4:name==='flak'||name==='ice'?3:1),locked:!!fire&&Math.abs(fire.angle-angle)<1e-8,maxDarts,maxTorps,maxShots,maxEscortShots,ground:Math.abs(b.y+b.h-130)<.01,onscreen:minX>=29.9&&maxX<=(name==='darts'?228:208),overlap,clean:!b.attack&&!g.enemies.some(e=>['clusterShell','clusterBurst','glacierRupture','hunterTorpedo'].includes(e.type))&&(name!=='darts'||g.enemies.filter(e=>e.persistentEscort&&!e.dead).length===4),marks,path});
    }
    let iceMarksSeparate=true;
    for(const x of [30,64,104,130,144])for(const px of [2,26,100,170,188]){
@@ -123,10 +123,10 @@ try{
      tracking.g.update(1/120,{dx:0,dy:0,fire:false});
    }
    const tw=tracking.g.audit.filter(a=>a.kind==='warn'),tf=tracking.g.audit.filter(a=>a.kind==='fire');
-   const retargeted=tf.length===8&&new Set(tf.map(a=>a.angle.toFixed(3))).size>=3;
+   const retargeted=tf.length===10&&new Set(tf.map(a=>a.angle.toFixed(3))).size>=3;
    const eachVolleyLocked=tf.every((f,i)=>Math.abs(f.angle-tw[i].angle)<1e-9&&f.time-tw[i].time>=tw[i].duration-.01);
    let volleyEscape=true;
-   // Complete eight-volley escapes at five positions are checked below
+   // Complete ten-volley escapes at five positions are checked below
    // together with all four fighters and their follow-up shots.
    const removedBeam=make();const noBossLaser=MOVES.slice(1).every(m=>!m.includes('beam'))&&!beginAttack(removedBeam.b,removedBeam.g,'beam');
    const capResults=[];
@@ -137,7 +137,7 @@ try{
    const salvoSizes=capResults.every(Boolean);
    const missile=make(),t=missile.g.spawnEnemy('hunterTorpedo',115,70,{angle:-2.8,phase:2,byBoss:true});
    Object.assign(missile.g.player,{x:90,y:65});const initialAngle=t.angle;tick(missile.g,.5);
-   const limitedHoming=t.mode==='hunt'&&Math.abs(t.angle-initialAngle)>0&&Math.abs(t.angle-initialAngle)<=6.3*(.5-.12+1/120)+.00001;
+   const limitedHoming=t.mode==='hunt'&&Math.abs(t.angle-initialAngle)>0&&Math.abs(t.angle-initialAngle)<=7*(.5-.12+1/120)+.00001;
    tick(missile.g,1.95);const locked=t.mode==='locked',lockedAngle=t.angle;
    missile.g.player.y=20;tick(missile.g,.15);const commitsStraight=locked&&t.angle===lockedAngle;
    const shoot=make(),st=shoot.g.spawnEnemy('hunterTorpedo',110,60,{angle:Math.PI,phase:1,byBoss:true});
@@ -164,38 +164,38 @@ try{
     restEscalates&&=Math.abs(g.time-ended-[0,.45,.30,.18][phase])<.02;
    }
    const missileArt=TORPEDO_ART.width===7&&TORPEDO_ART.height===4&&TORPEDO_ART.hi.width===14&&TORPEDO_ART.hi.height===8;
-   let newEscapes=true,iceAfterCommit=true;
+   let newEscapes=true,iceAfterCommit=true;const escapeFailures=[];
    // Ordinary no-fire movement with all four persistent fighters alive, including
    // two seconds of their follow-up shots after the complete boss pattern.
    const routes=[
-    {"bx":76,"name":"torpedoes","strategy":"reactive","right":45,"top":45,"bottom":95,"reverse":false,"offset":2},
-    {"bx":76,"name":"broadside","strategy":"reactive","right":65,"top":45,"bottom":95,"reverse":true,"offset":2},
+    {"bx":76,"name":"torpedoes","strategy":"reactive","right":45,"top":25,"bottom":115,"reverse":true,"offset":0},
+    {"bx":76,"name":"broadside","strategy":"reactive","right":65,"top":65,"bottom":85,"reverse":false,"offset":0},
     {"bx":76,"name":"clusters","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":76,"name":"flak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
-    {"bx":76,"name":"ice","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
+    {"bx":76,"name":"ice","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":true,"offset":0},
     {"bx":76,"name":"pursuit","strategy":"reactive","right":45,"top":25,"bottom":95,"reverse":true,"offset":0},
     {"bx":76,"name":"rushFlak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
-    {"bx":110,"name":"torpedoes","strategy":"reactive","right":45,"top":25,"bottom":95,"reverse":true,"offset":2},
-    {"bx":110,"name":"broadside","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":true,"offset":0},
+    {"bx":110,"name":"torpedoes","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":true,"offset":0},
+    {"bx":110,"name":"broadside","strategy":"reactive","right":45,"top":12,"bottom":115,"reverse":false,"offset":3},
     {"bx":110,"name":"clusters","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":110,"name":"flak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
-    {"bx":110,"name":"ice","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
+    {"bx":110,"name":"ice","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":true,"offset":0},
     {"bx":110,"name":"pursuit","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":true,"offset":0},
     {"bx":110,"name":"rushFlak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":144,"name":"torpedoes","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
-    {"bx":144,"name":"broadside","strategy":"reactive","right":90,"top":45,"bottom":115,"reverse":true,"offset":1},
+    {"bx":144,"name":"broadside","strategy":"reactive","right":110,"top":12,"bottom":95,"reverse":false,"offset":3},
     {"bx":144,"name":"clusters","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":144,"name":"flak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
-    {"bx":144,"name":"ice","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
+    {"bx":144,"name":"ice","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":true,"offset":0},
     {"bx":144,"name":"pursuit","strategy":"reactive","right":45,"top":12,"bottom":115,"reverse":true,"offset":3},
     {"bx":144,"name":"rushFlak","strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
-    {"bx":90,"name":"broadside","strategy":"reactive","right":45,"top":12,"bottom":115,"reverse":false,"offset":3},
-    {"bx":130,"name":"broadside","strategy":"reactive","right":65,"top":12,"bottom":115,"reverse":false,"offset":0},
+    {"bx":90,"name":"broadside","strategy":"reactive","right":65,"top":55,"bottom":115,"reverse":false,"offset":1},
+    {"bx":130,"name":"broadside","strategy":"reactive","right":45,"top":12,"bottom":85,"reverse":false,"offset":2},
     {"bx":76,"name":"darts","initialFighters":0,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":76,"name":"darts","initialFighters":2,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":3},
     {"bx":110,"name":"darts","initialFighters":0,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
     {"bx":110,"name":"darts","initialFighters":2,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":3},
-    {"bx":144,"name":"darts","initialFighters":0,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":0},
+    {"bx":144,"name":"darts","initialFighters":0,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":2},
     {"bx":144,"name":"darts","initialFighters":2,"strategy":"reactive","right":45,"top":12,"bottom":95,"reverse":false,"offset":3}
    ];
    for(const r of routes){
@@ -217,7 +217,7 @@ try{
      if(ended!==null&&g.time>ended+2)break;
     }
     const escaped=g.health===5&&g.lives===3&&!b.attack&&g.enemies.filter(e=>e.persistentEscort&&!e.dead).length===4&&g.audit.some(a=>a.type==='twinDart'&&a.kind==='fire');
-    newEscapes&&=escaped;if(r.name==='broadside')volleyEscape&&=escaped;
+    newEscapes&&=escaped;if(!escaped)escapeFailures.push({...r,health:g.health,lives:g.lives,attack:b.attack?.stage,fighters:g.enemies.filter(e=>e.persistentEscort&&!e.dead).length,time:g.time});if(r.name==='broadside')volleyEscape&&=escaped;
    }
    const realGun=make(),rg=realGun.g.spawnEnemy('hunterTorpedo',110,119,{angle:Math.PI,phase:1,byBoss:true});tick(realGun.g,1,{dx:0,dy:0,fire:true});
    const normalGunCountersMissile=rg.dead&&realGun.g.score>=15;
@@ -250,13 +250,13 @@ try{
     const hunt=[0,2,2.3,2.6][phase];tick(g,hunt+.10);longerTracking&&=t.mode==='hunt'&&!t.dead;
     tick(g,.04);longerTracking&&=t.mode==='locked'&&!t.dead&&Math.abs(t.lockAt-hunt-.12)<.02;
     const turn=make(),u=turn.g.spawnEnemy('hunterTorpedo',100,80,{angle:-Math.PI/2,phase,byBoss:true});let maxTurn=0,turnBound=true;
-    for(let i=0;i<95&&!u.dead;i++){const angle=u.angle;tick(turn.g,1/120);const delta=Math.abs(Math.atan2(Math.sin(u.angle-angle),Math.cos(u.angle-angle)));maxTurn=Math.max(maxTurn,delta*120);turnBound&&=delta<=[0,5.5,6.3,7.2][phase]/120+.00001;}
-    tighterTurns&&=turnBound&&Math.abs(maxTurn-[0,5.5,6.3,7.2][phase])<.01;
+    for(let i=0;i<95&&!u.dead;i++){const angle=u.angle;tick(turn.g,1/120);const delta=Math.abs(Math.atan2(Math.sin(u.angle-angle),Math.cos(u.angle-angle)));maxTurn=Math.max(maxTurn,delta*120);turnBound&&=delta<=[0,6.1,7,8.1][phase]/120+.00001;}
+    tighterTurns&&=turnBound&&Math.abs(maxTurn-[0,6.1,7,8.1][phase])<.01;
     const lead=make(),v=lead.g.spawnEnemy('hunterTorpedo',170,60,{angle:Math.PI,phase,byBoss:true});lead.g.player.y=35;
     tick(lead.g,.5,{dx:1,dy:1,fire:false});const center=lead.g.playerCenter();
     predictsMovement&&=v.aimX>center.x+3&&v.aimY>center.y+3&&v.aimX-center.x<15&&v.aimY-center.y<15;
     const salvo=make();salvo.b.phase=phase;beginAttack(salvo.b,salvo.g,'torpedoes');tick(salvo.g,.25);
-    roofRaises&&=salvo.b.launcherLift===1;tick(salvo.g,4);
+    roofRaises&&=salvo.b.launcherLift===1;for(let i=0;i<8*120&&salvo.b.attack;i++)tick(salvo.g,1/120);
     const launches=salvo.g.audit.filter(a=>a.kind==='torpedoLaunch');
     roofOrigins&&=launches.length===phase+1&&launches.every((a,i)=>{const m=launcherPort(salvo.b,i%2,2);return Math.abs(a.x-m.x)<.001&&Math.abs(a.y-m.y)<.001&&a.angle===-Math.PI/2;});
     // Independent golden values for the approved broadside's actual shots.
@@ -264,7 +264,7 @@ try{
     broad.g.fireShot=(...args)=>{const s=fire(...args);shots.push(s);return s;};
     beginAttack(broad.b,broad.g,'broadside');for(let i=0;i<120*16&&broad.b.attack;i++)tick(broad.g,1/120);
     const warns=broad.g.audit.filter(a=>a.kind==='warn');
-    broadsideExpanded&&=shots.length===(phase+5)*5&&warns.length===phase+5&&Math.abs(warns[0].duration-[0,.95,.85,.75][phase])<1e-8&&warns.slice(1).every(w=>w.duration===[0,1.1,1,.95][phase])&&shots.every((s,i)=>Math.abs(Math.hypot(s.vx,s.vy)-(89+phase*9))<1e-7&&(s.dmg||1)===(i%5===2?2:1));
+    broadsideExpanded&&=shots.length===[0,7,8,10][phase]*5&&warns.length===[0,7,8,10][phase]&&Math.abs(warns[0].duration-[0,.95,.85,.75][phase])<1e-8&&warns.slice(1).every(w=>w.duration===[0,1.1,1,.95][phase])&&shots.every((s,i)=>Math.abs(Math.hypot(s.vx,s.vy)-[0,106,118,130][phase])<1e-7&&(s.dmg||1)===(i%5===2?2:1));
    }
    for(let stage=0;stage<3;stage++)for(let phase=1;phase<=3;phase++)for(const open of [false,true]){
     const p=LAUNCHER_HULLS[stage][phase-1][open?'open':'closed'],e={x:0,y:0,phase,open,launcherLift:stage/2,mode:'fight'};
@@ -323,7 +323,7 @@ try{
     beginAttack(f.b,f.g,'flak');for(let i=0;i<120*20&&f.b.attack;i++)tick(f.g,1/120);
     const fw=f.g.audit.filter(a=>a.kind==='warn'&&a.attack==='flak'),ff=f.g.audit.filter(a=>a.kind==='fire'&&a.attack==='flak');
     lanceCounts&&=!f.b.attack&&fw.length===phase&&ff.length===phase;
-    lanceValues&&=rounds.length>0&&rounds.every(s=>s.iceLance&&s.dmg===2&&Math.abs(Math.hypot(s.vx,s.vy)-[0,120,132,144][phase])<.001)&&fw.every(w=>w.duration===1.15);
+    lanceValues&&=rounds.length>0&&rounds.every(s=>s.iceLance&&s.dmg===2&&Math.abs(Math.hypot(s.vx,s.vy)-[0,132,148,164][phase])<.001)&&fw.every(w=>w.duration===1.15);
     lanceGapsChange&&=fw.every((w,i)=>!i||Math.abs(w.gap-fw[i-1].gap)>=20);
     if(phase>=2){
      const z=make();z.b.phase=phase;beginAttack(z.b,z.g,'ice');let lastMark=z.b.attack.marks[0];
@@ -442,9 +442,9 @@ try{
     const i=(y*832+x)*4;if(heroFrame[i+3]===255){checked++;for(let k=0;k<4;k++)if(frame[i+k]!==heroFrame[i+k])return false;}
    }return checked>100;};
    const heroAboveLances=heroVisible(lanceFrame),heroAboveWreck=heroVisible(wreckFrame);
-   return {lancesFollowShake,wreckFollowsShake,heroAboveLances,heroAboveWreck,mortarFlashVisible,mortarTargetLocked,mortarCounts,mortarOrigins,mortarBounded,lanceCounts,lanceValues,lanceGapsChange,ruptureCounts,ruptureRetargets,committedTargets,threeHitCounter,bombCancelsCluster,coreDamage,coreRespectsProtection,lanceDamage,ruptureDamage,ruptureProtection,ruptureLifetime,oneShieldCharge,fatalRuptureSafe,fatalCoreNoFragments,phaseCancelsCluster,phaseCancelsRuptures,lanceContactVisible,ruptureContactVisible,blastContactVisible,hazardArt,longerTracking,tighterTurns,predictsMovement,roofOrigins,roofRaises,raisedMasks,raisedBreakup,broadsideExpanded,persistentFighters,warnedFighters,fullSlots,bossContinues,phaseTwoKeeps,phaseQuiet,phaseThreeKeeps,missingOnly,respawnKeeps,enteringQuiet,deathClearsFighters,hiddenLaunch,pendingFighterSafe,closed,frontPath,hullBlocks,ordinaryHits,...weapon,p2,p3,blockedStart,noTalkShots,iceMarksSeparate,shellSafe,lateShellSafe,retargetAfterCleanup,bossDartOwnership,killedClear,respawn,knockback:pushes.every(Boolean),nativeDamage,retargeted,eachVolleyLocked,volleyEscape,noBossLaser,salvoSizes,limitedHoming,commitsStraight,earlyShot,shootable,missileExpires,huntsHigh,flushesLow,noImmediateRepeat,escalation,cooldowns,combosRecur,restEscalates,missileArt,newEscapes,iceAfterCommit,normalGunCountersMissile,phaseClearsMissiles,noQueuedLaunchAfterPhase,deathClearsSalvo,missileKillSafe,missileContactVisible,exactBreakup,deathSafe,heldInitially,stagedBreakup,allLaunched,beforeFinish,oneAward,fallingParts,harmlessWreck,persistentWreck,resetWreck,noSafePockets,dodges,art,masks,isolated:LEVELS.length===3&&!ENEMY_TYPES.breakwater,attacks};
+   return {escapeFailures,lancesFollowShake,wreckFollowsShake,heroAboveLances,heroAboveWreck,mortarFlashVisible,mortarTargetLocked,mortarCounts,mortarOrigins,mortarBounded,lanceCounts,lanceValues,lanceGapsChange,ruptureCounts,ruptureRetargets,committedTargets,threeHitCounter,bombCancelsCluster,coreDamage,coreRespectsProtection,lanceDamage,ruptureDamage,ruptureProtection,ruptureLifetime,oneShieldCharge,fatalRuptureSafe,fatalCoreNoFragments,phaseCancelsCluster,phaseCancelsRuptures,lanceContactVisible,ruptureContactVisible,blastContactVisible,hazardArt,longerTracking,tighterTurns,predictsMovement,roofOrigins,roofRaises,raisedMasks,raisedBreakup,broadsideExpanded,persistentFighters,warnedFighters,fullSlots,bossContinues,phaseTwoKeeps,phaseQuiet,phaseThreeKeeps,missingOnly,respawnKeeps,enteringQuiet,deathClearsFighters,hiddenLaunch,pendingFighterSafe,closed,frontPath,hullBlocks,ordinaryHits,...weapon,p2,p3,blockedStart,noTalkShots,iceMarksSeparate,shellSafe,lateShellSafe,retargetAfterCleanup,bossDartOwnership,killedClear,respawn,knockback:pushes.every(Boolean),nativeDamage,retargeted,eachVolleyLocked,volleyEscape,noBossLaser,salvoSizes,limitedHoming,commitsStraight,earlyShot,shootable,missileExpires,huntsHigh,flushesLow,noImmediateRepeat,escalation,cooldowns,combosRecur,restEscalates,missileArt,newEscapes,iceAfterCommit,normalGunCountersMissile,phaseClearsMissiles,noQueuedLaunchAfterPhase,deathClearsSalvo,missileKillSafe,missileContactVisible,exactBreakup,deathSafe,heldInitially,stagedBreakup,allLaunched,beforeFinish,oneAward,fallingParts,harmlessWreck,persistentWreck,resetWreck,noSafePockets,dodges,art,masks,isolated:LEVELS.length===3&&!ENEMY_TYPES.breakwater,attacks};
   });
-  for(const [key,value]of Object.entries(result))if(key!=='attacks')check(phone.name+': '+key,value,result);
+  for(const [key,value]of Object.entries(result))if(key!=='attacks'&&key!=='escapeFailures')check(phone.name+': '+key,value,result);
   for(const a of result.attacks){check(phone.name+': '+a.name+' warned and locked',a.warned&&a.locked,a);check(phone.name+': '+a.name+' bounded, grounded and clears',a.maxDarts<=4&&a.maxTorps<=4&&a.maxShots<=20&&a.maxEscortShots<=2&&a.ground&&a.onscreen&&!a.overlap&&a.clean,a);}
   // Real encounter starts empty: no test laser or supply bypass. Ordinary
   // simulation runs to victory with original weapons, phase rewards and pods.

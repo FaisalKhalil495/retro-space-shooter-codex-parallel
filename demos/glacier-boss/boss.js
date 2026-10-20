@@ -1,16 +1,16 @@
-import { VIEW_W, HUD_H, PAL } from '../../js/config.js?v=0.29.0';
+import { VIEW_W, HUD_H, PAL, PLAYER } from '../../js/config.js?v=0.29.0';
 import { clamp, rectsOverlap } from '../../js/util.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
 import { picture, hullContact, WIDTH, HEIGHT, launcherPort } from './art.js?boss=6';
 import { updateBreakup, drawBreakup } from './wreck.js?boss=6';
-import { escorts, escortLimit, FORMATION } from './escorts.js?boss=6';
+import { escorts, escortLimit, FORMATION } from './escorts.js?boss=7';
 import { drawMortarMark, mortarPoint } from './hazards.js?boss=6';
 import { target } from '../glacier-combat/art.js?combat=3';
 export const MOVES=[null,['broadside','torpedoes','flak','clusters'],
   ['ice','darts','broadside','torpedoes','flak','clusters'],
   ['rushFlak','pursuit','rush','torpedoes','broadside','ice','darts','flak','clusters']];
 export const REST=[0,.45,.30,.18];
-export const BROADSIDE_VOLLEYS=[0,6,7,8];
+export const BROADSIDE_VOLLEYS=[0,7,8,10],BROADSIDE_SPEED=[0,106,118,130];
 const LEFT=[0,104,90,76],INTRO=[0,4,2,2];
 export const log=(g,e,kind,extra={})=>g.audit.push({time:g.time,id:e.id,kind,phase:e.phase,...extra});
 const muzzle=e=>({x:e.x+1,y:e.y+15});
@@ -27,7 +27,19 @@ function set(e,mode){e.mode=mode;e.timer=0;}
 function saySafe(g,e,text,style='talk'){clearThreats(g,true);g.say(e,text,style);}
 function markedX(x,e){x=clamp(x,14,190);if(x>e.x-9&&x<e.x+e.w+9)return clamp(e.x-20,14,190);return x;}
 function iceMarks(e,g){return [markedX(g.playerCenter().x,e)];}
-function flakGap(e,g){return clamp(g.playerCenter().y+(g.playerCenter().y>72?-32:32),30,e.attack?.name==='rushFlak'?88:111);}
+function flakGap(e,g,rush=false){
+  const hit=g.playerHitbox(),cy=hit.y+hit.h/2;
+  // Reserve .15 s to notice the full 1.15 s warning. Even diagonal movement
+  // can reach the chosen center before firing; never rely on invulnerability.
+  const reach=PLAYER.speed/Math.SQRT2*(1.15-.15),recent=e.lanceGaps||[],valid=[];
+  for(let y=30;y<=(rush?88:110);y+=2)if(Math.abs(y-cy)<=reach)valid.push(y);
+  const fresh=valid.filter(y=>recent.every(old=>Math.abs(y-old)>=20));
+  const changed=valid.filter(y=>!recent.length||Math.abs(y-recent.at(-1))>=20);
+  const choices=fresh.length?fresh:changed.length?changed:valid;
+  const gap=choices[Math.min(choices.length-1,Math.floor(g.rand()*choices.length))];
+  e.lanceGaps=[...recent,gap].slice(-2);
+  return gap;
+}
 function mortarMark(e,g,a){
   const p=g.playerCenter();a.sx=e.x+56;a.sy=e.y+8;a.tx=clamp(p.x,14,194);a.ty=clamp(p.y,24,111);
   a.mx=a.sx;a.my=a.sy;a.angle=Math.atan2(a.ty-a.sy,a.tx-a.sx);a.path=Array.from({length:19},(_,i)=>mortarPoint(a,i/18));
@@ -60,7 +72,7 @@ export function beginAttack(e,g,name){
   a.rear=p.x>e.x+e.w/2;a.mx=a.rear?e.x+e.w-2:m.x;a.my=a.rear?e.y+8:m.y;
   a.angle=Math.atan2(p.y-a.my,p.x-a.mx);
   if(name==='torpedoes'||name==='pursuit'){a.count=name==='pursuit'?2:e.phase+1;a.sent=0;const port=launcherPort(e,0,2);a.mx=port.x;a.my=port.y;a.warn=[0,1,.85,.7][e.phase];}
-  if(name==='flak'||name==='rushFlak'){a.gap=flakGap(e,g);a.wallX=e.x-4;a.gapSize=GAP_SIZE[e.phase];a.waves=0;a.waveCount=name==='rushFlak'?1:e.phase;}
+  if(name==='flak'||name==='rushFlak'){a.gap=flakGap(e,g,name==='rushFlak');a.wallX=e.x-4;a.gapSize=GAP_SIZE[e.phase];a.waves=0;a.waveCount=name==='rushFlak'?1:e.phase;}
   if(name==='clusters'){a.warn=[0,.95,.85,.75][e.phase];a.sent=0;a.count=e.phase+1;mortarMark(e,g,a);}
   if(name==='ice'){a.marks=iceMarks(e,g);a.strikes=0;a.strikeCount=e.phase;}
   if(name==='broadside')a.volleyCount=BROADSIDE_VOLLEYS[e.phase];
@@ -73,10 +85,10 @@ export function beginAttack(e,g,name){
   sfx.charge(a.warn);return true;
 }
 function broadside(e,g,a){
-  for(let i=0;i<5;i++)g.fireShot(a.mx,a.my,a.angle+(i-2)*.22,89+e.phase*9,i===2?'shell':'orb',true).dmg=i===2?2:1;
+  for(let i=0;i<5;i++)g.fireShot(a.mx,a.my,a.angle+(i-2)*.22,BROADSIDE_SPEED[e.phase],i===2?'shell':'orb',true).dmg=i===2?2:1;
   sfx.cannon();
 }
-export const LANCE_SPEED=[0,120,132,144],GAP_SIZE=[0,28,26,24];
+export const LANCE_SPEED=[0,132,148,164],GAP_SIZE=[0,28,26,24];
 function flak(e,g,a){
   for(let y=14;y<=126;y+=8)if(Math.abs(y-a.gap)>GAP_SIZE[e.phase]/2){
     const s=g.fireShot(a.wallX,y,Math.PI,LANCE_SPEED[e.phase],'icicle',true);s.dmg=2;s.iceLance=true;
@@ -90,7 +102,7 @@ function ice(e,g,a){
 function repeatWarning(e,g,a){
   a.stage='warn';a.t=0;
   if(a.name==='clusters')mortarMark(e,g,a);
-  else if(a.name==='flak'){const old=a.gap;a.gap=flakGap(e,g);if(Math.abs(a.gap-old)<20)a.gap=old<70?Math.min(111,old+32):Math.max(30,old-32);a.wallX=e.x-4;}
+  else if(a.name==='flak'){a.gap=flakGap(e,g);a.wallX=e.x-4;}
   else if(a.name==='ice')a.marks=iceMarks(e,g);
   log(g,e,'warn',{attack:a.name,duration:a.warn,angle:a.angle,mx:a.mx,my:a.my,marks:a.marks,path:a.path,gap:a.gap,wallX:a.wallX});sfx.charge(a.warn);
 }
@@ -179,7 +191,12 @@ function updateAttack(e,a,dt,g){
   }else if(a.stage==='recover'&&a.t>1.05){e.attack=null;e.open=false;e.idle=REST[e.phase];}
 }
 function drawGap(a,c,snap){
-  c.fillStyle='#e8eee5';for(const y of [a.gap-a.gapSize/2,a.gap+a.gapSize/2])c.fillRect(2,snap(y),Math.max(1,a.wallX-4),.5);
+  for(const y of [a.gap-a.gapSize/2,a.gap+a.gapSize/2]){
+    // A dark lip keeps the locked route readable over the bright snowfield.
+    const edge=snap(y),width=Math.max(1,a.wallX-4);
+    c.fillStyle='#354144';c.fillRect(2,edge-.5,width,1.5);
+    c.fillStyle='#e8eee5';c.fillRect(2,edge,width,.5);
+  }
 }
 export const BREAKWATER={
   boss:true,name:'BREAKWATER',title:'THE COASTBREAKER',hp:250,score:7000,voice:'metal',

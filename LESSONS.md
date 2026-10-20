@@ -114,6 +114,14 @@ The approved plan is `docs/concepts/level-4-enemies/boss-reinforcements-plan.md`
 
 ## 2. Gameplay taste (learned the hard way)
 
+- **Harder Breakwater, unpredictable lance gaps:** the owner approved revision
+  7's faster, longer broadsides, faster-turning torpedoes, faster lance walls
+  and faster fighter shots. They explicitly requested unpredictable gap
+  positions. A thin dark edge keeps gap markers visible on the bright snow.
+  Randomize every wall, including the first; vary direction and
+  jump size, preserve full warnings, reachable gap widths and the overhead
+  rush route, then lock the chosen position. Preserve health and weapon
+  opportunities. The approved plan records exact values.
 **Difficulty**
 - The owner found one-hit skipping shells and small icicles underwhelming.
   Approved replacements should require repeated maneuvers and give distinct
@@ -816,6 +824,30 @@ fewer rounds are needed.
   materials without changing the flight space. All 35 background and 664
   combat/earlier-content checks pass (699): original picture pixels and
   three-phase gameplay isolation hold at both phone layouts. Await phone review.
+- Breakwater revision 7: the owner approved the difficulty pass and random-gap
+  amendment. Implement the exact stronger speeds, 7/8/10 broadsides and faster
+  fighter fire while keeping damage, 250 HP, all nine patterns, warnings and
+  the full vulnerable recovery. Choose a fresh random reachable lance center
+  once per warning, preferring distance from two recent gaps where possible.
+  Use normal diagonal speed and reserve reaction time; keep rush gaps clear
+  above the hull. The first wall is random too, and drawing/pause cannot
+  change its selection. Faster attacks make several old rectangular dodge
+  routes take hits: find and verify new complete normal-input routes, retaining
+  all four fighters and their follow-up shots. Do not reduce the assertions
+  to match the helper's old route. A roof-launch test also assumed the boss
+  remained at its launch position after the faster salvo had ended; stop that
+  isolated fixture when the attack ends, rather than allowing later movement
+  to invalidate a correct origin. When observing fireShot, retain references:
+  callers attach flags such as iceLance only after that helper returns.
+  Preserve the supplied battlefield, still smoke, rocky shelf and every
+  earlier game/player system. All 787 checks pass, including 88 new difficulty
+  checks and 216 seeded gap routes per phone, alongside 29 complete four-fighter
+  patterns with follow-up fire. The old gap rule fails the new functional
+  checks. Portable layouts finish all phases and form four-fighter waves with
+  no external requests/errors/save writes. Earlier-game drawing-call counts
+  are unchanged. The phase-3 video is labeled as selected attacks, with native
+  automated touches and normal health/lives. Phone feedback remains the
+  difficulty verdict.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

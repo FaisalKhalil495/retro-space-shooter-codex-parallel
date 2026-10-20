@@ -12,12 +12,12 @@ try{
   const page=await browser.newPage({viewport:{width:phone.width,height:phone.height},isMobile:true,hasTouch:true}),errors=[];
   page.on('pageerror',e=>errors.push(String(e)));
   // Optional source replacement proves a golden check rejects old behavior.
-  if(process.env.OLD_TORPEDO)await page.route('**/demos/glacier-boss/torpedo.js?boss=6',async route=>route.fulfill({body:await readFile(process.env.OLD_TORPEDO,'utf8'),contentType:'text/javascript'}));
+  if(process.env.OLD_TORPEDO)await page.route('**/demos/glacier-boss/torpedo.js?boss=7',async route=>route.fulfill({body:await readFile(process.env.OLD_TORPEDO,'utf8'),contentType:'text/javascript'}));
   await page.goto(base+'demos/glacier-boss/'+phone.q);await page.waitForFunction(()=>window.__boss?.artworkReady);
   await page.evaluate(()=>window.__boss.frozen=true);
   const results=await page.evaluate(async()=>{
-   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=6');
-   const {beginAttack,chooseAttack,BREAKWATER}=await import('/demos/glacier-boss/boss.js?boss=6');
+   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=7');
+   const {beginAttack,chooseAttack,BREAKWATER}=await import('/demos/glacier-boss/boss.js?boss=7');
    const {useDetail}=await import('/js/detail.js?v=0.29.0');
    const positions=[{x:148,y:80},{x:176,y:52},{x:146,y:26},{x:176,y:94}],results=[];
    const check=(name,ok,detail)=>results.push({name,ok:!!ok,detail});
@@ -31,7 +31,7 @@ try{
    for(const phase of [1,2,3]){
     const {g}=make(phase);Object.assign(g.player,{x:90,y:60});
     const t=g.spawnEnemy('hunterTorpedo',150,65,{angle:Math.PI,phase,byBoss:true});
-    tick(g,.1);check('phase '+phase+': fast initial flight',Math.abs(Math.hypot(t.vx,t.vy)-[0,120,138,156][phase])<.001);
+    tick(g,.1);check('phase '+phase+': fast initial flight',Math.abs(Math.hypot(t.vx,t.vy)-[0,132,152,172][phase])<.001);
     const a=t.angle;tick(g,.05);check('phase '+phase+': guidance starts after short roof clearance',t.angle!==a&&t.T.hitTest(t,t.x+3,t.y+1,1,1)==='hit');
     tick(g,.25,{dx:1,dy:1,fire:false});const p=g.playerCenter(),lead=[0,.14,.17,.20][phase],v=80/Math.SQRT2;
     check('phase '+phase+': precise motion prediction',Math.abs(t.aimX-p.x-v*lead)<.01&&Math.abs(t.aimY-p.y-v*lead)<.01,{target:[t.aimX,t.aimY],player:p});
@@ -106,7 +106,7 @@ try{
   // Use the actual UI to freeze a wave in flight and restart it cleanly.
   await page.locator('#action').click();await page.evaluate(async()=>{
    const h=window.__boss,g=h.game;h.advance(11);g.speech.reset();
-   const {beginAttack,clearThreats}=await import('/demos/glacier-boss/boss.js?boss=6');clearThreats(g);
+   const {beginAttack,clearThreats}=await import('/demos/glacier-boss/boss.js?boss=7');clearThreats(g);
    Object.assign(g.boss,{mode:'fight',phase:3,x:144,attack:null,idle:99});beginAttack(g.boss,g,'darts');h.advance(1.4);
   });
   await page.locator('#pause').click();const paused=await page.evaluate(()=>JSON.stringify({b:window.__boss.game.boss.x,ds:window.__boss.game.enemies.map(d=>[d.id,d.x,d.y])}));

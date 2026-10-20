@@ -22,11 +22,11 @@ try{
   page.on('pageerror',e=>errors.push(String(e)));
   page.on('request',r=>{if(!r.url().startsWith(base)&&/^https?:/.test(r.url()))external.push(r.url());if(/\/music\/.*\.mp3/.test(r.url()))music.push(r.url());});
   await page.goto(base+'demos/glacier-boss/'+phone.q);await page.waitForFunction(()=>window.__boss?.artworkReady);await page.evaluate(()=>window.__boss.frozen=true);
-  check(phone.name+': supplied artwork loaded',await page.evaluate(()=>window.__boss.game.bg.loaded&&document.querySelector('.eyebrow').textContent.endsWith(' 6.4')));
+  check(phone.name+': supplied artwork loaded',await page.evaluate(()=>window.__boss.game.bg.loaded&&document.querySelector('.eyebrow').textContent.endsWith(' 7')));
   await page.locator('#action').tap();await page.evaluate(()=>window.__boss.advance(1));
   const result=await page.evaluate(async()=>{
    const {BattlefieldBackground}=await import('/demos/glacier-boss/battlefield.js?battle=4');
-   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=6.4');
+   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=7');
    const {useDetail}=await import('/js/detail.js?v=0.29.0');
    const g=window.__boss.game,bg=g.bg;
    const canvas=document.createElement('canvas');canvas.width=832;canvas.height=576;

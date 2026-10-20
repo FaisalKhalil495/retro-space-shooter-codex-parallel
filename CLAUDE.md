@@ -754,6 +754,33 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      664 combat/earlier-content checks pass (699 total); supplied-art pixels,
      pause/restart, floor scrolling and three-phase gameplay isolation pass
      at both phone layouts.
+     **Boss preview revision 7 — approved harder fight and random gaps:**
+     the owner approved `docs/concepts/level-4-enemies/boss-difficulty-plan.md`,
+     including their amendment for unpredictable lance gaps. Broadsides now
+     fire 7/8/10 volleys at 106/118/130 pixels/s. Torpedo tracking speeds are
+     132/152/172 with turn limits 6.1/7.0/8.1 radians/s; keep their existing
+     guidance periods, lead, straight speeds, shootdown counters and salvos.
+     Lances move at 132/148/164, keeping their 1/2/3 walls and 28/26/24 gaps.
+     Each wall randomly selects a reachable gap when its full 1.15-second
+     warning starts, then keeps it fixed through passage. Avoid recent gaps
+     where alternatives exist; no fixed opposite-side or alternating pattern.
+     Use seeded gameplay dice once per selection, independent of rendering.
+     A thin dark marker edge improves contrast over the bright snowfield.
+     Reserve 0.15 seconds for reaction when bounding reachable centers using
+     normal diagonal movement; rush gaps remain above the hull. Fighter shots
+     rise from 82 to 94/104 in phases 2/3. Keep all nine patterns, all damage,
+     250 HP, locked warnings, 1.05-second vulnerable recovery, attack deadlines,
+     native counters/defenses, compact persistent rear waves and exact breakup.
+     The supplied picture, still smoke, rocky ice platform and all original
+     player systems, saving/audio and earlier content remain unchanged. Look
+     for BREAKWATER 7; campaign integration and new music remain later stages.
+     All 787 checks pass, including 88 new difficulty checks, 216 seeded
+     lance/rush routes per phone and 29 four-fighter full-pattern routes with
+     follow-up fire. The old gap rule fails the new checks. Both portable
+     layouts finish all phases and form four-fighter waves without external
+     calls/errors/save writes; earlier-game drawing-call counts stay unchanged.
+     The labeled phase-3 video selects attacks for review using native automated
+     touches and normal health/lives. Await the owner's phone difficulty review.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -992,10 +1019,11 @@ Breakwater's approved boss preview has been revised after the owner rejected
 its first design and difficulty; revision 5 adds heavy mortars, lance walls
 and tall ruptures. Approved revision 6 adds faster, tighter pursuit, more
 broadsides and three/four-fighter rear waves after a visible retreat. The
-owner then requested a supplied icy-world image with an animated distant
-invasion behind that unchanged fight; revision 6.1 implements this separate
-preview background and awaits phone review. The full level
-still requires a separately approved implementation stage.
+owner then revised the background to their supplied battlefield and a distinct
+rock/ice platform. Approved revision 7 strengthens the fight and replaces
+predictable lance-gap shifts with random reachable gaps that lock at warning
+start. The separate preview awaits phone review. The full level still requires
+a separately approved implementation stage.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**
 (3D, 3E) → **Android app** on Google Play (stage A) → iPhone app (optional)

@@ -254,6 +254,33 @@ All 35 background checks and 664 combat/earlier-content checks pass (699 total),
 including intact picture pixels and identical three-phase fights at both phone
 layouts. Original campaign/coast/combat runtime files remain unchanged.
 
+The owner explicitly approved **revision 7**, including their amendment for
+unpredictable Ice Lance gaps; see
+`docs/concepts/level-4-enemies/boss-difficulty-plan.md`. Complete this difficulty
+pass without asking again. Broadside becomes 7/8/10 volleys at 106/118/130 px/s;
+torpedoes track at 132/152/172 with turn limits 6.1/7.0/8.1 rad/s; lances travel
+at 132/148/164; fighter rounds travel at 94/104 in phases 2/3. These approved
+values supersede earlier exact values. All other attack values, cooldowns,
+250 HP, warnings, 1.05-second vulnerable recovery and native defenses remain.
+Each lance wall chooses a seeded random reachable gap at warning start, with
+no fixed alternation, avoiding recent gaps where alternatives exist. Keep
+28/26/24 widths and full 1.15-second warnings; lock the gap afterward. Rush
+choices must keep the overhead route clear. Select from centers reachable
+even diagonally, reserving 0.15 seconds of warning time for reaction. Rendering
+never rolls these dice; pause preserves the marked gap. A thin dark lip on
+the existing gap markers keeps them readable against bright snow. Keep all nine patterns,
+compact rear waves and exact breakup. Preserve the supplied battlefield,
+static smoke, revision-6.4 rock/ice shelf, original hero/flame/bullets, controls,
+audio/saving and earlier content. Look for **BREAKWATER 7**, deliver verified
+phone previews and await owner review. Full Level 4 and new music stay separate.
+Revision 7 passes 787 checks: 320 boss, 124 reinforcements, 88 difficulty,
+35 background and 220 earlier-content checks. The new suite includes 216
+seeded lance/rush routes per phone; 29 full-pattern four-fighter routes retain
+follow-up fire. The old gap rule fails the new checks. Both portable phone
+layouts finish all phases and form four-fighter waves with no external
+requests, browser errors or save writes. The selected-phase-3 video uses
+normal health/lives and labeled native automated touches.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already

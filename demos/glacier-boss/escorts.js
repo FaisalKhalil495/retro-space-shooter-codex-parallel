@@ -6,6 +6,7 @@ import { clamp } from '../../js/util.js?v=0.29.0';
 const base=LOCAL_TYPES.twinDart;
 export const FORMATION=[{x:148,y:80},{x:176,y:52},{x:146,y:26},{x:176,y:94}];
 export const escortLimit=phase=>phase>=3?4:phase===2?3:0;
+const SHOT_SPEED=[0,82,94,104];
 export const escorts=g=>g.enemies.filter(e=>!e.dead&&e.persistentEscort);
 export const escortAwake=g=>g.state==='playing'&&g.player.entering<=0&&g.boss?.mode==='fight'&&g.bossMayAttack(g.boss);
 const safeWindow=g=>{const a=g.boss?.attack;return escortAwake(g)&&(!a||a.stage==='recover'||a.name==='darts');};
@@ -47,9 +48,9 @@ export const ESCORT={...base,
       const m=e.T.muzzle(e),p=g.playerCenter();e.angle=Math.atan2(p.y-m.y,p.x-m.x);
       log(e,g,'warn',{duration:.45,angle:e.angle,x:m.x,y:m.y});sfx.tick();
     }else if(e.timer<=0){
-      const m=e.T.muzzle(e),s=g.fireShot(m.x,m.y,e.angle,82,'orb',true);
+      const speed=SHOT_SPEED[g.boss.phase],m=e.T.muzzle(e),s=g.fireShot(m.x,m.y,e.angle,speed,'orb',true);
       s.escort=true;g.escortShotAt=g.time;e.lastShotAt=g.time;
-      log(e,g,'fire',{angle:e.angle,speed:82,x:m.x,y:m.y});sfx.tick();
+      log(e,g,'fire',{angle:e.angle,speed,x:m.x,y:m.y});sfx.tick();
       e.shots=(e.shots||0)+1;e.mode='wait';e.timer=1.15;e.charge=0;
     }
   }

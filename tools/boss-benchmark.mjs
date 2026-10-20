@@ -10,7 +10,7 @@ try{
  const p=await browser.newPage({viewport:{width:915,height:412}});await p.goto(base+'demos/glacier-boss/');await p.waitForFunction(()=>window.__boss?.artworkReady);await p.evaluate(()=>window.__boss.frozen=true);
  const metrics=await p.evaluate(async()=>{
   const {makePilot}=await import('/tools/boss-review-pilot.js');
-  const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=6');const {Game}=await import('/js/game.js?v=0.29.0');const {useDetail}=await import('/js/detail.js?v=0.29.0');
+  const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=7');const {Game}=await import('/js/game.js?v=0.29.0');const {useDetail}=await import('/js/detail.js?v=0.29.0');
   const fights=[];
   for(const specials of [false,true])for(const type of ['breakwater','warden']){
    const g=type==='breakwater'?new BossGame():new Game({level:3,startAt:'checkpoint'});g.rand=()=>.45;g.weapons.reset();g.health=1000000;g.player.invuln=0;

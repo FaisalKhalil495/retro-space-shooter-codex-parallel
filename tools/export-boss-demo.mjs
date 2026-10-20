@@ -53,7 +53,7 @@ html = html.replace('<a class="back" href="../../">Back to Ember Drift</a>', '')
 // The portable bootstrap supplies its own embedded artwork. Discard the
 // served page's relative image initializer, including for non-file viewers.
 html = html.replace(/\s*<script>globalThis\.__battleEmbeddedArt \|\|=.*?<\/script>/, '');
-html = html.replace('<script type="module" src="main.js?boss=6.4"></script>', bootstrap);
+html = html.replace('<script type="module" src="main.js?boss=7"></script>', bootstrap);
 await mkdir(dirname(resolve(output)), { recursive: true });
 await writeFile(output, html);
 console.log(`Exported ${Object.keys(sources).length} modules in one HTML file: ${resolve(output)}`);

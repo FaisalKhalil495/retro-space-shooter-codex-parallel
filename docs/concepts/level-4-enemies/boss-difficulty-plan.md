@@ -1,21 +1,20 @@
-# Breakwater — proposed difficulty pass
+# Breakwater — approved difficulty pass, revision 7
 
-Status: proposed for owner review. The request is to make the current fight
-harder. This document does not record approval of these particular values;
-no runtime tuning changes are included. The owner subsequently requested
-unpredictable Ice Lance gaps; that amendment is included below. Approval of
-the complete difficulty pass is still pending.
+Status: the owner explicitly approved this complete plan, including the random
+Ice Lance gap amendment, and instructed us to build it. Implemented in the
+separate preview as BREAKWATER 7. All approved target values below were kept;
+validation and portable delivery are recorded in the boss README.
 
 Scope: the separate Breakwater preview in
 `FaisalKhalil495/retro-space-shooter-codex-parallel` only. Never modify or
 publish against `retro-space-shooter` or `retro-space-shooter-codex`.
 The campaign, earlier levels and both other glacier demos stay unchanged.
 
-## Proposed changes
+## Approved changes
 
 Each slash-separated group below means phase 1 / phase 2 / phase 3.
 
-| Attack | Current | Proposed |
+| Attack | Before revision 7 | Revision 7 |
 | --- | --- | --- |
 | Broadside | 6 / 7 / 8 volleys; 98 / 107 / 116 pixels per second | 7 / 8 / 10 volleys; 106 / 118 / 130 pixels per second |
 | Hunter Torpedoes | Tracking speed 120 / 138 / 156; turning limit 5.5 / 6.3 / 7.2 radians per second | Tracking speed 132 / 152 / 172; turning limit 6.1 / 7.0 / 8.1 radians per second |
@@ -64,7 +63,7 @@ to react after their warnings. Keep all nine existing attack patterns.
 - The supplied background, static smoke, revision-6.4 rock/ice platform,
   exact original hero/flame/bullets, controls, audio, saving and ten-part breakup.
 
-## Review and delivery after approval
+## Required review and delivery
 
 Run complete normal-movement no-hit routes for every affected attack and
 combination, with all four fighters alive and at several boss positions.

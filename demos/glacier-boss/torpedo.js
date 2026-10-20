@@ -22,8 +22,8 @@ const circle=(e,x,y,w,h)=>{
   const dx=Math.max(x-cx,0,cx-x-w),dy=Math.max(y-cy,0,cy-y-h);
   return dx*dx+dy*dy<2.25?'hit':null;
 };
-export const HUNT=[0,2,2.3,2.6],TURN=[0,5.5,6.3,7.2],LEAD=[0,.14,.17,.20];
-export const HUNT_SPEED=[0,120,138,156],LOCK_SPEED=[0,148,166,184],EJECT=.12,LIFETIME=4.5;
+export const HUNT=[0,2,2.3,2.6],TURN=[0,6.1,7,8.1],LEAD=[0,.14,.17,.20];
+export const HUNT_SPEED=[0,132,152,172],LOCK_SPEED=[0,148,166,184],EJECT=.12,LIFETIME=4.5;
 export const HUNTER_TORPEDO={
  hp:2,score:15,noTarget:true,ram:2,gore:{metal:2},explodeSize:.3,
  init(e,g){e.w=7;e.h=4;e.mode='hunt';e.trail=0;e.phase=e.phase||1;e.hunt=e.hunt??HUNT[e.phase];e.lastPlayer=g.playerCenter();},

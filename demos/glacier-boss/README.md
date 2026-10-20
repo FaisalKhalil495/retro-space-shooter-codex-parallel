@@ -1,4 +1,4 @@
-# Breakwater — separate boss preview, revision 6.4
+# Breakwater — separate boss preview, revision 7
 
 The owner supplied a finished icy battlefield, a clean snowfield and a
 matching green-screen wreck layer. Since revision 6.3 the finished picture stays
@@ -10,7 +10,7 @@ no green backing is rendered in play.
 See [asset provenance](assets/README.md) for the three original uploads.
 The accepted coast/combat demos and original campaign keep their own worlds.
 
-Look for **BREAKWATER 6.4**. The owner allowed smoke to stay still if realistic
+Look for **BREAKWATER 7**. The owner allowed smoke to stay still if realistic
 animation is difficult. It overlaps wrecks/cliff in these still pictures, so
 it remains exactly as pictured. No procedural plumes, roof flares, added
 flying scenery, tint, camera drift or distortion remain. The 16:9 finished
@@ -24,13 +24,19 @@ scrolling tile boundary.
 Everything renders behind gameplay, with no new damage, targets, points,
 projectiles, audio or save writes. Shared pictures are prepared before play.
 
-All revision-6 combat rules, original hero/flame/bullets, compact enemies,
-controls, defenses, floor y=130 and exact ten-part destruction are unchanged.
+Revision 7 implements the approved harder fight and unpredictable Ice Lance
+gaps. Broadsides last longer and travel faster, torpedoes track faster and
+turn faster, lance walls move faster and fighters fire faster rounds. See the
+[approved difficulty plan](../../docs/concepts/level-4-enemies/boss-difficulty-plan.md).
+Preserve 250 HP, all nine patterns, damage, warning times, vulnerable recovery,
+compact enemies, original hero/flame/bullets, controls, native defenses,
+floor y=130 and exact ten-part destruction.
 
 The owner approved much stronger torpedo pursuit, more broadsides and larger
 fighter groups arriving from behind the boss after a visible retreat. See the
 [approved plan](../../docs/concepts/level-4-enemies/boss-reinforcements-plan.md).
-These revision-6 mechanics remain in 6.4. The campaign stays v0.29.0 with three levels.
+Its rear-wave maneuver and persistent fighters remain in revision 7. The
+campaign stays v0.29.0 with three levels.
 Revision 5.1's camera and ship-visibility fixes remain in place: Ice Lances and
 retained wreckage follow screen shake beneath the original hero and bullets.
 
@@ -44,8 +50,9 @@ retained wreckage follow screen shake beneath the original hero and bullets.
 3. Watch the rear gun's mortar arcs and marked circles. Destroy a shell with
    three hits or maneuver away before it splits into six fragments. Blast
    centers and direct shell contact cost three blocks.
-4. Follow the marked gaps through the faster lance walls. Later walls change
-   the gap; a lance costs two blocks. The rush sequence leaves an overhead gap.
+4. Follow each marked gap through the faster lance walls. Every wall chooses
+   a random reachable gap; once marked it stays fixed. A lance costs two
+   blocks. The rush sequence leaves a random overhead gap clear of the hull.
 5. Move sideways away from each marked ice crack. Ruptures reach the top of
    the flight area and cost three blocks. They collapse quickly; shooting
    cannot break them. Each later strike acquires a new position, then locks it.
@@ -72,9 +79,9 @@ curved rockets to reach the chamber; additional rests are 0.45/0.30/0.18 s.
 
 | Phase | Attack progression |
 | --- | --- |
-| 1 | Six-volley broadside, two torpedoes, one lance wall, two Cluster Mortars. |
-| 2 | Introduce two ruptures and a three-fighter rear wave; seven-volley broadside, three torpedoes, two lance walls and three mortars. |
-| 3 | Introduce rush with lances and torpedoes then two ruptures; eight-volley broadside, up to four fighters, four standalone torpedoes, three lance walls, four mortars and three standalone ruptures. |
+| 1 | Seven-volley broadside, two torpedoes, one lance wall, two Cluster Mortars. |
+| 2 | Introduce two ruptures and a three-fighter rear wave; eight-volley broadside, three torpedoes, two lance walls and three mortars. |
+| 3 | Introduce rush with lances and torpedoes then two ruptures; ten-volley broadside, up to four fighters, four standalone torpedoes, three lance walls, four mortars and three standalone ruptures. |
 
 After introductions, selection excludes the last two attacks, reacts to high/low
 positions and gives combinations a three-attack cooldown. A combination recurs
@@ -98,11 +105,18 @@ neither its existing recurrence guarantee nor the broadside deadline is starved.
   the burst. Destroyed shells, phase changes and fatal impacts never release
   a delayed burst. Blast centers respect native shields, hit protection and entry.
 - **Ice Lances:** native enemy projectiles with cached 16×6 ice artwork around
-  their original 3×3 contact square. Speeds 120/132/144 pixels/s, two blocks.
+  their original 3×3 contact square. Speeds 132/148/164 pixels/s, two blocks.
   Standalone patterns fire 1/2/3 walls; rush-with-lances fires one phase-3 wall.
   Every wall gets 1.15 s warning, with a fixed 28/26/24-pixel marked gap.
-  Reacquire and shift the next gap at least 20 pixels after the old wall clears.
-  Rush gaps remain above the hull (center no lower than y=88). Native bombs
+  Choose a fresh random reachable center for every wall, including the first,
+  after the old wall clears. Centers run from y=30 to 110 in two-pixel steps;
+  rush choices stop at 88 to clear the hull. Prefer centers at least 20 pixels
+  from both recent gaps; fall back to avoiding the last gap, then all reachable
+  centers if needed. Use one seeded gameplay roll at warning start. Bound the
+  center using the player's actual hitbox and diagonal speed, with 0.15 seconds
+  reserved for reaction during the 1.15-second warning. Mark and lock the gap;
+  never change it in response to later movement, drawing or pause. The existing
+  pale boundary lines have thin dark edges for contrast over bright snow. Native bombs
   clear the projectiles. They use the original projectile movement/defense rules;
   local cached artwork overlays the existing ice drawing without shared changes.
 - **Glacier Ruptures:** one warned column at a time, outside the hull's halo.
@@ -126,11 +140,11 @@ rounds plus two escort rounds. Different transient patterns only overlap inside
 explicit combinations. Phase dialogue/player deaths clear transient hazards
 and retain harmless fighters. Boss defeat and restart clear all fighters too.
 
-## Revised pursuit, broadsides and reinforcements
+## Current pursuit, broadsides and reinforcements
 
-**Broadside:** 6/7/8 volleys of five rounds, with a new aim and locked warning
+**Broadside:** 7/8/10 volleys of five rounds, with a new aim and locked warning
 for each. Preserve initial warnings 0.95/0.85/0.75 s, subsequent warnings
-1.10/1.00/0.95 s, speeds 98/107/116 pixels/s, 0.22-radian spread and center/outer
+1.10/1.00/0.95 s, speeds 106/118/130 pixels/s, 0.22-radian spread and center/outer
 damage of two/one blocks. The chamber opens 0.30 s before repeat volleys.
 
 **Hunter Torpedoes:** unchanged 7×4, 2 HP, 15 points and two-block contact;
@@ -140,12 +154,12 @@ for the first 0.12 s while clearing the roof. Then use these guidance values:
 
 | Phase | Tracking speed | Turn limit | Tracking duration | Prediction | Straight speed |
 | --- | --- | --- | --- | --- | --- |
-| 1 | 120 px/s | 5.5 rad/s | 2.0 s | 0.14 s | 148 px/s |
-| 2 | 138 px/s | 6.3 rad/s | 2.3 s | 0.17 s | 166 px/s |
-| 3 | 156 px/s | 7.2 rad/s | 2.6 s | 0.20 s | 184 px/s |
+| 1 | 132 px/s | 6.1 rad/s | 2.0 s | 0.14 s | 148 px/s |
+| 2 | 152 px/s | 7.0 rad/s | 2.3 s | 0.17 s | 166 px/s |
+| 3 | 172 px/s | 8.1 rad/s | 2.6 s | 0.20 s | 184 px/s |
 
-This raises tracking speed by 62/73/81% and more than doubles turning strength.
-Guidance remains finite; afterward the missile commits straight. Lifetime is
+Revision 7 raises tracking speed about 10% from revision 6 and increases
+turning strength with it. Guidance remains finite; afterward the missile commits straight. Lifetime is
 at most 4.5 s; leaving the flight area or shooting one down ends it earlier.
 Rupture follow-up warnings still wait for every surviving missile to commit.
 
@@ -162,8 +176,9 @@ at the phase's normal speed before opening the chamber for recovery.
 
 Surviving fighters keep their HP across phases and respawns. Every replacement
 uses the same retreat and rear approach and fills only missing lanes. No fighters
-launch from the ship. The 0.45 s locked firing warnings, 82 px/s rounds, 1.15 s
-individual rest, minimum 1.10 s between shots and two-round escort cap remain.
+launch from the ship. Round speeds are now 94/104 px/s in phases 2/3. The 0.45 s locked firing
+warnings, 1.15 s individual rest, minimum 1.10 s between shots and two-round
+escort cap remain.
 Give the longest-waiting ready fighter its turn so all four get to fire. Cancel
 warnings through dangerous boss patterns and restart them fully afterward.
 
@@ -182,34 +197,39 @@ recorded music. Existing synthesized effects and option settings are reused.
 
 ## Validation and delivery
 
-Revision 6.4 retains the background checks introduced for the supplied picture: three
-independent original-file SHA-256 checks, a full source-to-render pixel
-comparison at the native detail scale, fixed backdrop/smoke at six times,
-no green-screen pixels, foreground shelf scrolling, shared cached artwork,
-canvas-state restoration, and no live painting/readbacks or combat RNG calls.
-Original opaque hero pixels stay unchanged over the image. Complete matching
-three-phase fights with active/inert scenery verify gameplay isolation on
-both phone layouts, along with pause/resume/restart and no extra save/audio/
-external-network activity. The 664 combat and earlier-content checks remain.
-Same-browser drawing samples are cloud measurements, not physical phone FPS.
-All **699 checks pass**: 35 picture/background checks plus those 664 existing
-checks. The portable copy embeds the exact battlefield JPEG and cached shelf
-painter, completes every phase and exercises a four-fighter rear wave on both phone layouts, with no
-external resource requests, browser errors or save writes. Its progression
-fixture is invulnerable and proves function, not human difficulty. The new
-14-second video is a fresh start using native touch controls and normal
-health/lives, with no skipped entrance or selected-phase/HP/position edits.
+All **787 checks pass**: 320 boss, 124 reinforcement, 88 new difficulty,
+35 battlefield, 101 regular-combat, 49 smoke, 35 seeded-level (seed 28) and
+35 scenery checks. The new suite exercises 216 seeded complete lance/rush
+routes per phone across all phases, three boss positions and top/middle/bottom
+player heights, with persistent fighters in phases 2/3. It checks random first
+walls, varied direction/jump distances without simple alternation, exact
+seed replay independent of drawing, one gameplay roll per selection, full
+warnings, fixed marked positions, high-contrast boundary pixels, normal-input
+no-hit movement, overhead rush clearance and higher fighter shot speeds.
+Restoring only the old gap rule makes these functional checks fail.
 
-Revision 6's **444 boss and 220 existing checks (664 total)** cover 101 combat,
-49 smoke, 35 seeded-level (seed 28) and 35 scenery checks. Twenty-nine complete
-no-hit scenarios cover eight patterns: seven attacks with all four fighters,
-extra broadside positions and first/replacement rear waves. Each includes two
-seconds of follow-up escort fire.
-The portable HTML completes full wins at 915×412 and 874×402 with embedded
-artwork, zero external requests and no browser errors or save writes. Separately
-select a native phase-3 rear wave and verify all four fighters in the same copy:
-the fast laser fixture can win before that wave is chosen. The five earlier-game
-speed scenarios are sampled separately from the new background.
+The 29 complete full-pattern no-hit scenarios retain all four fighters and
+two seconds of follow-up fire, including five broadside positions and first/
+replacement rear waves. Several old routes take hits at the new speeds; the
+verified replacements use ordinary movement without shooting, invulnerability,
+health edits or teleporting. All approved target speeds and counts were kept.
+
+The picture checks retain three independent original-file SHA-256 checks,
+full source-to-render pixels, fixed backdrop/smoke at six times, no green
+backing, scrolling shelf, shared cached artwork and no live painting/readbacks
+or scenery RNG calls. Original opaque hero pixels remain unchanged. Complete
+matching three-phase fights with active/inert scenery pass at both phone
+layouts, alongside pause/restart and no extra save/audio/external activity.
+Earlier-game drawing-call counts remain 304/356/298/347/589, unchanged from
+the preceding revision. Cloud drawing samples do not establish phone FPS.
+
+The portable copy embeds the exact battlefield JPEG and all required modules,
+completes every phase and forms a selected four-fighter rear wave on both phone
+layouts without external requests, browser errors or save writes. Its
+invulnerable progression fixture proves function, not human difficulty.
+The revision-7 video selects phase 3 and its attack order for immediate review,
+with four fighters, normal health/lives and native automated touch inputs.
+It is labeled accordingly and does not claim an earned full playthrough.
 
 Focused checks cover real thumbs, safe areas, pause/replay, armor and all player
 specials, supplies, warning locks, phase escalation, bounded threats, native
@@ -237,24 +257,26 @@ physical-phone FPS. The owner's phone review decides.
 
 ```sh
 source /workspace/.cloud-onboarding/ember-drift/environment.sh
-node tools/boss-demo-test.mjs /tmp/ember-boss-v6-checks
-node tools/boss-reinforcements-test.mjs /tmp/ember-boss-v6-reinforcements
+node tools/boss-demo-test.mjs /tmp/ember-boss-v7-checks
+node tools/boss-reinforcements-test.mjs /tmp/ember-boss-v7-reinforcements
+node tools/boss-difficulty-test.mjs /tmp/ember-boss-v7-difficulty
 node tools/battlefield-test.mjs /tmp/ember-invasion-checks
-node tools/boss-benchmark.mjs /tmp/ember-boss-v6-benchmark
+node tools/boss-benchmark.mjs /tmp/ember-boss-v7-benchmark
 node tools/combat-demo-test.mjs /tmp/ember-combat-checks
 node tools/smoke-test.mjs /tmp/ember-smoke
 SEED=28 node tools/level-test.mjs /tmp/ember-levels
 node tools/coast-demo-test.mjs /tmp/ember-coast
 node tools/speed-test.mjs
-node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v6.4.html
+node tools/export-boss-demo.mjs /workspace/artifacts/glacier-coast-boss-v7.html
 ```
 
 Create smoke/level screenshot directories first and run suites sequentially.
 The portable HTML embeds the modules and the finished battlefield JPEG; verify
 full wins on both phone layouts without external resource requests or browser errors. Review
 older video fixtures are labeled as selected phase/attacks with normal health
-and actual touch inputs; the current preview records a fresh start. Videos
-are silent; the playable preview retains the original sound effects.
+and actual touch inputs. Revision 7 selects phase 3 and its attack order with
+four fighters; the visible label states this. Videos are silent; the playable
+preview retains the original sound effects.
 
 All runtime changes are local to `demos/glacier-boss/`. Shared ENEMY_TYPES,
 LEVELS, player weapons, controls, saves, menus, audio files, accepted coast and
