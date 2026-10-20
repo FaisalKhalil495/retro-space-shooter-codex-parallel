@@ -715,6 +715,29 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      All 32 updated background and 664 existing checks pass (696 total).
      Raster changes stay within the two roof regions at six sample times;
      full active/inert three-phase simulations match on both phone layouts.
+     **Boss preview revision 6.3 — owner-supplied battlefield pictures:** on
+     2026-10-20 the owner supplied `1000086584.jpg` (finished ringed-planet
+     battlefield with wrecks and smoke), `1000086605.jpg` (clean snowfield)
+     and `1000086606.jpg` (green-screen wreck layer). They explicitly allowed
+     leaving smoke still if realistic animation is difficult. Use the finished
+     image intact, preserving its 16:9 aspect at 208×117, with a two-pixel
+     extension of the final snow row above the native floor. The clean
+     snowfield supplies the scrolling floor texture; its collision remains
+     y=130. Preserve the green-screen image as a reference only: its scene
+     already exists in the finished composite, and green must never appear
+     in play. All three originals are retained byte-for-byte with SHA-256
+     records. Smoke is baked over wrecks/cliff and stays as pictured; remove
+     the earlier procedural smoke, roof fires and flares. Do not redraw the
+     supplied art or add warped/ghostlike effects. Boss mechanics, original
+     hero/flame/bullets, controls, audio/saving, exact breakup and all earlier
+     demos/campaign remain unchanged. Look for BREAKWATER 6.3 and await phone
+     review after delivery; this is still the separate preview.
+     All 35 updated picture/background and 664 existing checks pass (699).
+     Both portable phone layouts embed the exact two runtime JPEGs, finish
+     all phases and exercise four-fighter waves with no external requests,
+     browser errors or save writes. The 14-second video starts the actual
+     preview from the beginning with native touches and normal health/lives;
+     no skipped entrance or selected-phase/HP/position fixture is used.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.

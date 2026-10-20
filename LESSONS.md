@@ -224,6 +224,15 @@ The approved plan is `docs/concepts/level-4-enemies/boss-reinforcements-plan.md`
 
 ## 3. Look, sound and presentation
 
+- **Use the owner's supplied art directly.** On 2026-10-20 they supplied a
+  finished icy battlefield, a clean snowfield and a green-screen wreck layer,
+  allowing smoke to stay still if natural animation is difficult. Revision
+  6.3 keeps the finished picture's smoke, wrecks, defenses and ringed planet
+  intact; the clean snowfield supplies the ground. The green version is a
+  reference, not a separate view to show in play. Baked smoke overlaps scenery:
+  don't wobble ships/cliffs or add artificial plumes merely to animate it.
+  Preserve original upload bytes and verify both source hashes and the actual
+  aspect-preserving picture render. This supersedes the previous boss backdrop.
 - **Breakwater 6.1's aerial animation was rejected as ghostlike.** The owner
   prefers less motion or solid buildings/bases with smoke. Revision 6.2 uses
   opaque base clusters anchored to the snowy cliff, two localized roof fires
@@ -778,6 +787,18 @@ fewer rounds are needed.
   three-phase gameplay with scenery active/inert at both phone layouts. The
   owner still reviews actual phone readability and performance. Earlier demos
   retain their approved world; no campaign registration or extra audio.
+- Breakwater revision 6.3: the owner supplied a finished battlefield, clean
+  snowfield and green-screen wreck reference, allowing static smoke if natural
+  animation is difficult. Use the finished artwork directly and the clean
+  snowfield for the scrolling ground; archive the green version without
+  displaying it. Smoke overlapping wrecks/cliff stays still, preserving the
+  detailed source rather than warping structures or adding artificial effects.
+  Original-file hashes, full source-to-render pixels and six fixed-backdrop
+  samples now join the preservation checks: 35 background plus 664 existing
+  checks pass (699). Both portable phone layouts win and form four-fighter
+  waves with embedded JPEGs and no external requests/errors/save writes.
+  The 14-second video records a real fresh start with native touches and
+  normal health/lives, with no skipped entrance or selected-phase fixture.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

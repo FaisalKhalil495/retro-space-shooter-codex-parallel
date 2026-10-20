@@ -217,6 +217,28 @@ checks (696 total). Raster checks at six times, including a roof flare,
 allow movement only within the two roof regions above the scrolling floor.
 Full active/inert three-phase simulations match on both phone layouts.
 
+On 2026-10-20 the owner supplied three new pictures and requested them as
+the background, explicitly allowing the smoke to stay still if realistic
+animation is difficult. Revision **6.3** uses the finished `1000086584.jpg`
+as the intact battlefield, including its detailed baked smoke, ringed planet,
+defenses and crashed ships. Use `1000086605.jpg` for the scrolling foreground
+snow strip. Preserve `1000086606.jpg` as the supplied green-screen reference;
+do not display its green backing or key it over the already finished composite.
+All three original JPEG files are preserved byte-for-byte in boss assets.
+The smoke overlaps the wrecks/cliff, so preserve it as pictured rather than
+warp those objects or add artificial plumes. Remove 6.2's roof-smoke/fire/flare
+effects. This directly authorized background feedback supersedes the earlier
+boss scenery only. Keep every fight value, hero/flame/bullet, control, save,
+audio and destruction rule unchanged, with the same solid floor at y=130.
+Earlier campaign/coast/combat demos remain unchanged. Look for **BREAKWATER
+6.3**; await phone review after this correction. Full Level 4 integration
+and new music remain separate unapproved stages.
+Revision 6.3 passes 35 picture/background checks and the 664 preserved checks
+(699 total). Both portable phone layouts embed the two exact runtime JPEGs,
+complete all phases and show the four-fighter wave without external requests,
+errors or save writes. A 14-second video uses a fresh start and native touches,
+with normal health/lives and no skipped entrance or fixture edits.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already
@@ -315,7 +337,8 @@ node tools/coast-demo-test.mjs <screenshot-directory>
 
 Use `PLAYWRIGHT_PATH` when Playwright is installed outside the checkout. In the
 prepared cloud environment, source
-`/workspace/.cloud-onboarding/retro-space-shooter/environment.sh` if present.
+`/workspace/.cloud-onboarding/ember-drift/environment.sh` if present (older
+machines used `/workspace/.cloud-onboarding/retro-space-shooter/environment.sh`).
 Put generated screenshots outside the checkout and run suites sequentially.
 Both tests manage their own local servers. Use `tools/speed-test.mjs` for
 drawing changes and compare performance on the same machine. Simulated iPhone
