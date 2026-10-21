@@ -1,9 +1,9 @@
-# Proposed next stage — one continuous Level 4 mission preview
+# Approved stage — one continuous Level 4 mission preview
 
-Status: proposed on 2026-10-21 after the owner asked to move on from
-BREAKWATER 7. No approval of this new implementation stage is recorded yet.
-No runtime changes are included in this proposal. Revision 7 remains the
-current delivered boss fight; its 787 checks are the preservation baseline.
+Status: explicitly approved by the owner on 2026-10-21 and implemented as
+LEVEL 4 PREVIEW 1 under `demos/glacier-level/`. See its README for actual
+counts, timing, verification and phone review. Breakwater 7 and the other
+previews remain unchanged. Campaign integration and new music stay separate.
 
 ## Result to review
 
@@ -18,7 +18,7 @@ Work only in `FaisalKhalil495/retro-space-shooter-codex-parallel`, using the
 existing checkout and preview branch. Never modify, push, merge, open PRs,
 or deploy against `retro-space-shooter` or `retro-space-shooter-codex`.
 
-## Proposed mission progression
+## Approved mission progression
 
 | Section | Combat |
 | --- | --- |
@@ -67,7 +67,7 @@ shrink hit areas, or alter the seven accepted individual enemy behaviors.
   writes, new campaign entry, level unlock, menu changes or save migration.
   Full campaign connections and permanent progress remain a later stage.
 
-## Verification and delivery after approval
+## Verification and delivery
 
 Verify a complete regular-combat-to-boss run, all seven regular types, three
 boss phases, preserved resources through the transition, supply contents,

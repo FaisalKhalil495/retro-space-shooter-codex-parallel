@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0f1c">
+  <title>Glacier Coast — full mission preview</title>
+  <link rel="icon" href="../../icons/icon-192.png">
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;position:fixed;inset:0;overflow:hidden;background:#0b0f1c;color:#efe3cf;font-family:ui-monospace,Menlo,monospace;touch-action:none;overscroll-behavior:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+    #screen{position:fixed;inset:0;display:block;touch-action:none}
+    .overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:max(12px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));background:#0b0f1cbb}
+    [hidden]{display:none!important}.card{width:min(560px,76vw);padding:18px;text-align:center;background:#141a2ef5;border:1px solid #34406a;border-radius:12px}
+    .eyebrow{font-size:10px;color:#c98f4a;letter-spacing:.1em;margin:0 0 7px}h1{margin:0 0 8px;font-size:clamp(18px,5vh,28px);color:#f2cf8a}p{margin:8px 0;font-size:12px;line-height:1.5}
+    button,a{font:inherit}button{min-height:44px;padding:9px 16px;border:1px solid #69765e;border-radius:7px;color:#efe3cf;background:#293331;cursor:pointer;touch-action:manipulation}
+    button:disabled{opacity:.55;cursor:wait}#choices{display:flex;gap:10px;margin:12px 0 0}#choices button{flex:1;font-size:12px}small{display:block;font-size:10px;line-height:1.5;margin-top:5px;color:#c5c8b5}
+    #action{background:#e3a857;color:#0b0f1c;border-color:#f2cf8a;font-weight:bold;margin:8px}#choose{background:transparent;font-size:12px;margin:8px}
+    #pause{position:fixed;width:38px;height:38px;min-height:38px;padding:0;background:#1b2238dd;border:1px solid #34406a;font-size:18px}#pause::before,#pause::after{content:'';position:absolute;top:10px;width:5px;height:16px;background:#efe3cf}#pause::before{left:10px}#pause::after{right:10px}
+    #rotate{z-index:5;background:#0b0f1c;text-align:center}#rotate h1{font-size:20px}.back{display:inline-block;color:#9fb0d0;font-size:11px;padding:8px;margin-top:6px}
+    @media(max-height:350px){.card{padding:10px}p{margin:5px 0}#choices{margin-top:6px}}
+  </style>
+</head>
+<body>
+  <canvas id="screen" aria-label="Glacier Coast mission and Ember Drift touch controls"></canvas>
+  <button id="pause" type="button" aria-label="Pause mission" hidden></button>
+  <div id="panel" class="overlay"><section class="card" aria-labelledby="heading">
+    <p class="eyebrow">EMBER DRIFT · LEVEL 4 PREVIEW 1</p>
+    <h1 id="heading">GLACIER COAST</h1>
+    <p id="message">Loading the icy battlefield…</p>
+    <button id="action" type="button" disabled>Start full mission</button>
+    <button id="restart" type="button" hidden>Restart mission</button>
+    <button id="checkpoint" type="button" hidden>Retry boss · score from 0</button><br>
+    <a class="back" href="../../">Back to Ember Drift</a>
+  </section></div>
+  <div id="rotate" class="overlay" hidden><section><h1>Turn your phone sideways</h1><p>Ember Drift is played in landscape.</p></section></div>
+  <script>globalThis.__battleEmbeddedArt ||= new URL('../glacier-boss/assets/icy-battlefield.jpg?battle=3',document.baseURI).href;</script>
+  <script type="module" src="main.js?mission=1"></script>
+</body>
+</html>

@@ -781,6 +781,34 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      calls/errors/save writes; earlier-game drawing-call counts stay unchanged.
      The labeled phase-3 video selects attacks for review using native automated
      touches and normal health/lives. Await the owner's phone difficulty review.
+     **Full mission preview 1 — explicitly approved 2026-10-21:** join the
+     approved pieces in `demos/glacier-level/` without registering a campaign
+     level. Schedule 80 regular craft in 20/26/34 sections over three minutes,
+     then clear surviving threats before the warning and exact Breakwater 7.
+     Cap regular actors at four, including incoming ones; stagger by at least
+     0.9 seconds and defer busy lanes. Expire stale slots after 8 seconds
+     (12 for heavy flyers), recording skipped slots rather than bursting in
+     late groups. Bombers/hunters reserve the sky and enter alone among flyers;
+     other flyers use two clear lanes, ground actors stay on the flat floor.
+     Use the ten native level supply pods, carry health/lives/score/weapons/
+     timed powers through the boss transition without a reset, and offer an
+     in-session zero-score boss retry after reaching its warning. Retry uses
+     native fresh values: three lives, five health, no special or timed powers.
+     Full replay clears the checkpoint; nothing is saved permanently. Preserve
+     all earlier content, scenery, original ship/bullets, controls, audio and
+     boss tuning/destruction. Immediately remove killed regular actors in this
+     mission so a last-frame bomb/charge shootdown cannot release fragments;
+     no shared or previously delivered preview code changes. Look for LEVEL 4
+     PREVIEW 1 and await phone review; new music/campaign connections stay later.
+     All 88 mission and 787 existing checks pass (875). The armed fixture
+     admits 80 and wins around 282.14 s; no-fire admits 60, expires 20 crowded
+     slots, and brings in the boss at 199.13 s, with all seven types. Actual
+     armed boss arrival is 183.51 s. Crowding peaks at four regular actors,
+     five including hazards, thirteen rounds, no visible regular overlap and
+     at least 43.65 pixels between padded boxes per column. Both portable
+     layouts complete all phases and test retry with no external requests,
+     errors or save writes. The labeled final-wave video uses native automated
+     touches and normal reset health/equipment; it is a selected section.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.
@@ -1022,8 +1050,9 @@ broadsides and three/four-fighter rear waves after a visible retreat. The
 owner then revised the background to their supplied battlefield and a distinct
 rock/ice platform. Approved revision 7 strengthens the fight and replaces
 predictable lance-gap shifts with random reachable gaps that lock at warning
-start. The separate preview awaits phone review. The full level still requires
-a separately approved implementation stage.
+start. The owner approved a continuous full-mission preview next; it is now
+implemented in `demos/glacier-level/` and awaits phone review. Campaign
+connections, permanent progress and new music still require later stages.
 
 **Order from here** (owner agreed, after v0.29.0): finish **levels 4 and 5**
 (3D, 3E) → **Android app** on Google Play (stage A) → iPhone app (optional)
@@ -1049,6 +1078,13 @@ it over. The owner tests on Android; ideally the friend checks iPhone each stage
 
 ## Code map
 
+- `demos/glacier-level/` — approved continuous full mission preview. Its local
+  `MissionRunner` handles 80 scheduled arrivals, safe lanes, original supply
+  pods, bounded approach and boss warning. `MissionGame` reuses Breakwater 7,
+  carries resources through the transition and implements an in-session boss
+  retry without saving. Main/UI retain native controls and pause behavior.
+  `tools/mission-demo-test.mjs` checks the full mission; `mission-benchmark.mjs`
+  samples drawing; `export-mission-demo.mjs <output.html>` makes the portable copy.
 - `demos/glacier-boss/` — approved separate Breakwater fight, with local boss
   and shootable-shell definitions, cached double-detail hull/flash/mask art,
   rear reinforcement arrivals using accepted Twin Darts, opening-chamber rules,

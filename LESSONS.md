@@ -848,6 +848,30 @@ fewer rounds are needed.
   are unchanged. The phase-3 video is labeled as selected attacks, with native
   automated touches and normal health/lives. Phone feedback remains the
   difficulty verdict.
+- Full mission preview 1: after Breakwater 7 the owner asked to move on and
+  explicitly approved the continuous mission plan. Reuse the accepted art,
+  all seven types and exact boss tuning in a separate scene, preserving earlier
+  previews and the three-level campaign. A fixed 80-arrival script needs bounded
+  admission rather than blindly spawning a timed backlog. Count incoming actors,
+  reserve a waiting heavy flyer's turn, space ground entries and expire stale
+  slots transparently; otherwise ordinary darts can starve every Wake Hunter.
+  Record both scheduled and actual counts, including no-fire crowding. Carry
+  the same player/weapon/power-up objects into the boss so health and equipment
+  do not silently reset. Keep the retry checkpoint in memory and test both
+  boss retry and full restart with actual taps. A last-frame hazard test found
+  the reused bomb/charge update could still burst after being shot down; a
+  mission-local kill hook removes killed actors immediately. Both new checks
+  failed before that fix and pass afterward, without editing earlier previews
+  or shared game behavior. Native regular rounds also retain ordinary ownership;
+  inherited boss-shot defaults must not label regular guns as boss weapons.
+  All 88 mission and 787 existing checks pass (875). Controlled armed runs
+  admit all 80; no-fire runs admit 60 and expire 20 crowded slots while showing
+  all seven types. No visible regular overlap and over 43.65 pixels of padded
+  clearance remain. Portable layouts finish all phases and test checkpoint
+  retry without external requests, errors or save writes. The final-wave video
+  is labeled as a selected section with normal reset health and native automated
+  touches. Await phone review of LEVEL 4 PREVIEW 1 before
+  permanent campaign integration and separately reviewed recorded music.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

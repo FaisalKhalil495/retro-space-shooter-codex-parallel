@@ -281,6 +281,34 @@ layouts finish all phases and form four-fighter waves with no external
 requests, browser errors or save writes. The selected-phase-3 video uses
 normal health/lives and labeled native automated touches.
 
+The owner explicitly approved the continuous full-mission preview on
+2026-10-21; see `docs/concepts/level-4-enemies/full-mission-plan.md`. It is
+implemented in **`demos/glacier-level/`**, labeled **LEVEL 4 PREVIEW 1**.
+Reuse all seven accepted regular types and exact Breakwater 7. Schedule
+20/26/34 individual craft over roughly three minutes, then safely drain
+regular threats, warn and bring in the boss. Four regular actors maximum,
+including incoming ones; crowded lanes defer entries and expire stale slots
+rather than creating a catch-up burst. Heavy flyers reserve their turn so
+all seven types appear. Preserve individual art/behaviors and the supplied
+picture, static smoke, rocky ice floor, original hero/flame/bullets and controls.
+Use the ten original level supply pods. Carry actual health/lives/score,
+weapons and remaining timed powers into the boss without a reset or free heal.
+Boss retry is in-session only: score 0, five health, three lives, ordinary gun,
+cleared powers/hazards and no replay of regular waves. Full restart clears the
+checkpoint. This preview performs no storage writes, campaign/menu changes,
+new music or deployment. A mission-local kill hook immediately removes shot-down
+regular hazards to prevent a final-frame bomb/charge burst; the delivered
+combat/boss previews and shared runtime files remain untouched. Deliver the
+portable mission/video and await phone review before campaign integration.
+Full mission preview 1 passes 88 focused checks plus the 787 preservation
+checks (875 total). The controlled armed fixture admits all 80; the no-fire
+fixture admits 60 and expires 20 crowded slots, with all seven types, no
+visible regular overlap and over 43.65 pixels of padded actor clearance.
+Both portable phone layouts complete all three boss phases with no external
+calls, browser errors or storage writes. The labeled final-wave video uses
+native reset health/equipment and automated touches, without ongoing edits.
+Earlier-game drawing-call counts remain unchanged; physical phone review is next.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already
@@ -375,6 +403,7 @@ For approved runtime changes, run the existing tests from the repository root:
 node tools/smoke-test.mjs <screenshot-directory>
 SEED=28 node tools/level-test.mjs <screenshot-directory>
 node tools/coast-demo-test.mjs <screenshot-directory>
+node tools/mission-demo-test.mjs <screenshot-directory>
 ```
 
 Use `PLAYWRIGHT_PATH` when Playwright is installed outside the checkout. In the
