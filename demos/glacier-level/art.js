@@ -1,11 +1,10 @@
-import { ART } from '../glacier-combat/art.js?combat=3';
 import { SPRITES } from '../../js/sprites.js?v=0.29.0';
 
 // Mission-local pictures. Old previews and the campaign retain their originals.
 // Atlas cells are sampled ONCE at quarter-pixel detail, never during combat.
 const SCALE=4;
 export const MISSION_ART={};
-export const SIZES={skiff:[30,10],anchor:[18,12],dart:[17,11],bomber:[34,9],roller:[30,13],needle:[34,11],hunter:[32,13]};
+export const SIZES={skiff:[30,10],anchor:[28,15],dart:[24,12],bomber:[34,9],roller:[30,13],needle:[34,11],hunter:[32,13]};
 function canvas(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c;}
 function finish(hi,w,h){
  const pic=canvas(w,h);pic.hi=hi;pic.detail=SCALE;
@@ -17,19 +16,8 @@ function finish(hi,w,h){
  for(let i=0;i<b.length;i+=4)if(b[i+3]){b[i]=232;b[i+1]=229;b[i+2]=204;}
  pic.flash.hi.getContext('2d').putImageData(im,0,0);return pic;
 }
-function legacy(key,w,h){
- const hi=canvas(w*SCALE,h*SCALE),c=hi.getContext('2d');c.imageSmoothingEnabled=false;
- c.drawImage(ART[key].idle.hi,0,0,hi.width,hi.height);
- // Visible quarter-pixel rivets and lit seams, clipped to the old silhouette.
- c.globalCompositeOperation='source-atop';c.fillStyle='#b5b7a0';
- for(let x=12;x<hi.width-7;x+=10)c.fillRect(x,Math.floor(hi.height*.55),1,1);
- c.fillStyle='#e6e6cf';c.fillRect(w,Math.floor(hi.height*.42),w,1);
- const idle=finish(hi,w,h),openHi=canvas(w*SCALE,h*SCALE),oc=openHi.getContext('2d');oc.imageSmoothingEnabled=false;oc.drawImage(ART[key].open.hi,0,0,openHi.width,openHi.height);
- return {idle,open:finish(openHi,w,h)};
-}
-for(const key of ['anchor','dart'])MISSION_ART[key]=legacy(key,...SIZES[key]);
 const atlas=new Image();
-export const artReady=new Promise((resolve,reject)=>{
+const fleetReady=new Promise((resolve,reject)=>{
  atlas.onerror=()=>reject(new Error('Invader artwork could not load'));
  atlas.onload=()=>{
   try{
@@ -54,13 +42,39 @@ export const artReady=new Promise((resolve,reject)=>{
      oc.globalCompositeOperation='source-atop';oc.fillStyle='#202a32';oc.fillRect(w*1.65,h*2.9,w*.65,h*.5);
      oc.fillStyle='#e0dcc1';oc.fillRect(w*1.65,h*2.9,1,h*.5);oc.fillRect(w*2.3-1,h*2.9,1,h*.5);
     }
-    MISSION_ART[key]={idle,open:finish(openHi,w,h)};
+    MISSION_ART[key]={idle,open:finish(openHi,w,h),source:'invaders.png'};
    }
    resolve();
   }catch(e){reject(e);}
  };
 });
 atlas.src=globalThis.__missionEmbeddedArt||new URL('assets/invaders.png?mission=2',document.baseURI).href;
+const remaining=new Image();
+const remainingReady=new Promise((resolve,reject)=>{
+ remaining.onerror=()=>reject(new Error('Anchor and Dart artwork could not load'));
+ remaining.onload=()=>{
+  try{
+   // State pairs share a fixed source frame. Opening armor must not resize
+   // the machine, move its feet or shift the gun between warning frames.
+   const cells={anchor:[[0,0,934,448],[0,448,934,439]],dart:[[934,0,840,451],[934,451,840,436]]};
+   for(const [key,states] of Object.entries(cells)){
+    const tiles=states.map(([x,y,w,h],i)=>{const tile=canvas(w,451),offset=i?(key==='anchor'?28:5):0;tile.getContext('2d').drawImage(remaining,x,y,w,h,0,offset,w,h);return tile;});
+    let x0=934,y0=451,x1=0,y1=0;
+    for(const tile of tiles){const d=tile.getContext('2d').getImageData(0,0,tile.width,tile.height).data;
+     for(let y=0;y<tile.height;y++)for(let x=0;x<tile.width;x++)if(d[(y*tile.width+x)*4+3]>=128){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x+1);y1=Math.max(y1,y+1);}
+    }
+    const [w,h]=SIZES[key],pictures=tiles.map(tile=>{
+     const hi=canvas(w*SCALE,h*SCALE),c=hi.getContext('2d');c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
+     c.drawImage(tile,x0,y0,x1-x0,y1-y0,0,0,hi.width,hi.height);return finish(hi,w,h);
+    });
+    MISSION_ART[key]={idle:pictures[0],open:pictures[1],source:'anchor-darts.png'};
+   }
+   resolve();
+  }catch(e){reject(e);}
+ };
+});
+remaining.src=globalThis.__missionExtraArt||new URL('assets/anchor-darts.png?mission=3',document.baseURI).href;
+export const artReady=Promise.all([fleetReady,remainingReady]);
 export const picture=e=>MISSION_ART[e.T.art][['warn','vent','aim'].includes(e.mode)?'open':'idle'];
 export function hit(e,x,y,w,h){
  const p=picture(e),x0=Math.max(0,Math.floor((x-e.x)*SCALE)),y0=Math.max(0,Math.floor((y-e.y)*SCALE)),x1=Math.min(p.hi.width,Math.ceil((x+w-e.x)*SCALE)),y1=Math.min(p.hi.height,Math.ceil((y+h-e.y)*SCALE));

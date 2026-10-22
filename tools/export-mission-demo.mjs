@@ -33,7 +33,9 @@ let html = await readFile(resolve(root, 'demos/glacier-level/index.html'), 'utf8
 const payload = JSON.stringify(sources).replace(/</g, '\\u003c');
 const art = await readFile(resolve(root, 'demos/glacier-boss/assets/icy-battlefield.jpg'));
 const invaders = await readFile(resolve(root, 'demos/glacier-level/assets/invaders.png'));
+const extraArt = await readFile(resolve(root, 'demos/glacier-level/assets/anchor-darts.png'));
 const bootstrap = `<script>
+globalThis.__missionExtraArt = 'data:image/png;base64,${extraArt.toString('base64')}';
 globalThis.__missionEmbeddedArt = 'data:image/png;base64,${invaders.toString('base64')}';
 globalThis.__battleEmbeddedArt = 'data:image/jpeg;base64,${art.toString('base64')}';
 const sources = ${payload};
@@ -56,7 +58,8 @@ html = html.replace('<a class="back" href="../../">Back to Ember Drift</a>', '')
 // served page's relative image initializer, including for non-file viewers.
 html = html.replace(/\s*<script>globalThis\.__battleEmbeddedArt \|\|=.*?<\/script>/, '');
 html = html.replace(/\s*<script>globalThis\.__missionEmbeddedArt \|\|=.*?<\/script>/, '');
-html = html.replace('<script type="module" src="main.js?mission=2"></script>', bootstrap);
+html = html.replace(/\s*<script>globalThis\.__missionExtraArt \|\|=.*?<\/script>/, '');
+html = html.replace('<script type="module" src="main.js?mission=3"></script>', bootstrap);
 await mkdir(dirname(resolve(output)), { recursive: true });
 await writeFile(output, html);
 console.log(`Exported ${Object.keys(sources).length} modules in one HTML file: ${resolve(output)}`);

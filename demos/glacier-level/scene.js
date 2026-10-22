@@ -1,6 +1,6 @@
 import { BossGame, battleReady as backgroundReady } from '../glacier-boss/scene.js?boss=7';
-import { artReady, HERO } from './art.js?mission=2';
-import { TYPES, spawn } from './enemies.js?mission=2';
+import { artReady, HERO } from './art.js?mission=3';
+import { TYPES, MISSION_ESCORT, spawn } from './enemies.js?mission=3';
 import { SPRITES } from '../../js/sprites.js?v=0.29.0';
 import { LEVELS } from '../../js/levels.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
@@ -77,7 +77,8 @@ export class MissionGame extends BossGame{
  get level(){return SCENE;}
  reset(){super.reset();this.runner=new MissionRunner(this);}
  spawnEnemy(type,x,y,opts={}){
-  return TYPES[type]&&!opts.persistentEscort?spawn(this,type,x,y,opts):super.spawnEnemy(type,x,y,opts);
+  if(type==='twinDart'&&opts.persistentEscort)return spawn(this,type,x,y,opts,MISSION_ESCORT);
+  return TYPES[type]?spawn(this,type,x,y,opts):super.spawnEnemy(type,x,y,opts);
  }
  drawPlayer(c,snap){
   const draw=c.drawImage;

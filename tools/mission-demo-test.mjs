@@ -33,7 +33,7 @@ try{
   await page.setViewportSize({width:phone.width,height:phone.height});await page.waitForFunction(()=>document.querySelector('#rotate').hidden);await page.locator('#action').tap();await page.evaluate(()=>window.dispatchEvent(new Event('blur')));
   check(phone.name+': app interruption pauses',await page.evaluate(()=>window.__mission.mode==='paused'));await page.locator('#restart').tap();
   const results=await page.evaluate(async()=>{
-   const {MissionGame,ARRIVALS,SUPPLIES,regulars}=await import('/demos/glacier-level/scene.js?mission=2');
+   const {MissionGame,ARRIVALS,SUPPLIES,regulars}=await import('/demos/glacier-level/scene.js?mission=3');
    const {Game}=await import('/js/game.js?v=0.29.0');const {LEVELS}=await import('/js/levels.js?v=0.29.0');
    const {useDetail}=await import('/js/detail.js?v=0.29.0');const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=7');
    const checks=[],record=(name,ok,detail)=>checks.push({name,ok:!!ok,detail});
@@ -97,7 +97,7 @@ try{
    const pixels=g=>{const c=document.createElement('canvas');c.width=416;c.height=288;const ctx=useDetail(c.getContext('2d'));ctx.scale(2,2);g.draw(ctx,v=>v);return ctx.getImageData(0,0,416,288).data;};const a=pixels(demo),b=pixels(ref);
    // Only the requested ship's interior colors may differ. Everything
    // outside its original body (flame, bullets, world effects) stays exact.
-   const {HERO}=await import('/demos/glacier-level/art.js?mission=2');
+   const {HERO}=await import('/demos/glacier-level/art.js?mission=3');
    const {SPRITES}=await import('/js/sprites.js?v=0.29.0');
    const old=SPRITES.player.hi.getContext('2d').getImageData(0,0,36,22).data;
    const fine=HERO.hi.getContext('2d').getImageData(0,0,72,44).data;

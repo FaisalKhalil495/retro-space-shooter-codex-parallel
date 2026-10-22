@@ -1,6 +1,7 @@
 import { LOCAL_TYPES } from '../glacier-combat/enemies.js?combat=3';
 import { target } from '../glacier-combat/art.js?combat=3';
-import { MISSION_ART, body, hit } from './art.js?mission=2';
+import { ESCORT } from '../glacier-boss/escorts.js?boss=7';
+import { MISSION_ART, body, hit } from './art.js?mission=3';
 
 const guns={skiff:[.015,.35],anchor:[.04,.34],dart:[.04,.5],bomber:[.5,.91],roller:[.205,.07],needle:[.012,.55],hunter:[.012,.48]};
 function line(c,e,snap,locked){
@@ -13,7 +14,7 @@ export const TYPES=Object.fromEntries(Object.entries(LOCAL_TYPES).filter(([,t])=
   t.update(e,dt,g);
   if(t.flies){
    // Leave clearance above the enlarged ground machines during a dive.
-   const limit=g.terrain.floorY-17-e.h;
+   const limit=g.terrain.floorY-19-e.h;
    if(e.y>limit){e.baseY-=e.y-limit;e.y=limit;}
   }else{
    // A departing skiff must not drive through a slower anchor ahead of it.
@@ -28,8 +29,24 @@ export const TYPES=Object.fromEntries(Object.entries(LOCAL_TYPES).filter(([,t])=
   body(e,c,snap);
  }
 }]));
-export function spawn(g,type,x,y,opts){
- const T=TYPES[type],pic=MISSION_ART[T.art].idle;
+export const MISSION_ESCORT={...ESCORT,
+ draw:TYPES.twinDart.draw,muzzle:TYPES.twinDart.muzzle,
+ hitTest(e,...r){return e.passive||e.arriving?null:hit(e,...r);},
+ shotTest(e,...r){return e.x+e.w<=208?hit(e,...r):null;},
+ init:ESCORT.init,
+ update(e,dt,g){
+  if(e.dead)return;
+  ESCORT.update(e,dt,g);
+  // Limit the lower pair's vertical sway so their wider wings never overlap
+  // or touch the hull. Rear entry, horizontal motion and firing stay native.
+  if(!e.passive){
+   if(e.lane===0)e.y=Math.min(e.y,81);
+   if(e.lane===3)e.y=e.arriving?94:93.5+Math.sin(e.t*1.1+e.lane)*.5;
+  }
+ }
+};
+export function spawn(g,type,x,y,opts,T=TYPES[type]){
+ const pic=MISSION_ART[T.art].idle;
  const e={type,T,x,y,w:pic.width,h:pic.height,hp:T.hp,maxHp:T.hp,t:0,flash:0,id:++g.nextId,...opts};
  T.init(e,g);g.enemies.push(e);g.audit.push({time:g.time,id:e.id,type,kind:'spawn'});return e;
 }

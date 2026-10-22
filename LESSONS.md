@@ -889,6 +889,25 @@ fewer rounds are needed.
   phone layouts finish with no external calls, errors or save writes. Drawing
   calls remain unchanged. Keep Breakwater's compact escorts and exact fight;
   await phone review.
+- Full mission preview 3: the owner's follow-up exposed a real incomplete
+  conversion: Anchor/Dart still enlarged old drawings, and an explicit boss
+  escort exception kept the tiny original sprite. Size tests alone had passed
+  while the actual visual request remained only partly fulfilled. Replace the
+  missing closed/open states from their original concepts and follow the actual
+  boss spawn path through draw, flash, collision and muzzle hooks. Test that all
+  seven types use detailed source art, not just enlarged canvases, and that real
+  boss calls spawn the same new Dart. Wider four-fighter wings overlap if the
+  old vertical sway is kept; bound the lower pair without changing shot timing
+  or retreat tactics. Register anchor feet across armor states to avoid a jump.
+  Reuse the 29 independent complete no-hit routes with all larger fighters alive;
+  both phone layouts pass them with no invulnerability or projectile removal.
+  Preserve delivered previews and the hero; use a new clear preview label/export
+  so the owner can distinguish the corrected version. All 1,006 checks pass,
+  including 53 art checks covering both weapon states and 78 checks for real
+  mission reinforcement behavior and complete no-hit routes at both phone sizes.
+  Portable layouts confirm all 80 arrivals, all phases and corrected enemy sizes
+  with no external calls, errors or saving. The native-touch clip visibly selects
+  regular waves and a four-fighter phase-3 reinforcement call for review.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

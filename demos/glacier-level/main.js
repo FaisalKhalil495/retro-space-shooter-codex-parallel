@@ -5,7 +5,7 @@ import { VIEW_W, VIEW_H, PAL } from '../../js/config.js?v=0.29.0';
 import { unlockAudio, suspendAudio, setVolumes } from '../../js/audio.js?v=0.29.0';
 import { setVibrate } from '../../js/feedback.js?v=0.29.0';
 import { save } from '../../js/save.js?v=0.29.0';
-import { MissionGame, battleReady } from './scene.js?mission=2';
+import { MissionGame, battleReady } from './scene.js?mission=3';
 
 const STEP = 1 / 120;
 const canvas = document.getElementById('screen');
@@ -119,7 +119,7 @@ function render(dt) {
   if (mode === 'playing') controls.draw(ctx, dt);
   ctx.fillStyle = PAL.textDim;
   ctx.font = '10px ui-monospace, Menlo, monospace';
-  ctx.fillText('LEVEL 4 PREVIEW 2', layout.leftZone.x + 8, layout.leftZone.y + layout.leftZone.h - 8);
+  ctx.fillText('LEVEL 4 PREVIEW 3', layout.leftZone.x + 8, layout.leftZone.y + layout.leftZone.h - 8);
 }
 
 function frame(now) {

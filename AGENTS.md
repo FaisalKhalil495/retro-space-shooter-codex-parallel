@@ -331,6 +331,27 @@ per frame. The selected-wave touch clip shows all seven types with normal
 health/lives. Await phone review; this does not authorize campaign integration
 or new music.
 
+The owner reported remaining old/small enemies after preview 2 and explicitly
+requested a correction. **Mission preview 3** replaces the missed Anchor Gun
+and Twin Dart legacy drawings with detailed reference-derived closed/open
+states. Sizes are now anchor 28×15 and dart 24×12; the other five retain their
+preview-2 art and sizes. All mission boss reinforcements also use that same
+24×12 Dart art, replacing the earlier 11×8 fallback. This supersedes preview
+2's compact-escort exception for this mission. Preserve the player, boss hull,
+attacks, HP/points, persistent-fighter tactics and all earlier previews. Keep
+alpha masks, muzzles, hit flashes and both weapon states consistent. Reserve
+19 pixels above the floor for enlarged ground machines, and limit the lower
+escort pair's vertical sway to keep all four wings separated above the hull.
+Audit actual spawns through the boss call, not only the regular wave table.
+Look for LEVEL 4 PREVIEW 3. All 1,006 checks pass: 88 mission, 53 art,
+78 mission-escort and 787 preservation checks. The 29 complete no-hit boss
+routes pass with larger escorts at both phone sizes. Both portable layouts
+finish all 80 arrivals and all three boss phases, verify the corrected sizes
+and retry UI, and make no external requests or save writes. Cached drawing
+stays at 93 calls/frame; physical phone review remains next. The labeled
+selected-wave/phase-3 clip shows four corrected rear fighters with native
+health/lives and automated touches. Await phone review.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already

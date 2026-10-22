@@ -829,6 +829,26 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      portable layouts finish all three phases without external calls, errors
      or save writes. Drawing calls remain unchanged; await phone review before
      campaign integration or new music.
+     **Full mission preview 3 — owner-requested correction:** preview 2 still
+     enlarged legacy Anchor/Dart paintings and deliberately left boss escorts
+     tiny. The owner reported these remaining old/small enemies. Replace both
+     regular types with detailed reference-derived art in closed/open states;
+     anchor 28×15, Dart 24×12. Route actual boss reinforcement spawns through
+     private mission art as well: all escorts use the same 24×12 Dart, new
+     alpha masks, muzzles and hit flashes. Preserve 2 HP/30 points, arrival
+     behind the retreating boss, survivor health, four-slot cap, warnings and
+     shot scheduler. Limit the lower pair's vertical sway for wing clearance;
+     reserve 19 pixels above the floor for larger ground units. Keep the five
+     already-detailed enemies, player, background, boss attacks/destruction,
+     earlier demos and three-level campaign unchanged. Audit both weapon states
+     and every actual reinforcement path. Look for LEVEL 4 PREVIEW 3 and await
+     phone review before a new stage. All 1,006 checks pass: 88 mission,
+     53 art, 78 mission-escort and 787 preservation checks. All 29 complete
+     no-hit boss routes pass with larger escorts at both phone sizes; both
+     portable layouts finish 80 arrivals/all phases and confirm larger real
+     reinforcements without external requests, errors or save writes. The
+     selected-wave/phase-3 touch clip shows four new fighters with normal
+     health/lives. Cached drawing stays at 93 calls per frame.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.

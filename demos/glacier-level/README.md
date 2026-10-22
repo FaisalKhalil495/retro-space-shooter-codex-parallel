@@ -1,9 +1,10 @@
-# Glacier Coast — full mission preview 2
+# Glacier Coast — full mission preview 3
 
 The owner explicitly approved this separate full mission on 2026-10-21.
-The owner requested larger, sharper ships on 2026-10-22.
-Look for **LEVEL 4 PREVIEW 2**. Three sections of regular combat lead into
-the unchanged Breakwater 7 fight. The campaign still has three levels;
+The owner requested larger, sharper ships on 2026-10-22, then reported
+remaining old/small enemies. Preview 3 completes the missed conversions.
+Look for **LEVEL 4 PREVIEW 3**. Three sections of regular combat lead into
+the Breakwater 7 fight with updated reinforcement art. The campaign still has three levels;
 the scenery, combat and boss previews remain available as delivered.
 
 ## Phone review
@@ -31,32 +32,38 @@ the scenery, combat and boss previews remain available as delivered.
 
 ## Larger, sharper mission artwork
 
-| Regular enemy | Previous size | Preview 2 size |
+| Regular enemy | Original combat size | Preview 3 size |
 | --- | --- | --- |
 | Shelf Skiff | 14×9 | 30×10 |
-| Anchor Gun | 12×8 | 18×12 |
-| Twin Dart | 11×8 | 17×11 |
+| Anchor Gun | 12×8 | 28×15 |
+| Twin Dart | 11×8 | 24×12 |
 | Crest Bomber | 18×10 | 34×9 |
 | Snow Roller | 16×10 | 30×13 |
 | Needle Wing | 16×8 | 34×11 |
 | Wake Hunter | 15×10 | 32×13 |
 
-Sizes are game pixels on the unchanged 208×144 world. Width grows 50–114%;
-source proportions keep long ships and wide bombers distinct rather than
-stretching every vehicle into the same box. Five transparent cutouts derive
-from the owner's original references; their drum wheels, swept fin, crescent
-wings, exposed bombs and twin skis remain recognizable. Anchor/dart retain
-accepted designs with added seams and rivets. Private cached pictures use four
-source pixels per game pixel. The hero retains its original 18×11 outline;
+Sizes are game pixels on the unchanged 208×144 world.
+Source proportions keep long ships and wide bombers distinct rather than
+stretching every vehicle into the same box. All seven detailed transparent
+cutouts derive from the owner's original references; drum wheels, swept fins,
+crescent wings, exposed bombs and twin skis remain recognizable. Anchor/Dart
+now use their detailed concepts in closed/open weapon states, replacing the
+old enlarged paintings. Cached pictures use four source pixels per game pixel.
+The hero retains its original 18×11 outline;
 quarter-pixel shading, seams and canopy highlights sharpen its interior.
 
 Actual alpha silhouettes determine collisions and hit flashes. Enlarged gun
 positions drive warnings and shots. Ground followers keep four pixels behind
-an older machine and flyers reserve 17 pixels above the floor, accommodating
-the taller roller during dives. No-fire overlap checks caught the need for
+an older machine and flyers reserve 19 pixels above the floor, accommodating
+the taller anchor during dives. No-fire overlap checks caught the need for
 this spacing. Existing HP, scoring, attack timings/speeds/damage, pod schedule,
-player motion and defenses stay unchanged. The boss and its persistent compact
-escorts retain their original art, dimensions, attacks and breakup.
+player motion and defenses stay unchanged. The boss retains its hull, attacks
+and breakup. Its persistent escorts now use the same new 24×12 Dart as regular
+waves, with matching alpha
+collisions and firing points. Their 2 HP, 30 points, rear arrivals, warnings,
+survivor health and firing scheduler remain unchanged. The lower pair have
+bounded vertical sway so all four wider fighters stay separated above the
+boss hull. The older separate boss preview retains its original compact art.
 
 See [asset provenance](assets/README.md). Cached art is prepared before Start
 becomes available; the portable copy embeds it and makes no external requests.
@@ -89,9 +96,9 @@ hunter reserves the sky and flies without another flyer crowding its attack.
 In the three seeded no-fire checks at both phone sizes, **59 craft enter and
 21 crowded slots expire**, with all seven types represented. The worst delay
 is 7.85 seconds. Four regular craft, five visible actors including hazards,
-and twelve regular rounds are the observed peaks. No visible regular sprites
+and 13 regular rounds are the observed peaks. No visible regular sprites
 overlap; ground machines stay on the floor. Every sampled 24-pixel column has
-at least 40.51 pixels between padded actor/hazard boxes. This measures physical
+at least 38.85 pixels between padded actor/hazard boxes. This measures physical
 crowding, not bullet-free routes or phone difficulty.
 
 The invulnerable auto-aim progression fixtures admit all 80 craft with no
@@ -124,7 +131,7 @@ or delivered-preview behavior was edited to fix this new mission.
 
 ## Validation and delivery
 
-**915 checks pass:** 88 mission, 40 art and 787 existing checks. The new
+**1,006 checks pass:** 88 mission, 53 art, 78 escort and 787 existing checks. The new
 checks cover real simultaneous touch inputs, safe areas, pause/app interruption,
 six seeded wave runs per phone (including three full victories), no-fire
 crowding, finite queues, all seven
@@ -134,16 +141,18 @@ fresh retry values, full replay, stuck hazards, last-frame shootdown counters,
 original hero silhouette and geometry, exact pixels outside its body
 (flame/bullets), refined interior colors and original firing, no save writes and no new music.
 
-The standalone export embeds all 43 modules, the reference-derived invader atlas and exact supplied
-battlefield JPEG. Both phone layouts complete all 80 arrivals and three boss phases, then
+The standalone export embeds all 43 modules, both reference-derived invader
+atlases and the exact supplied battlefield JPEG. Both phone layouts complete
+all 80 arrivals and three boss phases, then
 exercise the retry UI with no external resource requests, browser errors or
 save writes. Its progression fixture is invulnerable and auto-aims.
 
-The short video selects the final-wave section with native reset health/lives,
-ordinary equipment and normal entry protection. Native automated touches steer
-and fire; health, position and invulnerability are not edited during play.
-The visible caption states that this is a selected section, not an earned full
-run. The video is silent; the playable preview retains native sound effects.
+The short video selects the final-wave section and a phase-3 reinforcement call
+with native reset health/lives, ordinary equipment and normal entry protection in waves (no invulnerability
+in the selected boss fixture). Native automated touches steer and fire; health, position and invulnerability are not edited during play.
+The visible captions identify the selected sections; this is not an earned
+full run. Four new reinforcements enter before ordinary native fire starts.
+The video is silent; the playable preview retains native sound effects.
 
 `tools/mission-benchmark.mjs` samples cached drawing in the same browser, with
 four regular craft, one charge and thirteen rounds versus the same scene with
@@ -153,9 +162,10 @@ counts remain 304/356/298/347/589. Review real Android Chrome and Safari on phon
 ```sh
 source /workspace/.cloud-onboarding/ember-drift/environment.sh
 node tools/mission-art-test.mjs /tmp/ember-mission-art
+node tools/mission-escort-test.mjs /tmp/ember-mission-escorts
 node tools/mission-demo-test.mjs /tmp/ember-mission
 node tools/mission-benchmark.mjs /tmp/ember-mission-benchmark
-node tools/export-mission-demo.mjs /workspace/artifacts/glacier-coast-mission-v2.html
+node tools/export-mission-demo.mjs /workspace/artifacts/glacier-coast-mission-v3.html
 ```
 
 Run the existing boss/reinforcement/difficulty/battlefield/combat/smoke/seed-28

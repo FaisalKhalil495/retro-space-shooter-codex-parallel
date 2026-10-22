@@ -12,9 +12,9 @@ try{
  const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  await page.goto(base+'demos/glacier-level/');await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
  const results=await page.evaluate(async()=>{
-  const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=2');
+  const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=3');
   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=7');
-  const {MISSION_ART,HERO,picture}=await import('/demos/glacier-level/art.js?mission=2');
+  const {MISSION_ART,HERO,picture}=await import('/demos/glacier-level/art.js?mission=3');
   const {ART}=await import('/demos/glacier-combat/art.js?combat=3');
   const {LOCAL_TYPES}=await import('/demos/glacier-combat/enemies.js?combat=3');
   const checks=[],record=(name,ok)=>checks.push({name,ok:!!ok}),g=new MissionGame(),old=new BossGame();
@@ -22,6 +22,9 @@ try{
   for(const type of ['shelfSkiff','anchorGun','twinDart','crestBomber','snowRoller','needleWing','wakeHunter']){
    const e=g.spawnEnemy(type,140,32,{missionRegular:true}),prior=old.spawnEnemy(type,140,32),pic=picture(e);
    record(type+': visibly larger with quarter-pixel source detail',e.w>=prior.w*1.5&&pic.hi.width===e.w*4&&pic.hi.height===e.h*4);
+   const detailed=['idle','open'].every(mode=>{const p=MISSION_ART[e.T.art][mode],colors=new Set(),pixels=p.hi.getContext('2d').getImageData(0,0,p.hi.width,p.hi.height).data;
+    for(let i=0;i<pixels.length;i+=4)if(pixels[i+3])colors.add(pixels.slice(i,i+3).join(','));return colors.size>200;});
+   record(type+': detailed reference artwork replaces legacy art in BOTH weapon states',MISSION_ART[e.T.art].source?.endsWith('.png')&&detailed);
    record(type+': earlier preview retains original art, dimensions and type',prior.T===LOCAL_TYPES[type]&&prior.w===ART[prior.T.art].idle.width&&e.T!==prior.T&&e.T.hp===prior.T.hp&&e.T.score===prior.T.score);
    const muzzle=e.T.muzzle(e);record(type+': warning muzzle follows enlarged body',muzzle.x>=e.x&&muzzle.x<=e.x+e.w&&muzzle.y>=e.y&&muzzle.y<=e.y+e.h);
    let mask=true,hit=true,flash=true,transparent=0;
@@ -39,7 +42,18 @@ try{
   const m=skiff.T.muzzle(skiff);skiff.T.update(skiff,0,g);
   record('actual skiff shots originate at enlarged gun, with original count/speed/damage',g.enemyShots.length===3&&g.enemyShots.every(s=>s.x===m.x&&s.y===m.y&&Math.abs(Math.hypot(s.vx,s.vy)-72)<.0001&&!s.byBoss));
   const anchor=g.enemies.find(e=>e.type==='anchorGun');anchor.mode='closed';const closed=!anchor.T.isVulnerable(anchor);anchor.mode='warn';record('anchor keeps its opening vulnerability and distinct opening art',closed&&anchor.T.isVulnerable(anchor)&&MISSION_ART.anchor.open!==MISSION_ART.anchor.idle);
-  const escort=g.spawnEnemy('twinDart',170,32,{persistentEscort:true,slot:0});record('boss escort keeps compact original dimensions and health',escort.w===11&&escort.h===8&&escort.hp===2&&escort.T!==g.enemies.find(e=>e.type==='twinDart').T);
+  const escort=g.spawnEnemy('twinDart',170,32,{persistentEscort:true,lane:0}),dart=g.enemies.find(e=>e.type==='twinDart');
+  record('boss escort uses the same larger detailed Dart and preserves its health',escort.w===24&&escort.h===12&&escort.w===dart.w&&escort.hp===2&&escort.T!==dart.T&&picture(escort)===MISSION_ART.dart.idle);
+  const drawCalls=[],mock={drawImage:p=>drawCalls.push(p)};escort.T.draw(escort,mock,v=>v);
+  record('boss escort renderer actually draws the new artwork',drawCalls[0]===MISSION_ART.dart.idle);
+  escort.mode='warn';dart.mode='warn';escort.T.draw(escort,mock,v=>v);record('boss escort warning also draws the new open weapon state',picture(escort)===MISSION_ART.dart.open&&picture(escort)===picture(dart)&&drawCalls.at(-1)===MISSION_ART.dart.open);
+  let escortMask=true;const d=picture(escort).hi.getContext('2d').getImageData(0,0,96,48).data;escort.passive=false;escort.arriving=false;
+  for(let y=0;y<48;y++)for(let x=0;x<96;x++)escortMask&&=(escort.T.hitTest(escort,escort.x+(x+.25)/4,escort.y+(y+.25)/4,.1,.1)==='hit')===(d[(y*96+x)*4+3]===255);
+  record('boss escort collision uses the new silhouette, including transparent wings',escortMask);
+  escort.passive=true;record('passive boss escorts remain harmless with enlarged art',escort.T.hitTest(escort,escort.x,escort.y,escort.w,escort.h)===null);
+  escort.passive=false;escort.arriving=true;record('arriving boss escorts remain harmless and shootable only once fully visible',escort.T.hitTest(escort,escort.x,escort.y,escort.w,escort.h)===null&&escort.T.shotTest(escort,escort.x,escort.y,escort.w,escort.h)==='hit');
+  const anchorArt=MISSION_ART.anchor,grounded=p=>{const data=p.hi.getContext('2d').getImageData(0,0,p.hi.width,p.hi.height).data;for(let x=0;x<p.hi.width;x++)if(data[((p.hi.height-1)*p.hi.width+x)*4+3])return true;return false;};
+  record('anchor feet stay on the floor in both armor states',grounded(anchorArt.idle)&&grounded(anchorArt.open));
   record('player keeps original 18 by 11 footprint at quarter-pixel detail',HERO.width===18&&HERO.height===11&&HERO.hi.width===72&&HERO.hi.height===44);
   let randomCalls=0;g.rand=()=>{randomCalls++;return .5;};for(let i=0;i<20;i++)for(const e of g.enemies.filter(e=>e.missionRegular)){
    const c=document.createElement('canvas').getContext('2d');e.T.draw(e,c,v=>v);
