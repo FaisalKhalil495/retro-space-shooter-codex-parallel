@@ -1,0 +1,35 @@
+import { LOCAL_TYPES } from '../glacier-combat/enemies.js?combat=3';
+import { target } from '../glacier-combat/art.js?combat=3';
+import { MISSION_ART, body, hit } from './art.js?mission=2';
+
+const guns={skiff:[.015,.35],anchor:[.04,.34],dart:[.04,.5],bomber:[.5,.91],roller:[.205,.07],needle:[.012,.55],hunter:[.012,.48]};
+function line(c,e,snap,locked){
+ const m=e.T.muzzle(e),a=e.angle??Math.PI;c.fillStyle=locked?'#d99b43':'#a88969';
+ for(let d=6;d<215;d+=6){const x=m.x+Math.cos(a)*d,y=m.y+Math.sin(a)*d;if(x<0||y<11||y>129)break;c.fillRect(snap(x),snap(y),1,.5);}
+}
+export const TYPES=Object.fromEntries(Object.entries(LOCAL_TYPES).filter(([,t])=>guns[t.art]).map(([key,t])=>[key,{
+ ...t,hitTest:hit,muzzle(e){const [x,y]=guns[t.art];return {x:e.x+e.w*x,y:e.y+e.h*y};},
+ update(e,dt,g){
+  t.update(e,dt,g);
+  if(t.flies){
+   // Leave clearance above the enlarged ground machines during a dive.
+   const limit=g.terrain.floorY-17-e.h;
+   if(e.y>limit){e.baseY-=e.y-limit;e.y=limit;}
+  }else{
+   // A departing skiff must not drive through a slower anchor ahead of it.
+   for(const other of g.enemies)if(other!==e&&!other.dead&&other.missionRegular&&!other.T.flies&&other.id<e.id&&other.x<e.x)
+    e.x=Math.max(e.x,other.x+other.w+4);
+  }
+ },
+ draw(e,c,snap){
+  if(key==='crestBomber'&&e.mode==='warn')target(c,e.tx,e.ty,snap,Math.floor(e.t*8)%2===0);
+  if(key==='needleWing'&&['aim','warn'].includes(e.mode))line(c,e,snap,e.mode==='warn');
+  if(key==='wakeHunter'&&e.mode==='warn')line(c,e,snap,true);
+  body(e,c,snap);
+ }
+}]));
+export function spawn(g,type,x,y,opts){
+ const T=TYPES[type],pic=MISSION_ART[T.art].idle;
+ const e={type,T,x,y,w:pic.width,h:pic.height,hp:T.hp,maxHp:T.hp,t:0,flash:0,id:++g.nextId,...opts};
+ T.init(e,g);g.enemies.push(e);g.audit.push({time:g.time,id:e.id,type,kind:'spawn'});return e;
+}

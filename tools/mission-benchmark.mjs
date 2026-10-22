@@ -9,7 +9,7 @@ const {server,base}=await serve(),browser=await chromium.launch({slowMo:0});
 try{
  const page=await browser.newPage();await page.goto(base+'demos/glacier-level/');await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
  const result=await page.evaluate(async()=>{
-  const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=1'),{useDetail}=await import('/js/detail.js?v=0.29.0');
+  const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=2'),{useDetail}=await import('/js/detail.js?v=0.29.0');
   const g=new MissionGame();await Promise.resolve();Object.assign(g.player,{x:26,y:65,entering:0,invuln:0});
   g.spawnEnemy('shelfSkiff',75,0,{missionRegular:true});g.spawnEnemy('snowRoller',150,0,{missionRegular:true});
   g.spawnEnemy('twinDart',148,32,{missionRegular:true});g.spawnEnemy('needleWing',177,94,{missionRegular:true});

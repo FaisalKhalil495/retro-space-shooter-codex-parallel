@@ -1,9 +1,12 @@
-import { BossGame, battleReady } from '../glacier-boss/scene.js?boss=7';
+import { BossGame, battleReady as backgroundReady } from '../glacier-boss/scene.js?boss=7';
+import { artReady, HERO } from './art.js?mission=2';
+import { TYPES, spawn } from './enemies.js?mission=2';
+import { SPRITES } from '../../js/sprites.js?v=0.29.0';
 import { LEVELS } from '../../js/levels.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
 import { drawText } from '../../js/font.js?v=0.29.0';
 import { PAL } from '../../js/config.js?v=0.29.0';
-export { battleReady };
+export const battleReady=Promise.all([backgroundReady,artReady]);
 export const WAVE_SECONDS=180,REGULAR_CAP=4;
 const SCENE={number:4,name:'GLACIER COAST',floor:14,background:{sun:false,dust:false},events:[[Number.MAX_SAFE_INTEGER,'end']]};
 const ground=new Set(['shelfSkiff','anchorGun','snowRoller']);
@@ -73,6 +76,14 @@ export class MissionRunner{
 export class MissionGame extends BossGame{
  get level(){return SCENE;}
  reset(){super.reset();this.runner=new MissionRunner(this);}
+ spawnEnemy(type,x,y,opts={}){
+  return TYPES[type]&&!opts.persistentEscort?spawn(this,type,x,y,opts):super.spawnEnemy(type,x,y,opts);
+ }
+ drawPlayer(c,snap){
+  const draw=c.drawImage;
+  c.drawImage=function(img,...args){return draw.call(this,img===SPRITES.player?HERO:img,...args);};
+  try{super.drawPlayer(c,snap);}finally{c.drawImage=draw;}
+ }
  // Boss patterns explicitly pass true; regular weapons keep native ownership.
  fireShot(x,y,angle,speed,kind='orb',byBoss=false){return super.fireShot(x,y,angle,speed,kind,byBoss);}
  killEnemy(e){

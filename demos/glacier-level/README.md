@@ -1,7 +1,8 @@
-# Glacier Coast — full mission preview 1
+# Glacier Coast — full mission preview 2
 
 The owner explicitly approved this separate full mission on 2026-10-21.
-Look for **LEVEL 4 PREVIEW 1**. Three sections of regular combat lead into
+The owner requested larger, sharper ships on 2026-10-22.
+Look for **LEVEL 4 PREVIEW 2**. Three sections of regular combat lead into
 the unchanged Breakwater 7 fight. The campaign still has three levels;
 the scenery, combat and boss previews remain available as delivered.
 
@@ -11,8 +12,10 @@ the scenery, combat and boss previews remain available as delivered.
    direction pad, Fire and Special. Start with five health, three lives and
    the ordinary gun. Shoot supply pods and collect their original pickups.
 2. W1 introduces skiffs, anchor guns and darts; W2 brings bombers, rollers,
-   precision ships and diving hunters; W3 mixes the roster. Small sprites,
-   gun positions, locked warnings and individual attacks are unchanged.
+   precision ships and diving hunters; W3 mixes the roster. Larger enemies
+   follow the supplied original pictures. Gun positions and
+   silhouette collisions match their bodies; locked warnings and individual
+   attacks retain their original timing and damage.
 3. Remaining enemies and regular fire clear before the boss warning. Keep
    your actual health, lives, score, weapons and remaining timed powers when
    Breakwater arrives. There is no free refill or fresh-player reset here.
@@ -25,6 +28,38 @@ the scenery, combat and boss previews remain available as delivered.
 6. Victory offers **Replay whole mission**. Nothing is saved to scores,
    reached levels or options. Sound effects play; new recorded music still
    needs a separate listening review.
+
+## Larger, sharper mission artwork
+
+| Regular enemy | Previous size | Preview 2 size |
+| --- | --- | --- |
+| Shelf Skiff | 14×9 | 30×10 |
+| Anchor Gun | 12×8 | 18×12 |
+| Twin Dart | 11×8 | 17×11 |
+| Crest Bomber | 18×10 | 34×9 |
+| Snow Roller | 16×10 | 30×13 |
+| Needle Wing | 16×8 | 34×11 |
+| Wake Hunter | 15×10 | 32×13 |
+
+Sizes are game pixels on the unchanged 208×144 world. Width grows 50–114%;
+source proportions keep long ships and wide bombers distinct rather than
+stretching every vehicle into the same box. Five transparent cutouts derive
+from the owner's original references; their drum wheels, swept fin, crescent
+wings, exposed bombs and twin skis remain recognizable. Anchor/dart retain
+accepted designs with added seams and rivets. Private cached pictures use four
+source pixels per game pixel. The hero retains its original 18×11 outline;
+quarter-pixel shading, seams and canopy highlights sharpen its interior.
+
+Actual alpha silhouettes determine collisions and hit flashes. Enlarged gun
+positions drive warnings and shots. Ground followers keep four pixels behind
+an older machine and flyers reserve 17 pixels above the floor, accommodating
+the taller roller during dives. No-fire overlap checks caught the need for
+this spacing. Existing HP, scoring, attack timings/speeds/damage, pod schedule,
+player motion and defenses stay unchanged. The boss and its persistent compact
+escorts retain their original art, dimensions, attacks and breakup.
+
+See [asset provenance](assets/README.md). Cached art is prepared before Start
+becomes available; the portable copy embeds it and makes no external requests.
 
 ## Timeline and actual counts
 
@@ -51,17 +86,17 @@ four regular craft maximum including incoming ones. Two ground actors need
 wide horizontal spacing. Ordinary flyers use lanes at y=32/94; a bomber or
 hunter reserves the sky and flies without another flyer crowding its attack.
 
-In the three seeded no-fire checks at both phone sizes, **60 craft enter and
-20 crowded slots expire**, with all seven types represented. The worst delay
-is 8.99 seconds. Four regular craft, five visible actors including hazards,
-and thirteen regular rounds are the observed peaks. No visible regular sprites
+In the three seeded no-fire checks at both phone sizes, **59 craft enter and
+21 crowded slots expire**, with all seven types represented. The worst delay
+is 7.85 seconds. Four regular craft, five visible actors including hazards,
+and twelve regular rounds are the observed peaks. No visible regular sprites
 overlap; ground machines stay on the floor. Every sampled 24-pixel column has
-at least 43.65 pixels between padded actor/hazard boxes. This measures physical
+at least 40.51 pixels between padded actor/hazard boxes. This measures physical
 crowding, not bullet-free routes or phone difficulty.
 
 The invulnerable auto-aim progression fixtures admit all 80 craft with no
 expired slots, max delay 0.76 seconds, boss arrival at 183.51 seconds and
-victory around 282.14 seconds. No-fire boss arrival is 199.13 seconds. These
+victory around 282.14 seconds. No-fire boss arrival is 195.13 seconds. These
 fixtures prove progression; they do not represent a human player's survival.
 An unexpected stuck threat has a 24-second retirement guard before the boss
 warning; that fallback is not used in the normal seeded runs.
@@ -76,9 +111,9 @@ remain unchanged. Timed powers continue counting down during the transition.
 `MissionGame` extends the unchanged boss-preview class and replaces its
 2.5-second boss-start runner with `MissionRunner`. The runner owns only local
 wave arrivals, pod scheduling, threat draining and the warning. There is no
-new `LEVELS` entry, save format, menu integration or music recording. All
-original modules, accepted sprites, picture assets and earlier demos remain
-unchanged. The native floor stays y=130 with no new solid obstacles.
+new `LEVELS` entry, save format, menu integration or music recording. All shared modules, accepted campaign sprites, older picture assets
+and earlier demos remain unchanged. Private mission art refines the player
+interior while preserving its outline, size, hitbox, flame and bullets. The native floor stays y=130 with no new solid obstacles.
 
 The mission preserves native ownership for regular rounds; boss patterns
 still explicitly tag their shots. A local `killEnemy` hook removes a killed
@@ -89,17 +124,18 @@ or delivered-preview behavior was edited to fix this new mission.
 
 ## Validation and delivery
 
-**875 checks pass:** 88 mission checks plus the 787 existing checks. The new
+**915 checks pass:** 88 mission, 40 art and 787 existing checks. The new
 checks cover real simultaneous touch inputs, safe areas, pause/app interruption,
 six seeded wave runs per phone (including three full victories), no-fire
 crowding, finite queues, all seven
 types, the safe boss handoff, complete three-phase victories, original supplies,
 resource identity and carryover, native shot ownership, checkpoint eligibility,
 fresh retry values, full replay, stuck hazards, last-frame shootdown counters,
-exact hero/flame/bullet pixels and firing, no save writes and no new music.
+original hero silhouette and geometry, exact pixels outside its body
+(flame/bullets), refined interior colors and original firing, no save writes and no new music.
 
-The standalone export embeds all 41 modules and the exact supplied battlefield
-JPEG. Both phone layouts complete all 80 arrivals and three boss phases, then
+The standalone export embeds all 43 modules, the reference-derived invader atlas and exact supplied
+battlefield JPEG. Both phone layouts complete all 80 arrivals and three boss phases, then
 exercise the retry UI with no external resource requests, browser errors or
 save writes. Its progression fixture is invulnerable and auto-aims.
 
@@ -116,9 +152,10 @@ counts remain 304/356/298/347/589. Review real Android Chrome and Safari on phon
 
 ```sh
 source /workspace/.cloud-onboarding/ember-drift/environment.sh
+node tools/mission-art-test.mjs /tmp/ember-mission-art
 node tools/mission-demo-test.mjs /tmp/ember-mission
 node tools/mission-benchmark.mjs /tmp/ember-mission-benchmark
-node tools/export-mission-demo.mjs /workspace/artifacts/glacier-coast-mission-v1.html
+node tools/export-mission-demo.mjs /workspace/artifacts/glacier-coast-mission-v2.html
 ```
 
 Run the existing boss/reinforcement/difficulty/battlefield/combat/smoke/seed-28

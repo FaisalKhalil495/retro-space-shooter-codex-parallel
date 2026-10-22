@@ -16,7 +16,7 @@ try{
   const page=await context.newPage(),errors=[],external=[],music=[];
   page.on('pageerror',e=>errors.push(String(e)));page.on('request',r=>{if(/^https?:/.test(r.url())&&!r.url().startsWith(base))external.push(r.url());if(/\/music\/.*\.mp3/.test(r.url()))music.push(r.url());});
   await page.goto(base+'demos/glacier-level/'+phone.q);await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
-  check(phone.name+': ready with unchanged hero, health, lives and ordinary gun',await page.evaluate(()=>{const h=window.__mission,g=h.game;return h.mode==='ready'&&g.health===5&&g.lives===3&&!g.weapons.kind&&!g.boss&&g.enemies.length===0&&g.bg.loaded&&!g.reachedBoss;}));
+  check(phone.name+': ready with original health, lives and ordinary gun',await page.evaluate(()=>{const h=window.__mission,g=h.game;return h.mode==='ready'&&g.health===5&&g.lives===3&&!g.weapons.kind&&!g.boss&&g.enemies.length===0&&g.bg.loaded&&!g.reachedBoss;}));
   await page.locator('#action').tap();await page.evaluate(()=>window.__mission.advance(.8));
   const {layout,fire}=await page.evaluate(()=>({layout:window.__mission.layout,fire:window.__mission.controls.buttons.fire}));
   check(phone.name+': original safe-area layout',layout.game.x>=(phone.q?62:0)&&layout.rightZone.x+layout.rightZone.w<=phone.width-(phone.q?62:0));
@@ -33,7 +33,7 @@ try{
   await page.setViewportSize({width:phone.width,height:phone.height});await page.waitForFunction(()=>document.querySelector('#rotate').hidden);await page.locator('#action').tap();await page.evaluate(()=>window.dispatchEvent(new Event('blur')));
   check(phone.name+': app interruption pauses',await page.evaluate(()=>window.__mission.mode==='paused'));await page.locator('#restart').tap();
   const results=await page.evaluate(async()=>{
-   const {MissionGame,ARRIVALS,SUPPLIES,regulars}=await import('/demos/glacier-level/scene.js?mission=1');
+   const {MissionGame,ARRIVALS,SUPPLIES,regulars}=await import('/demos/glacier-level/scene.js?mission=2');
    const {Game}=await import('/js/game.js?v=0.29.0');const {LEVELS}=await import('/js/levels.js?v=0.29.0');
    const {useDetail}=await import('/js/detail.js?v=0.29.0');const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=7');
    const checks=[],record=(name,ok,detail)=>checks.push({name,ok:!!ok,detail});
@@ -95,7 +95,19 @@ try{
    for(let i=0;i<72;i++){demo.updatePlayer(1/120,{dx:0,dy:0,fire:true});Game.prototype.updatePlayer.call(ref,1/120,{dx:0,dy:0,fire:true});}
    const firing=JSON.stringify(demo.bullets)===JSON.stringify(ref.bullets)&&demo.bullets.length>2;
    const pixels=g=>{const c=document.createElement('canvas');c.width=416;c.height=288;const ctx=useDetail(c.getContext('2d'));ctx.scale(2,2);g.draw(ctx,v=>v);return ctx.getImageData(0,0,416,288).data;};const a=pixels(demo),b=pixels(ref);
-   record('exact original hero, flame, bullets and firing rate',firing&&a.every((v,i)=>v===b[i]));
+   // Only the requested ship's interior colors may differ. Everything
+   // outside its original body (flame, bullets, world effects) stays exact.
+   const {HERO}=await import('/demos/glacier-level/art.js?mission=2');
+   const {SPRITES}=await import('/js/sprites.js?v=0.29.0');
+   const old=SPRITES.player.hi.getContext('2d').getImageData(0,0,36,22).data;
+   const fine=HERO.hi.getContext('2d').getImageData(0,0,72,44).data;
+   let silhouette=true,changed=0,outside=true;
+   for(let y=0;y<44;y++)for(let x=0;x<72;x++)if((fine[(y*72+x)*4+3]>0)!==(old[(Math.floor(y/2)*36+Math.floor(x/2))*4+3]>0))silhouette=false;
+   for(let y=0;y<288;y++)for(let x=0;x<416;x++)for(let k=0;k<4;k++)if(a[(y*416+x)*4+k]!==b[(y*416+x)*4+k]){
+    const px=Math.floor(x/2-demo.player.x),py=Math.floor(y/2-demo.player.y);
+    if(px<0||py<0||px>=18||py>=11)outside=false;else changed++;
+   }
+   record('sharper ship preserves original silhouette, flame, bullets, geometry and firing',firing&&silhouette&&changed>20&&outside&&demo.player.w===ref.player.w&&demo.player.h===ref.player.h);
    return {checks,metrics};
   });
   for(const r of results.checks)check(phone.name+': '+r.name,r.ok,r.detail);

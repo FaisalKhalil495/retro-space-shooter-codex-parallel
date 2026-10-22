@@ -872,6 +872,23 @@ fewer rounds are needed.
   is labeled as a selected section with normal reset health and native automated
   touches. Await phone review of LEVEL 4 PREVIEW 1 before
   permanent campaign integration and separately reviewed recorded music.
+- Full mission preview 2: the owner's explicit size/sharpness feedback
+  supersedes earlier compact dimensions for this mission. Large source concepts
+  lose their identity when reduced to tiny generic drawings: retain the actual
+  drum wheel, swept fin, crescent wings, twin engines/bombs and articulated skis
+  from the supplied references. Cache transparent cutouts at quarter-pixel detail;
+  keep old previews and shared sprites untouched. Enlarging art also requires
+  real alpha masks, revised muzzles, ground spacing and diving clearance. The
+  no-fire check caught a departing skiff overtaking an anchor; fix that movement
+  instead of weakening the overlap assertion. Player sharpening can preserve
+  every original alpha pixel while refining interior colors. Test silhouette,
+  geometry, firing and every rendered pixel outside the ship separately rather
+  than disabling the original preservation check. Both phone fixtures retain
+  all seven regular types, no overlaps, full wins and native boss handoff.
+  All 88 mission, 40 art and 787 preservation checks pass (915); both portable
+  phone layouts finish with no external calls, errors or save writes. Drawing
+  calls remain unchanged. Keep Breakwater's compact escorts and exact fight;
+  await phone review.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

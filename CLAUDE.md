@@ -809,6 +809,26 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      layouts complete all phases and test retry with no external requests,
      errors or save writes. The labeled final-wave video uses native automated
      touches and normal reset health/equipment; it is a selected section.
+     **Full mission preview 2 — requested 2026-10-22:** the owner finds the
+     regular enemies too small and supplied the five original concept photos.
+     Enlarge all seven regular types by 50–114% in width; use faithful cutouts
+     for the roller, long cannon ship, crescent hunter, twin-engine bomber and
+     twin-ski skiff. Keep olive/cream armor, snow and visible machinery. Private
+     quarter-pixel pictures, flash copies and collision masks live in the mission;
+     no shared or earlier-preview art changes. The hero gets clearer interior
+     detail while retaining every original contour/transparent pixel, 18×11
+     geometry, hitbox, flame, bullets and firing. Match actual muzzles/warnings
+     to the enlarged bodies, space departing ground units and reserve clearance
+     over their heads during dives. Keep regular HP, points, weapons/timing,
+     80 scheduled slots, supplies and the exact boss fight, including compact
+     escorts. Preview 2's no-fire fixture admits 59 and skips 21 occupied slots;
+     all seven types appear, no visible regular overlap, at least 40.51 pixels
+     of padded column clearance. Armed progression still admits all 80 with
+     boss arrival at 183.51 s and victory at 282.14 s. Look for LEVEL 4 PREVIEW 2;
+     all 88 mission, 40 art and 787 preservation checks pass (915). Both
+     portable layouts finish all three phases without external calls, errors
+     or save writes. Drawing calls remain unchanged; await phone review before
+     campaign integration or new music.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.

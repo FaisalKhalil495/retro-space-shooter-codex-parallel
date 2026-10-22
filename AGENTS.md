@@ -309,6 +309,28 @@ calls, browser errors or storage writes. The labeled final-wave video uses
 native reset health/equipment and automated touches, without ongoing edits.
 Earlier-game drawing-call counts remain unchanged; physical phone review is next.
 
+The owner explicitly requested **mission preview 2** on 2026-10-22: larger,
+sharper regular enemies matching their five supplied original pictures, and a
+sharper player ship. This is authorized visual feedback, superseding the old
+compact dimensions and exact interior hero-color rule for this mission only.
+Keep the original hero silhouette, footprint, hitbox, engine flame, bullets,
+firing and all player systems. Use private quarter-pixel art and types under
+`demos/glacier-level/`; do not mutate shared sprites or earlier previews.
+Regular sizes are skiff 30×10, anchor 18×12, dart 17×11, bomber 34×9,
+roller 30×13, needle 34×11, hunter 32×13. Five reference-derived transparent
+cutouts retain their distinctive machinery; the other two retain their accepted
+art with added detail. Match collision masks, warning lines and muzzles to the
+larger bodies. Space departing ground units and keep flyers 17 pixels above
+the floor to accommodate the taller machines. Preserve HP, scoring, attacks,
+timeline, supplies, background, exact Breakwater 7 and compact boss escorts.
+Look for LEVEL 4 PREVIEW 2. All 88 mission, 40 art and 787 preservation
+checks pass (915). Both portable phone layouts complete all 80 arrivals and
+three boss phases with no external calls, errors or save writes. Earlier-game
+drawing calls remain unchanged; cached busy mission drawing stays at 93 calls
+per frame. The selected-wave touch clip shows all seven types with normal
+health/lives. Await phone review; this does not authorize campaign integration
+or new music.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already
