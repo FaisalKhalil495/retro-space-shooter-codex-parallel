@@ -1,174 +1,175 @@
-# Glacier Coast — full mission preview 3
+# Glacier Coast — full mission preview 4
 
-The owner explicitly approved this separate full mission on 2026-10-21.
-The owner requested larger, sharper ships on 2026-10-22, then reported
-remaining old/small enemies. Preview 3 completes the missed conversions.
-Look for **LEVEL 4 PREVIEW 3**. Three sections of regular combat lead into
-the Breakwater 7 fight with updated reinforcement art. The campaign still has three levels;
-the scenery, combat and boss previews remain available as delivered.
+The owner approved this difficulty pass on 2026-10-29 after finding Preview 3
+too easy and asking for a plan based on LESSONS.md. Look for **LEVEL 4 PREVIEW 4**.
+The three-minute approach now applies sustained mixed-enemy pressure before
+Breakwater. The three-level campaign and earlier separate previews are intact.
+[Approved plan and implementation notes](../../docs/concepts/level-4-enemies/mission-difficulty-plan.md).
 
 ## Phone review
 
-1. Hold the phone sideways and tap **Start full mission**. Use the original
-   direction pad, Fire and Special. Start with five health, three lives and
-   the ordinary gun. Shoot supply pods and collect their original pickups.
-2. W1 introduces skiffs, anchor guns and darts; W2 brings bombers, rollers,
-   precision ships and diving hunters; W3 mixes the roster. Larger enemies
-   follow the supplied original pictures. Gun positions and
-   silhouette collisions match their bodies; locked warnings and individual
-   attacks retain their original timing and damage.
-3. Remaining enemies and regular fire clear before the boss warning. Keep
-   your actual health, lives, score, weapons and remaining timed powers when
-   Breakwater arrives. There is no free refill or fresh-player reset here.
-4. Fight the exact revision-7 boss: 7/8/10 faster broadsides, aggressive roof
-   torpedoes, random reachable lance gaps, rear fighters and the same breakup.
-5. Pause/resume, turning upright and switching apps work as before. Restart
-   mission begins a fresh run. After a defeat at the boss, **Retry boss · score
-   from 0** starts its warning with five health, three lives and no special
-   weapon or timed powers. This checkpoint exists only in the current run.
-6. Victory offers **Replay whole mission**. Nothing is saved to scores,
-   reached levels or options. Sound effects play; new recorded music still
-   needs a separate listening review.
+1. Turn sideways and tap **Start full mission**. Use the original pad, Fire
+   and Special. Start with five health blocks, three lives and the normal gun.
+2. Expect all seven enemy types during the first minute. Enemies warn while
+   entering once their whole body is visible. Skiffs fire three spreads and
+   Darts four shots; a bomber can fly with a supporting Dart. Hunters have a
+   clear diving corridor with ground attackers firing beneath them.
+3. Ordinary bullets are 20%, 25%, then 30% faster over the three wave minutes.
+   Full warnings remain. Staying at one height holding Fire should be dangerous;
+   changing height and making angled maneuvers should give workable escapes.
+4. Shoot the original supply pods for weapons, shields, repairs and other
+   useful pickups. Your actual health, lives, score, ammo and remaining timed
+   powers carry into the boss without a free refill.
+5. Breakwater retains its nine weapons/tactics, 250 HP, warned reachable lance
+   gaps, roof torpedoes and exact ten-part breakup. Phases 2–3 allow at most
+   two other attacks between broadsides; phase 3 uses its existing combinations
+   after at most two ordinary attacks once introductions finish. Its shots do
+   not inherit the ordinary-bullet speed boost. The larger persistent fighters
+   still arrive from behind, retain damage and fill only missing slots.
+6. Pause/resume, turning upright and app interruptions work as before. Restart
+   begins a fresh mission. After losing at the boss, **Retry boss · score from
+   0** offers a fresh attempt with five health, three lives and no special or
+   timed powers. The checkpoint stays in memory only; nothing writes scores,
+   progress or options. New recorded music remains a separate review stage.
 
-## Larger, sharper mission artwork
+## Current combat rules
 
-| Regular enemy | Original combat size | Preview 3 size |
-| --- | --- | --- |
-| Shelf Skiff | 14×9 | 30×10 |
-| Anchor Gun | 12×8 | 28×15 |
-| Twin Dart | 11×8 | 24×12 |
-| Crest Bomber | 18×10 | 34×9 |
-| Snow Roller | 16×10 | 30×13 |
-| Needle Wing | 16×8 | 34×11 |
-| Wake Hunter | 15×10 | 32×13 |
+All ordinary health, contact/shot damage, score and artwork remain unchanged.
+Skiff follow-up waits fall from 1.2 to 0.8 seconds; Dart waits from 1.15 to 0.75.
+Bombers keep two bombs with 1.1-second waits; rollers keep two charges with
+1.2-second waits. Needle Wings retain two separately aimed/locked shots.
+Anchor Guns retain their 1.6-second vulnerable opening.
 
-Sizes are game pixels on the unchanged 208×144 world.
-Source proportions keep long ships and wide bombers distinct rather than
-stretching every vehicle into the same box. All seven detailed transparent
-cutouts derive from the owner's original references; drum wheels, swept fins,
-crescent wings, exposed bombs and twin skis remain recognizable. Anchor/Dart
-now use their detailed concepts in closed/open weapon states, replacing the
-old enlarged paintings. Cached pictures use four source pixels per game pixel.
-The hero retains its original 18×11 outline;
-quarter-pixel shading, seams and canopy highlights sharpen its interior.
+Regular weapon warnings begin at least 0.28 seconds apart; regular projectile
+salvos stay at least 0.18 seconds apart. Each warning keeps its original duration.
+Respawn interruptions get a fresh warning. No fire originates off-screen or
+backwards from a gun. Passed machines turn visibly between warnings and leave
+room to face the player; each turn gets a new full warning. Their original
+pictures, muzzles and hit masks mirror together. Warning/exit direction locks
+prevent unannounced hunter reversals. Rightward rolling charges brake on-screen
+for the original full fuse warning. The boss retains its full 1.05-second
+vulnerable recovery, original phase introductions, attack speeds, warning times,
+native defenses and rewards.
 
-Actual alpha silhouettes determine collisions and hit flashes. Enlarged gun
-positions drive warnings and shots. Ground followers keep four pixels behind
-an older machine and flyers reserve 19 pixels above the floor, accommodating
-the taller anchor during dives. No-fire overlap checks caught the need for
-this spacing. Existing HP, scoring, attack timings/speeds/damage, pod schedule,
-player motion and defenses stay unchanged. The boss retains its hull, attacks
-and breakup. Its persistent escorts now use the same new 24×12 Dart as regular
-waves, with matching alpha
-collisions and firing points. Their 2 HP, 30 points, rear arrivals, warnings,
-survivor health and firing scheduler remain unchanged. The lower pair have
-bounded vertical sway so all four wider fighters stay separated above the
-boss hull. The older separate boss preview retains its original compact art.
+| Ordinary shot | Minute 1 | Minute 2 | Minute 3 |
+| --- | --- | --- | --- |
+| Skiff spread | 86.4 | 90 | 93.6 |
+| Dart round | 98.4 | 102.5 | 106.6 |
+| Needle shot | 132 | 137.5 | 143 |
+| Anchor shell | 84 | 87.5 | 91 |
 
-See [asset provenance](assets/README.md). Cached art is prepared before Start
-becomes available; the portable copy embeds it and makes no external requests.
+Speeds are game pixels/second. The multiplier also applies to ordinary hazard
+fragments, not boss-owned rounds. There is no global `shotSpeed` change that
+would accidentally multiply the boss's already-tuned attacks.
+
+The final camping audit also tested the far-right boundary. Preview 3 let
+high/middle right-edge campers finish without damage. Preview 4 makes them
+fight: normal fixed-position shooters now lose all lives around 55.66/37.69 s.
+Two no-hit corner exits allow 0.15 seconds to react before an ordinary-input
+retreat. Outflanking remains a useful counter; standing past an enemy no longer
+silences it for the whole level. The actor count, source artwork and player
+movement stay unchanged.
 
 ## Timeline and actual counts
 
-The wave clock lasts 180 seconds and pauses while dead or entering after a
-respawn. The boss approach can take longer if enemies survive. The boss fight
-then adds its own duration; three minutes is the regular-combat section.
+Eighty craft remain scheduled in 20/26/34 sections over 180 wave seconds.
+The clock pauses during death/entry; the approach can take longer while
+surviving enemies and shots leave. The boss adds its own fight duration.
 
 | Scheduled type | Individual craft |
 | --- | --- |
-| Shelf Skiff | 13 |
-| Anchor Gun | 11 |
-| Twin Dart | 24 |
-| Crest Bomber | 9 |
-| Snow Roller | 7 |
-| Needle Wing | 9 |
-| Wake Hunter | 7 |
+| Shelf Skiff | 10 |
+| Anchor Gun | 10 |
+| Twin Dart | 20 |
+| Crest Bomber | 11 |
+| Snow Roller | 9 |
+| Needle Wing | 11 |
+| Wake Hunter | 9 |
 | Total | 80 |
 
-The sections schedule 20/26/34 craft. Pods, shootable bombs/charges and boss
-reinforcements are counted separately. Counts are a schedule, not a forced
-backlog: occupied lanes delay arrivals; stale slots expire after 8 seconds,
-or 12 for bombers/hunters. Admissions stay at least 0.9 seconds apart, with
-four regular craft maximum including incoming ones. Two ground actors need
-wide horizontal spacing. Ordinary flyers use lanes at y=32/94; a bomber or
-hunter reserves the sky and flies without another flyer crowding its attack.
+Pods, bombs/charges and boss fighters are separate. First opening heavy slots
+are bomber 17.93 s, roller 26.73, Needle Wing 29.67 and hunter 38.47. All seven
+actually enter before wave second 60 in the no-fire audit, not just on paper.
 
-In the three seeded no-fire checks at both phone sizes, **59 craft enter and
-21 crowded slots expire**, with all seven types represented. The worst delay
-is 7.85 seconds. Four regular craft, five visible actors including hazards,
-and 13 regular rounds are the observed peaks. No visible regular sprites
-overlap; ground machines stay on the floor. Every sampled 24-pixel column has
-at least 38.85 pixels between padded actor/hazard boxes. This measures physical
-crowding, not bullet-free routes or phone difficulty.
+Regular actors are capped at four including incoming craft. Admissions stay
+0.9 seconds apart; busy lanes defer entries, and stale slots expire after
+8 seconds (12 for bombers/hunters) instead of producing a late catch-up burst.
+Two ground machines stay widely spaced. At most two flyers share the sky;
+only one Dart can accompany a bomber, and hunters keep other flyers out of
+their committed dive corridor. Ground support still fits underneath.
 
-The invulnerable auto-aim progression fixtures admit all 80 craft with no
-expired slots, max delay 0.76 seconds, boss arrival at 183.51 seconds and
-victory around 282.14 seconds. No-fire boss arrival is 195.13 seconds. These
-fixtures prove progression; they do not represent a human player's survival.
-An unexpected stuck threat has a 24-second retirement guard before the boss
-warning; that fallback is not used in the normal seeded runs.
+Seeded no-fire runs admit **67 craft and expire 13 crowded slots**. Observed
+peaks: four regular machines, five actors including hazards, thirteen rounds,
+no visible regular overlap, and at least 38.60 pixels between padded boxes
+per 24-pixel column. The longest admitted delay is 9.01 seconds. This measures
+body crowding, not bullet-free routes. Boss arrival is about 197.64 seconds.
 
-Ten native supply pods retain the existing level schedule: rockets at 20 s,
-shield 36, bombs 49, spread 64, life 77, repair 90, rapid 110, laser 126,
-repair 140 and wingman 154. Native boss survival/weapon pods and phase rewards
-remain unchanged. Timed powers continue counting down during the transition.
+Invulnerable auto-aim progression admits all 80 with no skips, at most 0.01 s
+admission delay, boss arrival 183.51 s and victory 282.14 s. This fixture proves
+progression, not human difficulty. A 24-second stuck-threat retirement guard
+bounds approach; normal runs do not use that fallback.
 
-## Implementation boundary
+Ten native pods retain their schedule: rockets 20 s, shield 36, bombs 49,
+spread 64, life 77, repair 90, rapid 110, laser 126, repair 140 and wingman 154.
+Native adaptive boss pods and quiet phase rewards remain. The mission neither
+removes useful help nor inflates enemy HP to extend the fight.
 
-`MissionGame` extends the unchanged boss-preview class and replaces its
-2.5-second boss-start runner with `MissionRunner`. The runner owns only local
-wave arrivals, pod scheduling, threat draining and the warning. There is no
-new `LEVELS` entry, save format, menu integration or music recording. All shared modules, accepted campaign sprites, older picture assets
-and earlier demos remain unchanged. Private mission art refines the player
-interior while preserving its outline, size, hitbox, flame and bullets. The native floor stays y=130 with no new solid obstacles.
+## Preserved artwork and implementation
 
-The mission preserves native ownership for regular rounds; boss patterns
-still explicitly tag their shots. A local `killEnemy` hook removes a killed
-actor immediately after native scoring/effects. That prevents reused bombs
-and charges from updating once more and bursting after a last-frame shootdown.
-Both counter checks failed before this hook and pass afterward. No shared
-or delivered-preview behavior was edited to fix this new mission.
+Preview 3's seven detailed enemy designs and both weapon states are unchanged.
+Sizes: Skiff 30×10, Anchor 28×15, Dart 24×12, Bomber 34×9, Roller 30×13,
+Needle 34×11, Hunter 32×13 on the 208×144 game grid. Boss fighters use the
+same 24×12 Dart. Quarter-pixel pictures, alpha masks, warning muzzles and hit
+flashes remain consistent. Hero outline, 18×11 footprint, hitbox, interior
+sharpening, flame, bullets and firing are preserved. See [asset provenance](assets/README.md).
+
+The supplied battlefield, still smoke and scrolling rocky ice shelf stay intact.
+The solid floor remains y=130; ground machines stay on it, flyers retain
+19 pixels of overhead clearance, and lower escort sway remains bounded.
+
+`MissionGame` extends the unchanged boss preview. `combat.js` owns the private
+regular tactics; `boss.js` wraps native patrol/selection timing and reuses the
+native attacks/destruction. Neither shared game code nor earlier preview
+behavior changes. The local kill hook still retires shot-down bombs/charges
+immediately so their last-frame update cannot release fragments.
 
 ## Validation and delivery
 
-**1,006 checks pass:** 88 mission, 53 art, 78 escort and 787 existing checks. The new
-checks cover real simultaneous touch inputs, safe areas, pause/app interruption,
-six seeded wave runs per phone (including three full victories), no-fire
-crowding, finite queues, all seven
-types, the safe boss handoff, complete three-phase victories, original supplies,
-resource identity and carryover, native shot ownership, checkpoint eligibility,
-fresh retry values, full replay, stuck hazards, last-frame shootdown counters,
-original hero silhouette and geometry, exact pixels outside its body
-(flame/bullets), refined interior colors and original firing, no save writes and no new music.
+**1,116 checks pass:** 96 new pressure, 88 mission, 67 art, 78 mission-escort
+and 787 boss/background/earlier-content checks. The pressure suite checks real
+first warnings, speed ownership, full warning durations, all seven early types,
+mixed waves, attack counts, new boss selection at the native warning start,
+and 17 complete no-hit paired encounters at both phone sizes. The suite fails
+on the actual delivered Preview 3, proving it catches the old behavior.
 
-The standalone export embeds all 43 modules, both reference-derived invader
-atlases and the exact supplied battlefield JPEG. Both phone layouts complete
-all 80 arrivals and three boss phases, then
-exercise the retry UI with no external resource requests, browser errors or
-save writes. Its progression fixture is invulnerable and auto-aims.
+Normal-health/native-input comparisons use the ordinary gun and no specials,
+teleports or hidden assistance. Fixed-height shooters lose all lives at about
+31.43/31.22/46.15 s (high/middle/low), versus 43.55/43.57/73.83 s in Preview 3.
+The same simple moving patrol lasts 84.75 s versus 108.01 s before and 136.03 s
+in Frostring. These are bounded review pilots, not human difficulty or survival
+claims; the owner's Android/Safari phone play remains the deciding check.
 
-The short video selects the final-wave section and a phase-3 reinforcement call
-with native reset health/lives, ordinary equipment and normal entry protection in waves (no invulnerability
-in the selected boss fixture). Native automated touches steer and fire; health, position and invulnerability are not edited during play.
-The visible captions identify the selected sections; this is not an earned
-full run. Four new reinforcements enter before ordinary native fire starts.
-The video is silent; the playable preview retains native sound effects.
+The standalone HTML embeds all modules, both exact invader atlases and the exact
+battlefield JPEG. Verify full wins and retry UI at both phone sizes with no
+external requests, browser errors or save writes. The short review clip uses
+normal health and native touches, clearly labeling any selected wave/phase.
+Its purpose is to show the changes, not claim an earned full playthrough.
 
-`tools/mission-benchmark.mjs` samples cached drawing in the same browser, with
-four regular craft, one charge and thirteen rounds versus the same scene with
-no threats. Cloud samples are not physical-phone FPS. Earlier-game drawing-call
-counts remain 304/356/298/347/589. Review real Android Chrome and Safari on phones.
+Cached drawing uses 93 calls/frame normally and 109 with all four actors
+turned. Original-game call counts remain unchanged on the same machine;
+cloud timing is not physical-phone FPS. No music, menu, campaign or permanent
+progress changes are included. Await phone review after delivery.
 
 ```sh
 source /workspace/.cloud-onboarding/ember-drift/environment.sh
+node tools/mission-pressure-test.mjs /tmp/ember-mission-pressure
+node tools/mission-demo-test.mjs /tmp/ember-mission
 node tools/mission-art-test.mjs /tmp/ember-mission-art
 node tools/mission-escort-test.mjs /tmp/ember-mission-escorts
-node tools/mission-demo-test.mjs /tmp/ember-mission
 node tools/mission-benchmark.mjs /tmp/ember-mission-benchmark
-node tools/export-mission-demo.mjs /workspace/artifacts/glacier-coast-mission-v3.html
+node tools/export-mission-demo.mjs /workspace/artifacts/glacier-coast-mission-v4.html
 ```
 
-Run the existing boss/reinforcement/difficulty/battlefield/combat/smoke/seed-28
-level/coast checks sequentially as well. Stop for phone review before new music,
-permanent progress or campaign integration. Work only in the allowed parallel
-repository; do not publish, merge or deploy this preview to the other repositories.
+Run existing boss/reinforcement/difficulty/background/combat/smoke/seed-28 level/
+coast checks sequentially. Work only in the allowed parallel repository; no
+publication or deployment to either other repository is authorized.

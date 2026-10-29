@@ -849,6 +849,36 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      reinforcements without external requests, errors or save writes. The
      selected-wave/phase-3 touch clip shows four new fighters with normal
      health/lives. Cached drawing stays at 93 calls per frame.
+     **Full mission preview 4 — difficulty pass explicitly approved 2026-10-29:**
+     all seven regular types enter during the first minute. Full warnings start
+     once completely visible, while machines enter. Ordinary fire is 20/25/30%
+     faster by wave minute, scoped away from boss shots. Skiffs fire three
+     volleys, Darts four shots with shorter waits. Bomber + one Dart and hunter
+     + ground pressure replace sky isolation; stagger warnings, preserve clear
+     dive corridors and the four-regular cap. Keep 80 entries in 20/26/34 parts,
+     bounded queues, native supplies and all health/art/player rules. Later
+     Breakwater phases permit at most two attacks between broadsides and phase 3
+     combines after at most two ordinary attacks. Phase 1/introductions, all nine
+     attacks, full warning times, 1.05-second recovery, 250 HP and exact breakup
+     remain native. Private mission combat/selector modules preserve earlier
+     previews and shared game files. The new 96 pressure checks reject Preview
+     3, prove 17 paired normal-input no-hit routes at both phone sizes and compare
+     normal-health campers/patrol with Preview 3 and Frostring. See the approved
+     mission-difficulty plan; look for LEVEL 4 PREVIEW 4 and await phone review.
+     All 1,116 checks pass: 96 pressure plus 1,020 other checks,
+     including native per-round sounds, 17 complete paired escapes per phone
+     and the 29 four-fighter boss routes. Preview 3 fails the new tests. Both
+     standalone layouts complete 80 arrivals/all phases, the retry UI and a
+     real 12-pattern phase-3 schedule without external calls/errors/save writes.
+     All 45 modules and original runtime images are embedded; cached busy draw
+     calls stay at 93 and original-game call counts remain unchanged. The labeled
+     selected-wave/phase-3 clip uses native touches and normal health/lives.
+     A final edge audit found a full-health right-edge bypass. Regular machines
+     visibly turn between warnings and leave room to face a passed player;
+     artwork pixels are mirrored with exact hit masks/muzzles. Warning/exit
+     direction locks prevent unannounced reversals. Rightward charges stop at
+     the visible edge for the native fuse warning. Two additional no-hit corner
+     escapes include reaction time. The cached all-turned fixture is 109 calls.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.

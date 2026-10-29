@@ -908,6 +908,41 @@ fewer rounds are needed.
   Portable layouts confirm all 80 arrivals, all phases and corrected enemy sizes
   with no external calls, errors or saving. The native-touch clip visibly selects
   regular waves and a four-fighter phase-3 reinforcement call for review.
+- Full mission preview 4: the owner found the level too easy and explicitly
+  approved a plan based on these lessons. Art enlargement had not upgraded the
+  two-attack preview behaviors; fully visible enemies waited to park before
+  warning, heavy flyers were isolated, and the ordinary-fire boost used in
+  Frostring was absent. Improve actual fighting opportunities and combinations
+  while preserving useful supplies and full warnings, rather than extending HP.
+  Mission-only updates introduce all seven types early, boost ordinary speeds
+  20/25/30%, add three Skiff volleys/four Dart shots and pair a bomber with a
+  Dart or hunter with ground pressure. Keep the hunter's dive corridor clear.
+  Local boss selection tightens later broadside/combination deadlines while
+  reusing original attacks, recovery and destruction. Starting an attack before
+  the native update would consume one warning step: patrol first, then select
+  at the native point. Check actual warnings, not just configured duration.
+  Fifteen complete paired no-hit routes use normal movement/damage; camping and
+  patrol comparisons use normal health with no teleports or hidden assistance.
+  Prove new checks reject the actual Preview 3. Compare the previous world, but
+  do not call helper survival a verdict on human difficulty. A patrol must turn
+  within its movement tolerance; an exact-edge reversal can silently become
+  a stationary pilot. Self-review also preserved the native per-round tick sound
+  for each spread projectile, not only one sound per volley; tests count those
+  calls along with actual firing. All 1,116 checks pass (96 pressure + 1,020 other),
+  including 17 paired no-hit encounters per phone and all 29 boss routes. Both
+  portable layouts finish all phases and test later selection/retry without
+  external calls, errors or saving. Busy cached draws stay at 93 calls/frame.
+  Await phone review of LEVEL 4 PREVIEW 4 after delivery.
+  The edge audit must include the right side, not just three heights at x=26:
+  an untouched refuge let high/middle campers finish without taking damage.
+  Turn passed enemies visibly and reposition hover points with full warnings;
+  mirror masks/muzzles as well as the original picture. Lock the exit direction:
+  reorienting a leaving hunter can cause an unannounced return from off-screen.
+  Rightward charges must brake before leaving so the fuse warning stays visible.
+  Two corner escapes include 0.15 seconds to react. Per-pixel mirrored-art checks
+  bring art checks to 67; actual turns/charges/corner cases bring pressure checks
+  to 96. All 1,116 checks pass. Normal/fully-turned cached fixtures use 93/109
+  draw calls; physical-phone feedback remains the final difficulty verdict.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

@@ -12,11 +12,12 @@ try{
  const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  await page.goto(base+'demos/glacier-level/');await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
  const results=await page.evaluate(async()=>{
-  const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=3');
+  const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=4');
   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=7');
-  const {MISSION_ART,HERO,picture}=await import('/demos/glacier-level/art.js?mission=3');
+  const {MISSION_ART,HERO,picture}=await import('/demos/glacier-level/art.js?mission=4');
   const {ART}=await import('/demos/glacier-combat/art.js?combat=3');
   const {LOCAL_TYPES}=await import('/demos/glacier-combat/enemies.js?combat=3');
+  const {useDetail}=await import('/js/detail.js?v=0.29.0');
   const checks=[],record=(name,ok)=>checks.push({name,ok:!!ok}),g=new MissionGame(),old=new BossGame();
   g.runner={update(){}};old.runner={update(){}};
   for(const type of ['shelfSkiff','anchorGun','twinDart','crestBomber','snowRoller','needleWing','wakeHunter']){
@@ -37,10 +38,21 @@ try{
    }
    record(type+': every opaque and transparent quarter pixel matches collisions',mask&&hit&&transparent>10);
    record(type+': hit flash preserves both collision silhouettes',flash);
+   e.mode='enter';e.facingRight=true;const original=picture(e),pixels=original.hi.getContext('2d').getImageData(0,0,original.hi.width,original.hi.height).data;
+   const canvas=document.createElement('canvas');canvas.width=e.w*4;canvas.height=e.h*4;const c=useDetail(canvas.getContext('2d'));c.scale(4,4);c.imageSmoothingEnabled=false;
+   e.T.draw({...e,x:0,y:0},c,v=>v);const mirrored=c.getImageData(0,0,canvas.width,canvas.height).data;let turn=true,turnHit=true;
+   for(let y=0;y<canvas.height;y++)for(let x=0;x<canvas.width;x++){
+    const i=y*canvas.width+x,j=y*canvas.width+canvas.width-1-x;
+    for(let k=0;k<4;k++)turn&&=mirrored[i*4+k]===pixels[j*4+k];
+    turnHit&&=(e.T.hitTest(e,e.x+(x+.25)/4,e.y+(y+.25)/4,.1,.1)==='hit')===(pixels[j*4+3]===255);
+   }
+   record(type+': turning preserves every original artwork pixel and mirrors collisions',turn&&turnHit);
+   const right=e.T.muzzle(e);e.facingRight=false;const left=e.T.muzzle(e);
+   record(type+': turned gun and warning muzzle match the displayed weapon',Math.abs(right.x+left.x-(2*e.x+e.w))<1e-8&&right.y===left.y);
   }
   const skiff=g.enemies.find(e=>e.type==='shelfSkiff');skiff.mode='warn';skiff.timer=0;g.player.x=26;g.player.y=100;g.player.entering=0;g.player.invuln=100;
   const m=skiff.T.muzzle(skiff);skiff.T.update(skiff,0,g);
-  record('actual skiff shots originate at enlarged gun, with original count/speed/damage',g.enemyShots.length===3&&g.enemyShots.every(s=>s.x===m.x&&s.y===m.y&&Math.abs(Math.hypot(s.vx,s.vy)-72)<.0001&&!s.byBoss));
+  record('actual skiff shots originate at enlarged gun, with original count/damage and boosted speed',g.enemyShots.length===3&&g.enemyShots.every(s=>s.x===m.x&&s.y===m.y&&Math.abs(Math.hypot(s.vx,s.vy)-86.4)<.0001&&!s.byBoss));
   const anchor=g.enemies.find(e=>e.type==='anchorGun');anchor.mode='closed';const closed=!anchor.T.isVulnerable(anchor);anchor.mode='warn';record('anchor keeps its opening vulnerability and distinct opening art',closed&&anchor.T.isVulnerable(anchor)&&MISSION_ART.anchor.open!==MISSION_ART.anchor.idle);
   const escort=g.spawnEnemy('twinDart',170,32,{persistentEscort:true,lane:0}),dart=g.enemies.find(e=>e.type==='twinDart');
   record('boss escort uses the same larger detailed Dart and preserves its health',escort.w===24&&escort.h===12&&escort.w===dart.w&&escort.hp===2&&escort.T!==dart.T&&picture(escort)===MISSION_ART.dart.idle);

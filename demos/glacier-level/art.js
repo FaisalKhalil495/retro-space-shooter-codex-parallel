@@ -73,14 +73,19 @@ const remainingReady=new Promise((resolve,reject)=>{
   }catch(e){reject(e);}
  };
 });
-remaining.src=globalThis.__missionExtraArt||new URL('assets/anchor-darts.png?mission=3',document.baseURI).href;
+remaining.src=globalThis.__missionExtraArt||new URL('assets/anchor-darts.png?mission=4',document.baseURI).href;
 export const artReady=Promise.all([fleetReady,remainingReady]);
 export const picture=e=>MISSION_ART[e.T.art][['warn','vent','aim'].includes(e.mode)?'open':'idle'];
 export function hit(e,x,y,w,h){
- const p=picture(e),x0=Math.max(0,Math.floor((x-e.x)*SCALE)),y0=Math.max(0,Math.floor((y-e.y)*SCALE)),x1=Math.min(p.hi.width,Math.ceil((x+w-e.x)*SCALE)),y1=Math.min(p.hi.height,Math.ceil((y+h-e.y)*SCALE));
+ const p=picture(e),localX=e.facingRight?e.x+e.w-x-w:x-e.x;
+ const x0=Math.max(0,Math.floor(localX*SCALE)),y0=Math.max(0,Math.floor((y-e.y)*SCALE)),x1=Math.min(p.hi.width,Math.ceil((localX+w)*SCALE)),y1=Math.min(p.hi.height,Math.ceil((y+h-e.y)*SCALE));
  for(let py=y0;py<y1;py++)for(let px=x0;px<x1;px++)if(p.mask[py*p.hi.width+px])return 'hit';return null;
 }
-export function body(e,c,snap){const p=picture(e);c.drawImage(e.flash>0?p.flash:p,snap(e.x),snap(e.y));}
+export function body(e,c,snap){
+ const p=picture(e),pic=e.flash>0?p.flash:p;
+ if(e.facingRight){c.save();c.translate(snap(e.x)+e.w,snap(e.y));c.scale(-1,1);c.drawImage(pic,0,0);c.restore();}
+ else c.drawImage(pic,snap(e.x),snap(e.y));
+}
 
 // Keep every original contour and transparent pixel of the selected ship.
 // Refine its existing armor/glass at quarter pixels; no new fins or guns.

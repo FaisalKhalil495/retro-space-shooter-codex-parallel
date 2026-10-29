@@ -1,6 +1,7 @@
 import { BossGame, battleReady as backgroundReady } from '../glacier-boss/scene.js?boss=7';
-import { artReady, HERO } from './art.js?mission=3';
-import { TYPES, MISSION_ESCORT, spawn } from './enemies.js?mission=3';
+import { artReady, HERO } from './art.js?mission=4';
+import { TYPES, MISSION_ESCORT, RIGHT_CHARGE, spawn } from './enemies.js?mission=4';
+import { MISSION_BOSS } from './boss.js?mission=4';
 import { SPRITES } from '../../js/sprites.js?v=0.29.0';
 import { LEVELS } from '../../js/levels.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
@@ -10,15 +11,14 @@ export const battleReady=Promise.all([backgroundReady,artReady]);
 export const WAVE_SECONDS=180,REGULAR_CAP=4;
 const SCENE={number:4,name:'GLACIER COAST',floor:14,background:{sun:false,dust:false},events:[[Number.MAX_SAFE_INTEGER,'end']]};
 const ground=new Set(['shelfSkiff','anchorGun','snowRoller']);
-const intro={crestBomber:61,snowRoller:71,needleWing:81,wakeHunter:91};
 const sections=[
- ['shelfSkiff','anchorGun','twinDart','twinDart','shelfSkiff','anchorGun','twinDart','twinDart','shelfSkiff','anchorGun','twinDart','twinDart','shelfSkiff','anchorGun','twinDart','twinDart','shelfSkiff','twinDart','twinDart','shelfSkiff'],
+ ['shelfSkiff','anchorGun','twinDart','twinDart','shelfSkiff','crestBomber','twinDart','anchorGun','snowRoller','needleWing','shelfSkiff','twinDart','wakeHunter','anchorGun','twinDart','crestBomber','twinDart','snowRoller','needleWing','wakeHunter'],
  ['crestBomber','shelfSkiff','twinDart','twinDart','anchorGun','snowRoller','shelfSkiff','twinDart','needleWing','crestBomber','anchorGun','twinDart','snowRoller','wakeHunter','needleWing','shelfSkiff','crestBomber','twinDart','anchorGun','snowRoller','needleWing','wakeHunter','crestBomber','twinDart','needleWing','wakeHunter'],
  [...Array.from({length:4},()=>['shelfSkiff','twinDart','crestBomber','anchorGun','twinDart','needleWing','snowRoller','wakeHunter']).flat(),'crestBomber','needleWing']
 ];
 export const ARRIVALS=sections.flatMap((types,section)=>types.map((type,i)=>{
  const time=section===0?(i<4?[3,7,11,11.9][i]:15+(i-4)*44/15):section*60+1+i*(section===1?56:58)/(types.length-1);
- return Object.freeze({time:Math.max(time,intro[type]||0),type,section:section+1});
+ return Object.freeze({time,type,section:section+1});
 })).sort((a,b)=>a.time-b.time);
 // Reuse the original pod contents/times without changing the campaign table.
 export const SUPPLIES=LEVELS[1].events.filter(e=>e[1]==='carrier').map(([time,,opts])=>Object.freeze({time,drop:opts.drop}));
@@ -32,7 +32,11 @@ function laneFor(g,type){
  // repeated dart arrivals could starve the first hunter indefinitely.
  const reserved=g.runner.pending.find(e=>heavy(e.type));
  if(reserved&&reserved.type!==type)return null;
- if(flyers.length>=2||flyers.some(e=>heavy(e.type))||heavy(type)&&flyers.length)return null;
+ if(flyers.length>=2||flyers.some(e=>e.type==='wakeHunter')||type==='wakeHunter'&&flyers.length)return null;
+ // Only a single Dart may support a bomber. Keep hunters' committed dive
+ // corridor clear of other flyers; ground attackers can support them.
+ if(flyers.some(e=>e.type==='crestBomber')&&type!=='twinDart')return null;
+ if(type==='crestBomber'&&flyers.some(e=>e.type!=='twinDart'))return null;
  const lanes=type==='crestBomber'?[32]:[32,94];
  return lanes.find(y=>flyers.every(e=>Math.abs(e.y-y)>30))??null;
 }
@@ -75,10 +79,12 @@ export class MissionRunner{
 }
 export class MissionGame extends BossGame{
  get level(){return SCENE;}
- reset(){super.reset();this.runner=new MissionRunner(this);}
+ reset(){super.reset();this.regularWarnAt=-10;this.regularShotAt=-10;this.runner=new MissionRunner(this);}
  spawnEnemy(type,x,y,opts={}){
   if(type==='twinDart'&&opts.persistentEscort)return spawn(this,type,x,y,opts,MISSION_ESCORT);
-  return TYPES[type]?spawn(this,type,x,y,opts):super.spawnEnemy(type,x,y,opts);
+  if(TYPES[type])return spawn(this,type,x,y,opts);
+  const e=super.spawnEnemy(type,x,y,opts);if(type==='breakwater')e.T=MISSION_BOSS;
+  if(type==='rollingCharge'&&opts.direction===1)e.T=RIGHT_CHARGE;return e;
  }
  drawPlayer(c,snap){
   const draw=c.drawImage;
@@ -86,7 +92,10 @@ export class MissionGame extends BossGame{
   try{super.drawPlayer(c,snap);}finally{c.drawImage=draw;}
  }
  // Boss patterns explicitly pass true; regular weapons keep native ownership.
- fireShot(x,y,angle,speed,kind='orb',byBoss=false){return super.fireShot(x,y,angle,speed,kind,byBoss);}
+ fireShot(x,y,angle,speed,kind='orb',byBoss=false){
+  const boost=byBoss?1:1.2+Math.min(2,Math.floor((this.runner?.t||0)/60))*.05;
+  return super.fireShot(x,y,angle,speed*boost,kind,byBoss);
+ }
  killEnemy(e){
   super.killEnemy(e);
   // The reused regular hazards have no dead-update guard. Retire a killed

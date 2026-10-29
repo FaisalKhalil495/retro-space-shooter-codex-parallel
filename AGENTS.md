@@ -352,6 +352,44 @@ stays at 93 calls/frame; physical phone review remains next. The labeled
 selected-wave/phase-3 clip shows four corrected rear fighters with native
 health/lives and automated touches. Await phone review.
 
+The owner explicitly approved the **Preview 4 difficulty pass** on 2026-10-29
+following their request to read LESSONS.md and plan. See
+`docs/concepts/level-4-enemies/mission-difficulty-plan.md`. Introduce all seven
+regular types in the first minute; start full warnings once fully visible while
+entering. Ordinary fire speeds rise 20/25/30% over the three wave minutes,
+without boosting boss shots. Skiffs fire three volleys, Darts four shots, with
+shorter rests. A bomber can share the sky with one Dart; hunters retain a clear
+sky corridor with ground support. Stagger warnings/salvos, preserve the four-
+regular cap and 80 scheduled entries. Breakwater phases 2/3 allow at most two
+other attacks between broadsides; phase 3 uses combinations after at most two
+ordinary attacks once introductions finish. Keep native attacks, damage, HP,
+full warnings, vulnerable recovery and destruction. Preserve Preview 3 art,
+hero/bullets, controls, audio, supplies, saving and all earlier previews/levels.
+Implement only under `demos/glacier-level/`; do not edit shared behavior.
+Complete testing/delivery without re-requesting this approval. The new pressure
+checks must reject Preview 3, include complete normal-input escapes and measure
+normal-health camping/patrol alongside Frostring. Look for LEVEL 4 PREVIEW 4;
+then await phone review before another stage.
+Preview 4 is complete: 1,116 checks pass (96 pressure + 1,020 other),
+including 17 full paired no-hit encounters at both phone sizes and all 29
+four-fighter boss routes. Native per-shot sounds are checked alongside attack
+counts. The actual Preview 3 fails the new pressure checks. Both standalone
+phone layouts finish all 80 arrivals/three phases, verify actual phase-3
+selection deadlines and exercise retry without external calls, errors or save
+writes. The export embeds 45 modules plus the unchanged two atlases and JPEG.
+Busy cached drawing remains 93 calls/frame and earlier-game counts match.
+The native-touch clip selects final waves and phase 3 with normal health/lives;
+no ongoing player edits. Await the owner's real-phone difficulty review.
+
+The final camping audit found an untouched far-right refuge. Regular machines
+now turn visibly between warnings and adjust hover room, using mirrored original
+pictures with matching muzzles, masks and flashes. Warnings/exit direction stay
+locked; rightward hunters leave to the right. Turned rolling charges brake on-
+screen so their full fuse warning/burst remain visible. Two right-corner escape
+routes allow a 0.15-second reaction before ordinary-input retreat. All three
+right-edge camping positions now take damage; preserve these regression checks.
+The normal cached busy fixture is 93 draw calls/frame, fully turned 109.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already
