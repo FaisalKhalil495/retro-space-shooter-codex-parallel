@@ -16,10 +16,10 @@ try{
   const page=await browser.newPage({viewport:{width:phone.width,height:phone.height},isMobile:true,hasTouch:true}),errors=[];
   page.on('pageerror',e=>errors.push(String(e)));await page.goto(base+'demos/glacier-level/'+phone.q);await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
   const results=await page.evaluate(async routes=>{
-   const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=5');
+   const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=6');
    const {beginAttack,clearThreats}=await import('/demos/glacier-boss/boss.js?boss=7');
    const {FORMATION}=await import('/demos/glacier-boss/escorts.js?boss=7');
-   const {picture,MISSION_ART}=await import('/demos/glacier-level/art.js?mission=5');
+   const {picture,MISSION_ART}=await import('/demos/glacier-level/art.js?mission=6');
    const checks=[],record=(name,ok,detail)=>checks.push({name,ok:!!ok,detail});
    const make=(phase=3,bx=144)=>{
     const g=new MissionGame();g.runner={update(){}};g.rand=()=>.45;
@@ -34,7 +34,7 @@ try{
      tick(g,1/120);const ds=fighters(g);arrived||=ds.some(e=>e.arriving);
      clear&&=ds.every(e=>e.y+e.h<=b.y);
      separate&&=ds.every((e,i)=>ds.slice(i+1).every(o=>!(e.x<o.x+o.w&&e.x+e.w>o.x&&e.y<o.y+o.h&&e.y+e.h>o.y)));
-     art&&=ds.every(e=>e.w===20&&e.h===10&&[MISSION_ART.dart.idle,MISSION_ART.dart.open].includes(picture(e)));
+     art&&=ds.every(e=>e.w===14&&e.h===7&&[MISSION_ART.dart.idle,MISSION_ART.dart.open].includes(picture(e)));
      visible&&=ds.filter(e=>!e.arriving).every(e=>e.x>=2&&e.x+e.w<=206&&e.y>=11&&e.y+e.h<=106);
     }
     const group=fighters(g),audit=g.audit.filter(e=>e.kind==='reinforcement');

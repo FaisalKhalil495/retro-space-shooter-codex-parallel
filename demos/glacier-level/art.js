@@ -4,7 +4,7 @@ import { SPRITES } from '../../js/sprites.js?v=0.29.0';
 // Atlas cells are sampled ONCE at quarter-pixel detail, never during combat.
 const SCALE=4;
 export const MISSION_ART={};
-export const SIZES={skiff:[25,9],anchor:[23,13],dart:[20,10],bomber:[28,8],roller:[25,11],needle:[28,9],hunter:[26,11]};
+export const SIZES={skiff:[18,7],anchor:[17,10],dart:[14,7],bomber:[20,6],roller:[18,8],needle:[20,7],hunter:[19,8]};
 function canvas(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c;}
 function finish(hi,w,h){
  const pic=canvas(w,h);pic.hi=hi;pic.detail=SCALE;
@@ -73,7 +73,7 @@ const remainingReady=new Promise((resolve,reject)=>{
   }catch(e){reject(e);}
  };
 });
-remaining.src=globalThis.__missionExtraArt||new URL('assets/anchor-darts.png?mission=5',document.baseURI).href;
+remaining.src=globalThis.__missionExtraArt||new URL('assets/anchor-darts.png?mission=6',document.baseURI).href;
 export const artReady=Promise.all([fleetReady,remainingReady]);
 export const picture=e=>MISSION_ART[e.T.art][['warn','vent','aim'].includes(e.mode)?'open':'idle'];
 export function hit(e,x,y,w,h){

@@ -902,6 +902,29 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      without requests/errors/save writes. The labeled 32-second touch clip keeps
      normal health/lives with no ongoing player edits. Cached busy rendering is
      108/140 calls normally/fully turned; earlier-game counts stay unchanged.
+     **Full mission preview 6 — further size and kill-reward feedback:** the owner
+     requested smaller enemies and ammo/spread/other rewards like earlier worlds.
+     The previous mission types had no random loot fields, so every kill yielded
+     zero equipment. Enable native maybeDrop on all seven regular types, with
+     10–35% base chances, ammo eligibility, native low-health assistance and
+     full-health shooting-power redistribution. Full ammo uses weaponPick's
+     rapid/spread fallback through the common draw/collect resolver. Further
+     shrink widths 26–30% (14×7 Dart; others 17–20 wide), with matching masks and
+     muzzles and original source art. Boss escorts follow the Dart scale; hero,
+     all group waves, attacks, HP, warning/supply/boss rules and earlier content
+     remain unchanged. Verify actual normal-gun kills, native pickup movement,
+     three-shot spread/half-interval rapid, legal ground-target hits and every
+     complete escape route. Earned rewards may extend normal-pilot survival;
+     keep independent no-fire pressure checks. See mission-rewards-review.md;
+     deliver LEVEL 4 PREVIEW 6 on the same allowed Pages branch and await review.
+     All 1,278 checks pass, including 88 new reward checks. Disabling kill loot
+     reproduces the zero-drop failure. Native-input bullet-kill/collection cases
+     prove ammo/spread/rapid and all three full-ammo fallbacks; legal low fire still
+     hits smaller ground targets. All complete escape routes and whole timelines
+     pass at both phone sizes. Both portable layouts finish 214 entries/all phases,
+     selection and retry without requests/errors/saving. The labeled 32-second
+     touch clip collects actual loot with normal health/lives and no ongoing edits.
+     Cached busy calls remain 108/140 normally/turned; earlier-game counts match.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.

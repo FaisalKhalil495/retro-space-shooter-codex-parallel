@@ -974,6 +974,33 @@ fewer rounds are needed.
   touch clip selects final waves with normal health/lives and no ongoing player
   edits. Busy cached drawing is 108/140 calls normally/turned; prior-game counts
   stay unchanged. Await phone feedback on LEVEL 4 PREVIEW 5.
+- Full mission preview 6: the owner still found craft too large and asked for
+  kill-earned ammo/spread/other items. Inspect type metadata as well as the
+  shared game hook: maybeDrop already ran, but all seven preview definitions
+  lacked dropChance/ammoLoot, making every regular kill yield zero equipment.
+  Source pictures alone do not inherit gameplay rewards. Enable native drop
+  policy with 10–35% chances and original low-health/full-health behavior;
+  do not invent currencies or visible loot tells. Another 26–30% width reduction
+  brings the common Dart to 14×7, smaller than the unchanged hero. Match masks,
+  muzzles and opening states; test that small ground units still meet the legal
+  normal-gun path. Ammo must refill the carried special, and full ammo should
+  use native shooting-power fallback through the same draw/collect resolver.
+  Test real damage/death and normal movement to collect the result, not only a
+  declared dropChance or manually granted item. Assert that earned spread/rapid
+  really change firing. More kills must yield more items; dead actors cannot
+  pay twice and hazards/boss escorts retain their no-drop policy. Earned healing
+  and shields are supposed to extend survival: old fixed death deadlines must
+  not force removal of the requested help. Keep actual pressure and full dodge
+  routes independently checked. Earlier levels and current group waves stay.
+  All 1,278 checks pass, including 88 new reward checks. A separate disabled-loot
+  control fails on actual zero drops. Real normal-gun kills, movement, collection
+  and firing prove the reward loop without injected items or health assistance.
+  Smaller ground targets stay hittable in 0.83–1.08 s. All existing full escape
+  routes and moving timelines pass; both portable phone layouts finish all 214
+  entries/phases and native retry/selection without requests/errors/save writes.
+  The labeled 32-second touch clip actually collects rapid/ammo with normal
+  health/lives and no ongoing player edits. Cached busy calls stay 108/140;
+  prior-game rendering counts match. Await phone review of LEVEL 4 PREVIEW 6.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

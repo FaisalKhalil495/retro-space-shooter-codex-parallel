@@ -421,6 +421,34 @@ without external requests, errors or saving. The labeled 32-second touch clip
 uses normal health/lives and no ongoing player edits. Busy cached rendering
 is 108 calls/frame (140 fully turned), with earlier-game counts unchanged.
 
+The owner played Preview 5 and directly requested **Preview 6**: enemies still
+looked too large and kills needed ammo, spread and other rewards like levels
+1–3. This is authorized feedback; complete it without another approval. See
+`docs/concepts/level-4-enemies/mission-rewards-review.md`. Shrink widths another
+26–30%: Skiff 18×7, Anchor 17×10, Dart 14×7, Bomber 20×6, Roller 18×8, Needle
+20×7, Hunter 19×8; boss escorts use the same Dart. Keep the original source
+art/masks/muzzles consistent and the hero unchanged. Regular types now enable
+native loot chances (30/15/20/35/35/15/10% in that order), ammo eligibility and
+native low-health help. Prior preview types had no random drops at all. Reuse
+native loot selection, placement, quantities/durations and collection. Full
+special ammo uses native weaponPick fallback, resolved identically for item
+art and collection. Preserve all group waves, attacks, HP, score, full warnings,
+controls, ten supply pods, boss supplies/bonuses, audio/saving and earlier content.
+Keep hazards/escorts excluded from random loot. Test actual kills, collection,
+shooting effects, reachable smaller ground targets, no-hit routes and full runs.
+Earned help may extend survival; do not counteract it to preserve old bot-death
+deadlines. Compare actual Preview 5 and reject disabled loot. Use LEVEL 4 PREVIEW
+6 and update only the already authorized Pages branch; await phone feedback.
+Preview 6 is complete: all 1,278 checks pass, including 88 new reward checks.
+Disabling kill loot makes the new suite fail on zero drops. Actual normal-gun
+kills/collection prove ammo, three-shot spread and half-interval rapid work;
+small ground targets remain hittable. All prior whole-formation/paired/boss
+routes pass with full health and expected attacks. Both standalone layouts
+complete 214 entries/three phases and native retry/selection without external
+calls, errors or saving. The labeled 32-second touch clip shows actual rapid/
+ammo collection with normal health/lives and no ongoing player edits. Cached
+busy drawing stays 108/140 calls normal/turned; earlier-game counts unchanged.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already

@@ -23,14 +23,14 @@ try{
   });
   await page.goto(base+'demos/glacier-level/'+phone.q);await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
   const result=await page.evaluate(async({routes,old})=>{
-   const now=await import('/demos/glacier-level/scene.js?mission=5'),before=await import('/demos/glacier-level/scene.js?mission=baseline4');await before.battleReady;
+   const now=await import('/demos/glacier-level/scene.js?mission=6'),before=await import('/demos/glacier-level/scene.js?mission=baseline4');await before.battleReady;
    const {Game}=await import('/js/game.js?v=0.29.0');
    const {MissionGame:G,FORMATIONS,ARRIVALS}=now,C=old?before.MissionGame:G;
    const checks=[],record=(name,ok,detail)=>checks.push({name,ok:!!ok,detail});
-   const expected={shelfSkiff:[25,9],anchorGun:[23,13],twinDart:[20,10],crestBomber:[28,8],snowRoller:[25,11],needleWing:[28,9],wakeHunter:[26,11]};
+   const expected={shelfSkiff:[18,7],anchorGun:[17,10],twinDart:[14,7],crestBomber:[20,6],snowRoller:[18,8],needleWing:[20,7],wakeHunter:[19,8]};
    for(const [type,[w,h]]of Object.entries(expected)){
     const g=new C(),b=new before.MissionGame(),e=g.spawnEnemy(type,160,32),prior=b.spawnEnemy(type,160,32);
-    record(type+': modestly smaller original design, matching body and unchanged toughness',e.w===w&&e.h===h&&e.w/prior.w>=.8&&e.w/prior.w<=.84&&e.hp===prior.hp&&e.T.score===prior.T.score);
+    record(type+': modestly smaller original design, matching body and unchanged toughness',e.w===w&&e.h===h&&e.w/prior.w>=.55&&e.w/prior.w<=.62&&e.hp===prior.hp&&e.T.score===prior.T.score);
    }
    record('54 real formations of 3–5 craft, with 54/72/88 machines over three minutes',!old&&FORMATIONS.length===54&&FORMATIONS.every(w=>w.members.length>=3&&w.members.length<=5)&&ARRIVALS.length===214&&[1,2,3].every((s,i)=>ARRIVALS.filter(e=>e.section===s).length===[54,72,88][i]));
    {
@@ -44,7 +44,7 @@ try{
    const craft=e=>!e.dead&&!e.T.boss&&!excluded.has(e.type);
    const seed=g=>{let n=28;g.rand=()=>{n=(n*1664525+1013904223)>>>0;return n/4294967296;};};
    const inventories=[];
-   for(const [name,make]of [['outerBelt',()=>new Game({level:1})],['rustMoon',()=>new Game({level:2})],['frostring',()=>new Game({level:3})],['preview4',()=>new before.MissionGame()],['preview5',()=>new C()]]){
+   for(const [name,make]of [['outerBelt',()=>new Game({level:1})],['rustMoon',()=>new Game({level:2})],['frostring',()=>new Game({level:3})],['preview4',()=>new before.MissionGame()],['preview6',()=>new C()]]){
     const g=make();seed(g);let spawned=0,shots=0,peak=0,sum=0,frames=0,groupPeak=0,visibleFire=0,warningVisible=true;
     const spawn=g.spawnEnemy.bind(g);g.spawnEnemy=(...a)=>{const e=spawn(...a);if(craft(e))spawned++;return e;};
     const fire=g.fireShot.bind(g);g.fireShot=(...a)=>{shots++;return fire(...a);};
@@ -79,7 +79,7 @@ try{
     record(profile+': full crowded timeline stays bounded and physically separated while the player moves',!overlap&&sky&&cap<=8&&!!g.boss&&!g.audit.some(e=>e.kind==='approachFallback'),{overlap,sky,cap,time:g.time});
    }
    const pilots=[];
-   for(const profile of ['vertical','rectangle','figure8'])for(const [name,make]of [['outerBelt',()=>new Game({level:1})],['rustMoon',()=>new Game({level:2})],['frostring',()=>new Game({level:3})],['preview4',()=>new before.MissionGame()],['preview5',()=>new C()]]){
+   for(const profile of ['vertical','rectangle','figure8'])for(const [name,make]of [['outerBelt',()=>new Game({level:1})],['rustMoon',()=>new Game({level:2})],['frostring',()=>new Game({level:3})],['preview4',()=>new before.MissionGame()],['preview6',()=>new C()]]){
     const g=make();seed(g);let k=0,dir=-1,first=null,damage=0;
     const hurt=g.hurtPlayer.bind(g);g.hurtPlayer=(...a)=>{const hp=g.health;hurt(...a);if(g.health<hp){first??=g.time;damage+=hp-g.health;}};
     const route=profile==='figure8'?[[100,16],[2,112],[100,112],[2,16]]:[[65,112],[65,16],[2,16],[2,112]];
@@ -90,7 +90,7 @@ try{
     }
     pilots.push({profile,name,time:g.time,state:g.state,health:g.health,lives:g.lives,firstDamage:first,damage});
    }
-   record('normal-health moving pilots encounter sustained pressure rather than empty waves',pilots.filter(p=>p.name==='preview5').every(p=>p.firstDamage!==null&&p.damage>=5&&p.time<pilots.find(b=>b.name==='preview4'&&b.profile===p.profile).time*.95),pilots);
+   record('normal-health moving pilots still encounter damage; earned loot may extend survival',pilots.filter(p=>p.name==='preview6').every(p=>p.firstDamage!==null&&p.damage>=5),pilots);
    for(const r of routes){
     const wave=FORMATIONS.find(w=>w.section===r.minute+1&&w.recipe===r.recipe),g=new C();seed(g);
     Object.assign(g.player,{x:26,y:115,entering:0,invuln:0});

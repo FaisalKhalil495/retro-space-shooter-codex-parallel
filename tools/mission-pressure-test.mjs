@@ -13,8 +13,8 @@ const routes=JSON.parse(await readFile(new URL('./fixtures/mission-pressure-rout
 // No live or unrelated repository.
 const baseline='8357620ff413a3fb5e0e3cd004aa0f897d7bb1a9';
 const source=name=>execFileSync('git',['show',baseline+':demos/glacier-level/'+name],{encoding:'utf8'});
-const oldScene=source('scene.js').replace('./art.js?mission=3','./art.js?mission=5').replace('./enemies.js?mission=3','./enemies.js?mission=baseline');
-const oldEnemies=source('enemies.js').replace('./art.js?mission=3','./art.js?mission=5');
+const oldScene=source('scene.js').replace('./art.js?mission=3','./art.js?mission=6').replace('./enemies.js?mission=3','./enemies.js?mission=baseline');
+const oldEnemies=source('enemies.js').replace('./art.js?mission=3','./art.js?mission=6');
 const {server,base}=await serve();let browser,count=0;
 try{
  browser=await chromium.launch({slowMo:0});
@@ -25,11 +25,11 @@ try{
   await page.route('**/demos/glacier-level/enemies.js?mission=baseline',r=>r.fulfill({body:oldEnemies,contentType:'text/javascript'}));
   await page.goto(base+'demos/glacier-level/'+phone.q);await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
   const result=await page.evaluate(async({routes,old})=>{
-   const current=await import('/demos/glacier-level/scene.js?mission=5'),prior=await import('/demos/glacier-level/scene.js?mission=baseline');
+   const current=await import('/demos/glacier-level/scene.js?mission=6'),prior=await import('/demos/glacier-level/scene.js?mission=baseline');
    const {MissionGame:G,ARRIVALS}=old?prior:current,{MissionGame:Before}=prior;
    const {Game}=await import('/js/game.js?v=0.29.0');
    const {sfx}=await import('/js/audio.js?v=0.29.0');
-   const {chooseMissionAttack}=await import('/demos/glacier-level/boss.js?mission=5');
+   const {chooseMissionAttack}=await import('/demos/glacier-level/boss.js?mission=6');
    const {chooseAttack,beginAttack}=await import('/demos/glacier-boss/boss.js?boss=7');
    const checks=[],record=(name,ok,detail)=>checks.push({name,ok:!!ok,detail});
    const roster=['shelfSkiff','anchorGun','twinDart','crestBomber','snowRoller','needleWing','wakeHunter'];

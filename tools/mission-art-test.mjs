@@ -12,9 +12,9 @@ try{
  const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  await page.goto(base+'demos/glacier-level/');await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
  const results=await page.evaluate(async()=>{
-  const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=5');
+  const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=6');
   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=7');
-  const {MISSION_ART,HERO,picture}=await import('/demos/glacier-level/art.js?mission=5');
+  const {MISSION_ART,HERO,picture}=await import('/demos/glacier-level/art.js?mission=6');
   const {ART}=await import('/demos/glacier-combat/art.js?combat=3');
   const {LOCAL_TYPES}=await import('/demos/glacier-combat/enemies.js?combat=3');
   const {useDetail}=await import('/js/detail.js?v=0.29.0');
@@ -22,7 +22,7 @@ try{
   g.runner={update(){}};old.runner={update(){}};
   for(const type of ['shelfSkiff','anchorGun','twinDart','crestBomber','snowRoller','needleWing','wakeHunter']){
    const e=g.spawnEnemy(type,140,32,{missionRegular:true}),prior=old.spawnEnemy(type,140,32),pic=picture(e);
-   record(type+': retained reference detail at the compact mission scale',e.w>=prior.w*1.5&&pic.hi.width===e.w*4&&pic.hi.height===e.h*4);
+   record(type+': retained reference detail at the compact mission scale',pic.hi.width===e.w*4&&pic.hi.height===e.h*4);
    const detailed=['idle','open'].every(mode=>{const p=MISSION_ART[e.T.art][mode],colors=new Set(),pixels=p.hi.getContext('2d').getImageData(0,0,p.hi.width,p.hi.height).data;
     for(let i=0;i<pixels.length;i+=4)if(pixels[i+3])colors.add(pixels.slice(i,i+3).join(','));return colors.size>200;});
    record(type+': detailed reference artwork replaces legacy art in BOTH weapon states',MISSION_ART[e.T.art].source?.endsWith('.png')&&detailed);
@@ -55,12 +55,12 @@ try{
   record('actual skiff shots originate at the scaled gun, with original count/damage and boosted speed',g.enemyShots.length===3&&g.enemyShots.every(s=>s.x===m.x&&s.y===m.y&&Math.abs(Math.hypot(s.vx,s.vy)-86.4)<.0001&&!s.byBoss));
   const anchor=g.enemies.find(e=>e.type==='anchorGun');anchor.mode='closed';const closed=!anchor.T.isVulnerable(anchor);anchor.mode='warn';record('anchor keeps its opening vulnerability and distinct opening art',closed&&anchor.T.isVulnerable(anchor)&&MISSION_ART.anchor.open!==MISSION_ART.anchor.idle);
   const escort=g.spawnEnemy('twinDart',170,32,{persistentEscort:true,lane:0}),dart=g.enemies.find(e=>e.type==='twinDart');
-  record('boss escort uses the same compact detailed Dart and preserves its health',escort.w===20&&escort.h===10&&escort.w===dart.w&&escort.hp===2&&escort.T!==dart.T&&picture(escort)===MISSION_ART.dart.idle);
+  record('boss escort uses the same compact detailed Dart and preserves its health',escort.w===14&&escort.h===7&&escort.w===dart.w&&escort.hp===2&&escort.T!==dart.T&&picture(escort)===MISSION_ART.dart.idle);
   const drawCalls=[],mock={drawImage:p=>drawCalls.push(p)};escort.T.draw(escort,mock,v=>v);
   record('boss escort renderer actually draws the new artwork',drawCalls[0]===MISSION_ART.dart.idle);
   escort.mode='warn';dart.mode='warn';escort.T.draw(escort,mock,v=>v);record('boss escort warning also draws the new open weapon state',picture(escort)===MISSION_ART.dart.open&&picture(escort)===picture(dart)&&drawCalls.at(-1)===MISSION_ART.dart.open);
-  let escortMask=true;const d=picture(escort).hi.getContext('2d').getImageData(0,0,80,40).data;escort.passive=false;escort.arriving=false;
-  for(let y=0;y<40;y++)for(let x=0;x<80;x++)escortMask&&=(escort.T.hitTest(escort,escort.x+(x+.25)/4,escort.y+(y+.25)/4,.1,.1)==='hit')===(d[(y*80+x)*4+3]===255);
+  let escortMask=true;const d=picture(escort).hi.getContext('2d').getImageData(0,0,56,28).data;escort.passive=false;escort.arriving=false;
+  for(let y=0;y<28;y++)for(let x=0;x<56;x++)escortMask&&=(escort.T.hitTest(escort,escort.x+(x+.25)/4,escort.y+(y+.25)/4,.1,.1)==='hit')===(d[(y*56+x)*4+3]===255);
   record('boss escort collision uses the new silhouette, including transparent wings',escortMask);
   escort.passive=true;record('passive boss escorts remain harmless with scaled art',escort.T.hitTest(escort,escort.x,escort.y,escort.w,escort.h)===null);
   escort.passive=false;escort.arriving=true;record('arriving boss escorts remain harmless and shootable only once fully visible',escort.T.hitTest(escort,escort.x,escort.y,escort.w,escort.h)===null&&escort.T.shotTest(escort,escort.x,escort.y,escort.w,escort.h)==='hit');

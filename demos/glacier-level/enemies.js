@@ -1,16 +1,19 @@
 import { LOCAL_TYPES } from '../glacier-combat/enemies.js?combat=3';
 import { target } from '../glacier-combat/art.js?combat=3';
 import { ESCORT } from '../glacier-boss/escorts.js?boss=7';
-import { MISSION_ART, body, hit } from './art.js?mission=5';
-import { initCombat, updateCombat } from './combat.js?mission=5';
+import { MISSION_ART, body, hit } from './art.js?mission=6';
+import { initCombat, updateCombat } from './combat.js?mission=6';
 
+// Use the original Game.maybeDrop policy: kills roll for real power-ups/ammo,
+// with native low-health help and full-health shooting-power redistribution.
+const loot={shelfSkiff:.3,anchorGun:.15,twinDart:.2,crestBomber:.35,snowRoller:.35,needleWing:.15,wakeHunter:.1};
 const guns={skiff:[.015,.35],anchor:[.04,.34],dart:[.04,.5],bomber:[.5,.91],roller:[.205,.07],needle:[.012,.55],hunter:[.012,.48]};
 function line(c,e,snap,locked){
  const m=e.T.muzzle(e),a=e.angle??Math.PI;c.fillStyle=locked?'#d99b43':'#a88969';
  for(let d=6;d<215;d+=6){const x=m.x+Math.cos(a)*d,y=m.y+Math.sin(a)*d;if(x<0||x>208||y<11||y>129)break;c.fillRect(snap(x),snap(y),1,.5);}
 }
 export const TYPES=Object.fromEntries(Object.entries(LOCAL_TYPES).filter(([,t])=>guns[t.art]).map(([key,t])=>[key,{
- ...t,hitTest:hit,muzzle(e){const [x,y]=guns[t.art];return {x:e.x+e.w*(e.facingRight?1-x:x),y:e.y+e.h*y};},
+ ...t,dropChance:loot[key],hurtDropChance:loot[key]===.35?.5:undefined,ammoLoot:true,hitTest:hit,muzzle(e){const [x,y]=guns[t.art];return {x:e.x+e.w*(e.facingRight?1-x:x),y:e.y+e.h*y};},
  init(e,g){t.init(e,g);initCombat(e,g);},
  update(e,dt,g){
   updateCombat(e,dt,g);
