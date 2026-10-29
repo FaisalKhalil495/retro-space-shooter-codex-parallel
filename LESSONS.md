@@ -943,6 +943,37 @@ fewer rounds are needed.
   bring art checks to 67; actual turns/charges/corner cases bring pressure checks
   to 96. All 1,116 checks pass. Normal/fully-turned cached fixtures use 93/109
   draw calls; physical-phone feedback remains the final difficulty verdict.
+- Full mission preview 5: the owner's actual phone review found Preview 4
+  easy and its enemies large despite passing all checks. The first three worlds
+  send groups, not isolated demonstration enemies. Count actual craft and gunfire
+  apart from rocks, shells and mines: seed-28 first-180-second no-fire runs show
+  284/229/193 craft, versus 65 in Preview 4. Its two-flyer/four-regular admission
+  policy was the key pacing restriction. The requested feedback pass modestly
+  shrinks widths 17–19% and uses 54 formations/214 scheduled craft, up to eight
+  regulars. Shared forward speed and horizontal separation preserve a formation;
+  different entry/exit speeds and vertical separation can catch and squash its
+  followers. A moving-player audit found one hunter diving through its partner
+  during exit: stagger committed dives with full locked warnings. Test actual
+  admission and every group member's attacks, not only a group picture. Compare
+  native-input crossing/rectangular pilots, not just stationary targets. The
+  crossing route survived 180 s before but loses at 66.73 s now, close to the
+  same Frostring pilot's 69.61 s; physical phone feedback still decides the feel.
+  Preserve meaningful supplies, native defenses, full warnings and enemy HP.
+  Whole-formation escapes complement the paired/boss routes. Modest size changes
+  alter muzzles and bullet paths: find new valid full routes, keeping exact health,
+  complete attack counts and clearing all threats. Do not silently drop checks.
+  The owner enabled Pages on the allowed feature branch and confirmed it works;
+  later requested updates use that same branch, never either other repository.
+  Queue selection must retain its chosen lane before removing that entry:
+  removing it can expose a waiting hunter and change a second lane lookup to
+  null, moving a flyer under the HUD. Check sky bounds throughout moving-player
+  runs, not only overlaps and the floor. All 1,190 checks pass, including 74 new
+  formation checks and 21 complete formation escapes per phone. Actual Preview
+  4 fails the new suite. Both portable layouts finish all 214 entries/phases and
+  native retry/selection without external calls/errors/save writes. The 32-second
+  touch clip selects final waves with normal health/lives and no ongoing player
+  edits. Busy cached drawing is 108/140 calls normally/turned; prior-game counts
+  stay unchanged. Await phone feedback on LEVEL 4 PREVIEW 5.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

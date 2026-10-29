@@ -5,7 +5,7 @@ import { VIEW_W, VIEW_H, PAL } from '../../js/config.js?v=0.29.0';
 import { unlockAudio, suspendAudio, setVolumes } from '../../js/audio.js?v=0.29.0';
 import { setVibrate } from '../../js/feedback.js?v=0.29.0';
 import { save } from '../../js/save.js?v=0.29.0';
-import { MissionGame, battleReady } from './scene.js?mission=4';
+import { MissionGame, battleReady } from './scene.js?mission=5';
 
 const STEP = 1 / 120;
 const canvas = document.getElementById('screen');
@@ -31,7 +31,7 @@ message.textContent = 'Loading the icy battlefield…';
 battleReady.then(() => {
   if (!game.bg.loaded) throw new Error('Landscape painting failed');
   artworkReady = true; action.disabled = false;
-  message.textContent = 'Three minutes of invader waves, then Breakwater. Steer left and hold Fire on the right. Shoot supply pods for weapons and power-ups. Your remaining health and equipment carry into the boss fight.';
+  message.textContent = 'Three minutes of invader formations, then Breakwater. Groups of three to five attack together. Steer left and hold Fire on the right. Shoot supply pods for weapons and power-ups. Your remaining health and equipment carry into the boss fight.';
 }).catch(() => {
   message.textContent = 'The battlefield could not load. Reload this page to try again.';
   action.disabled = false; action.textContent = 'Reload battlefield';
@@ -119,7 +119,7 @@ function render(dt) {
   if (mode === 'playing') controls.draw(ctx, dt);
   ctx.fillStyle = PAL.textDim;
   ctx.font = '10px ui-monospace, Menlo, monospace';
-  ctx.fillText('LEVEL 4 PREVIEW 4', layout.leftZone.x + 8, layout.leftZone.y + layout.leftZone.h - 8);
+  ctx.fillText('LEVEL 4 PREVIEW 5', layout.leftZone.x + 8, layout.leftZone.y + layout.leftZone.h - 8);
 }
 
 function frame(now) {

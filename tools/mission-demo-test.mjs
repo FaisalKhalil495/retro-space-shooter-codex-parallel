@@ -33,12 +33,12 @@ try{
   await page.setViewportSize({width:phone.width,height:phone.height});await page.waitForFunction(()=>document.querySelector('#rotate').hidden);await page.locator('#action').tap();await page.evaluate(()=>window.dispatchEvent(new Event('blur')));
   check(phone.name+': app interruption pauses',await page.evaluate(()=>window.__mission.mode==='paused'));await page.locator('#restart').tap();
   const results=await page.evaluate(async()=>{
-   const {MissionGame,ARRIVALS,SUPPLIES,regulars}=await import('/demos/glacier-level/scene.js?mission=4');
+   const {MissionGame,ARRIVALS,SUPPLIES,regulars}=await import('/demos/glacier-level/scene.js?mission=5');
    const {Game}=await import('/js/game.js?v=0.29.0');const {LEVELS}=await import('/js/levels.js?v=0.29.0');
    const {useDetail}=await import('/js/detail.js?v=0.29.0');const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=7');
    const checks=[],record=(name,ok,detail)=>checks.push({name,ok:!!ok,detail});
    const roster=['shelfSkiff','anchorGun','twinDart','crestBomber','snowRoller','needleWing','wakeHunter'];
-   record('80 scheduled regular craft in three escalating sections',ARRIVALS.length===80&&[1,2,3].every((n,i)=>ARRIVALS.filter(e=>e.section===n).length===[20,26,34][i])&&roster.every(t=>ARRIVALS.some(e=>e.type===t)));
+   record('214 scheduled regular craft in three escalating sections',ARRIVALS.length===214&&[1,2,3].every((n,i)=>ARRIVALS.filter(e=>e.section===n).length===[54,72,88][i])&&roster.every(t=>ARRIVALS.some(e=>e.type===t)));
    record('original ten supply pods and their contents',JSON.stringify(SUPPLIES)===JSON.stringify([['rockets',20],['shield',36],['bomb',49],['spread',64],['life',77],['repair',90],['rapid',110],['laser',126],['repair',140],['wingman',154]].map(([drop,time])=>({time,drop}))));
    const other=new MissionGame(),bossPreview=new BossGame();await Promise.resolve();
    record('campaign remains three levels; approved scenery is reused',LEVELS.length===3&&other.bg.world===window.__mission.game.bg.world&&bossPreview.bg.world===window.__mission.game.bg.world);
@@ -63,10 +63,12 @@ try{
     }
     const arrivals=g.audit.filter(e=>e.kind==='arrival'),counts={};for(const e of arrivals)counts[e.type]=(counts[e.type]||0)+1;
     const m={fire,seed:seed0,counts,total:arrivals.length,skipped:g.audit.filter(e=>e.kind==='waveSkipped').length,cap,maxObjects,maxShots,minSpace,overlap,onGround,bossAt,totalTime:g.time,phases,maxDelay:Math.max(...arrivals.map(e=>e.delay))};metrics.push(m);
-    record('seed '+seed0+' '+(fire?'armed progression':'no-fire crowding')+': bounded lanes, visible separation and clear flight space',cap<=4&&!overlap&&onGround&&minSpace>=33,m);
+    // Even after four-pixel padding, keep a full 11-pixel hero plus 4 pixels.
+    // Dense group flight is also checked with complete normal-input routes.
+    record('seed '+seed0+' '+(fire?'armed progression':'no-fire crowding')+': bounded lanes, visible separation and clear flight space',cap<=8&&!overlap&&onGround&&minSpace>=15,m);
     record('seed '+seed0+': all seven types, finite delays and safe boss handoff',roster.every(t=>counts[t]>0)&&m.maxDelay<=12.01&&bossAt>=183&&bossAt<215&&transitionSafe&&!g.audit.some(e=>e.kind==='approachFallback'),m);
-    record('seed '+seed0+': pods and wave bookkeeping',g.audit.filter(e=>e.kind==='missionSupply').length===10&&arrivals.length+m.skipped===80&&arrivals.every((e,i)=>!i||e.at-arrivals[i-1].at>=.89),m);
-    if(fire)record('seed '+seed0+': full 80-enemy victory through all boss phases',g.state==='clear'&&m.total===80&&phases.join(',')==='1,2,3'&&g.score>10000&&g.audit.filter(e=>e.kind==='chosen'&&e.phase===3).length>0,m);
+    record('seed '+seed0+': pods and wave bookkeeping',g.audit.filter(e=>e.kind==='missionSupply').length===10&&arrivals.length+m.skipped===214&&arrivals.every((e,i)=>!i||e.at-arrivals[i-1].at>=.279),m);
+    if(fire)record('seed '+seed0+': full 214-enemy victory through all boss phases',g.state==='clear'&&m.total===214&&phases.join(',')==='1,2,3'&&g.score>10000&&g.audit.filter(e=>e.kind==='chosen'&&e.phase===3).length>0,m);
    }
    const carry=new MissionGame();carry.runner.phase='warning';carry.runner.timer=2.995;carry.reachedBoss=true;carry.player.entering=0;
    carry.health=3;carry.lives=2;carry.score=4321;carry.weapons.kind='rockets';carry.weapons.ammo=2;carry.powerups.collect('rapid');
@@ -97,7 +99,7 @@ try{
    const pixels=g=>{const c=document.createElement('canvas');c.width=416;c.height=288;const ctx=useDetail(c.getContext('2d'));ctx.scale(2,2);g.draw(ctx,v=>v);return ctx.getImageData(0,0,416,288).data;};const a=pixels(demo),b=pixels(ref);
    // Only the requested ship's interior colors may differ. Everything
    // outside its original body (flame, bullets, world effects) stays exact.
-   const {HERO}=await import('/demos/glacier-level/art.js?mission=4');
+   const {HERO}=await import('/demos/glacier-level/art.js?mission=5');
    const {SPRITES}=await import('/js/sprites.js?v=0.29.0');
    const old=SPRITES.player.hi.getContext('2d').getImageData(0,0,36,22).data;
    const fine=HERO.hi.getContext('2d').getImageData(0,0,72,44).data;
@@ -110,8 +112,8 @@ try{
    record('sharper ship preserves original silhouette, flame, bullets, geometry and firing',firing&&silhouette&&changed>20&&outside&&demo.player.w===ref.player.w&&demo.player.h===ref.player.h);
    return {checks,metrics};
   });
-  for(const r of results.checks)check(phone.name+': '+r.name,r.ok,r.detail);
   await writeFile(join(out,phone.name+'-metrics.json'),JSON.stringify(results.metrics,null,2)+'\n');
+  for(const r of results.checks)check(phone.name+': '+r.name,r.ok,r.detail);
   await page.evaluate(()=>{const h=window.__mission;h.game.lives=1;h.game.hurtPlayer(99);h.advance(1.6);});
   check(phone.name+': wave defeat offers whole-mission replay without boss retry',await page.evaluate(()=>window.__mission.mode==='lost'&&document.querySelector('#checkpoint').hidden));await page.locator('#action').tap();
   await page.evaluate(()=>{const h=window.__mission,g=h.game;g.reachedBoss=true;g.lives=1;g.hurtPlayer(99);h.advance(1.6);});

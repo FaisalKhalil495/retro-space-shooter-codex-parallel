@@ -12,9 +12,9 @@ try{
  const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  await page.goto(base+'demos/glacier-level/');await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
  const results=await page.evaluate(async()=>{
-  const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=4');
+  const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=5');
   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=7');
-  const {MISSION_ART,HERO,picture}=await import('/demos/glacier-level/art.js?mission=4');
+  const {MISSION_ART,HERO,picture}=await import('/demos/glacier-level/art.js?mission=5');
   const {ART}=await import('/demos/glacier-combat/art.js?combat=3');
   const {LOCAL_TYPES}=await import('/demos/glacier-combat/enemies.js?combat=3');
   const {useDetail}=await import('/js/detail.js?v=0.29.0');
@@ -22,12 +22,12 @@ try{
   g.runner={update(){}};old.runner={update(){}};
   for(const type of ['shelfSkiff','anchorGun','twinDart','crestBomber','snowRoller','needleWing','wakeHunter']){
    const e=g.spawnEnemy(type,140,32,{missionRegular:true}),prior=old.spawnEnemy(type,140,32),pic=picture(e);
-   record(type+': visibly larger with quarter-pixel source detail',e.w>=prior.w*1.5&&pic.hi.width===e.w*4&&pic.hi.height===e.h*4);
+   record(type+': retained reference detail at the compact mission scale',e.w>=prior.w*1.5&&pic.hi.width===e.w*4&&pic.hi.height===e.h*4);
    const detailed=['idle','open'].every(mode=>{const p=MISSION_ART[e.T.art][mode],colors=new Set(),pixels=p.hi.getContext('2d').getImageData(0,0,p.hi.width,p.hi.height).data;
     for(let i=0;i<pixels.length;i+=4)if(pixels[i+3])colors.add(pixels.slice(i,i+3).join(','));return colors.size>200;});
    record(type+': detailed reference artwork replaces legacy art in BOTH weapon states',MISSION_ART[e.T.art].source?.endsWith('.png')&&detailed);
    record(type+': earlier preview retains original art, dimensions and type',prior.T===LOCAL_TYPES[type]&&prior.w===ART[prior.T.art].idle.width&&e.T!==prior.T&&e.T.hp===prior.T.hp&&e.T.score===prior.T.score);
-   const muzzle=e.T.muzzle(e);record(type+': warning muzzle follows enlarged body',muzzle.x>=e.x&&muzzle.x<=e.x+e.w&&muzzle.y>=e.y&&muzzle.y<=e.y+e.h);
+   const muzzle=e.T.muzzle(e);record(type+': warning muzzle follows the compact body',muzzle.x>=e.x&&muzzle.x<=e.x+e.w&&muzzle.y>=e.y&&muzzle.y<=e.y+e.h);
    let mask=true,hit=true,flash=true,transparent=0;
    for(const mode of ['enter','warn']){
     e.mode=mode;const p=picture(e),d=p.hi.getContext('2d').getImageData(0,0,p.hi.width,p.hi.height).data,f=p.flash.hi.getContext('2d').getImageData(0,0,p.hi.width,p.hi.height).data;
@@ -52,17 +52,17 @@ try{
   }
   const skiff=g.enemies.find(e=>e.type==='shelfSkiff');skiff.mode='warn';skiff.timer=0;g.player.x=26;g.player.y=100;g.player.entering=0;g.player.invuln=100;
   const m=skiff.T.muzzle(skiff);skiff.T.update(skiff,0,g);
-  record('actual skiff shots originate at enlarged gun, with original count/damage and boosted speed',g.enemyShots.length===3&&g.enemyShots.every(s=>s.x===m.x&&s.y===m.y&&Math.abs(Math.hypot(s.vx,s.vy)-86.4)<.0001&&!s.byBoss));
+  record('actual skiff shots originate at the scaled gun, with original count/damage and boosted speed',g.enemyShots.length===3&&g.enemyShots.every(s=>s.x===m.x&&s.y===m.y&&Math.abs(Math.hypot(s.vx,s.vy)-86.4)<.0001&&!s.byBoss));
   const anchor=g.enemies.find(e=>e.type==='anchorGun');anchor.mode='closed';const closed=!anchor.T.isVulnerable(anchor);anchor.mode='warn';record('anchor keeps its opening vulnerability and distinct opening art',closed&&anchor.T.isVulnerable(anchor)&&MISSION_ART.anchor.open!==MISSION_ART.anchor.idle);
   const escort=g.spawnEnemy('twinDart',170,32,{persistentEscort:true,lane:0}),dart=g.enemies.find(e=>e.type==='twinDart');
-  record('boss escort uses the same larger detailed Dart and preserves its health',escort.w===24&&escort.h===12&&escort.w===dart.w&&escort.hp===2&&escort.T!==dart.T&&picture(escort)===MISSION_ART.dart.idle);
+  record('boss escort uses the same compact detailed Dart and preserves its health',escort.w===20&&escort.h===10&&escort.w===dart.w&&escort.hp===2&&escort.T!==dart.T&&picture(escort)===MISSION_ART.dart.idle);
   const drawCalls=[],mock={drawImage:p=>drawCalls.push(p)};escort.T.draw(escort,mock,v=>v);
   record('boss escort renderer actually draws the new artwork',drawCalls[0]===MISSION_ART.dart.idle);
   escort.mode='warn';dart.mode='warn';escort.T.draw(escort,mock,v=>v);record('boss escort warning also draws the new open weapon state',picture(escort)===MISSION_ART.dart.open&&picture(escort)===picture(dart)&&drawCalls.at(-1)===MISSION_ART.dart.open);
-  let escortMask=true;const d=picture(escort).hi.getContext('2d').getImageData(0,0,96,48).data;escort.passive=false;escort.arriving=false;
-  for(let y=0;y<48;y++)for(let x=0;x<96;x++)escortMask&&=(escort.T.hitTest(escort,escort.x+(x+.25)/4,escort.y+(y+.25)/4,.1,.1)==='hit')===(d[(y*96+x)*4+3]===255);
+  let escortMask=true;const d=picture(escort).hi.getContext('2d').getImageData(0,0,80,40).data;escort.passive=false;escort.arriving=false;
+  for(let y=0;y<40;y++)for(let x=0;x<80;x++)escortMask&&=(escort.T.hitTest(escort,escort.x+(x+.25)/4,escort.y+(y+.25)/4,.1,.1)==='hit')===(d[(y*80+x)*4+3]===255);
   record('boss escort collision uses the new silhouette, including transparent wings',escortMask);
-  escort.passive=true;record('passive boss escorts remain harmless with enlarged art',escort.T.hitTest(escort,escort.x,escort.y,escort.w,escort.h)===null);
+  escort.passive=true;record('passive boss escorts remain harmless with scaled art',escort.T.hitTest(escort,escort.x,escort.y,escort.w,escort.h)===null);
   escort.passive=false;escort.arriving=true;record('arriving boss escorts remain harmless and shootable only once fully visible',escort.T.hitTest(escort,escort.x,escort.y,escort.w,escort.h)===null&&escort.T.shotTest(escort,escort.x,escort.y,escort.w,escort.h)==='hit');
   const anchorArt=MISSION_ART.anchor,grounded=p=>{const data=p.hi.getContext('2d').getImageData(0,0,p.hi.width,p.hi.height).data;for(let x=0;x<p.hi.width;x++)if(data[((p.hi.height-1)*p.hi.width+x)*4+3])return true;return false;};
   record('anchor feet stay on the floor in both armor states',grounded(anchorArt.idle)&&grounded(anchorArt.open));

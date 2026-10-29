@@ -6,7 +6,7 @@ import {join} from 'node:path';
 import {serve} from './serve.mjs';
 const {chromium}=createRequire(import.meta.url)(process.env.PLAYWRIGHT_PATH||'playwright');
 // Same independent no-hit routes used to review Breakwater 7 before this art
-// correction. Larger bodies/muzzles must still allow complete native dodges.
+// correction. Scaled bodies/muzzles must still allow complete native dodges.
 const routes=JSON.parse(await readFile(new URL('./fixtures/mission-escort-routes.json',import.meta.url),'utf8'));
 const out=process.argv[2]||'/tmp/ember-mission-escorts';await mkdir(out,{recursive:true});
 const {server,base}=await serve();let browser,count=0;
@@ -16,10 +16,10 @@ try{
   const page=await browser.newPage({viewport:{width:phone.width,height:phone.height},isMobile:true,hasTouch:true}),errors=[];
   page.on('pageerror',e=>errors.push(String(e)));await page.goto(base+'demos/glacier-level/'+phone.q);await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
   const results=await page.evaluate(async routes=>{
-   const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=4');
+   const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=5');
    const {beginAttack,clearThreats}=await import('/demos/glacier-boss/boss.js?boss=7');
    const {FORMATION}=await import('/demos/glacier-boss/escorts.js?boss=7');
-   const {picture,MISSION_ART}=await import('/demos/glacier-level/art.js?mission=4');
+   const {picture,MISSION_ART}=await import('/demos/glacier-level/art.js?mission=5');
    const checks=[],record=(name,ok,detail)=>checks.push({name,ok:!!ok,detail});
    const make=(phase=3,bx=144)=>{
     const g=new MissionGame();g.runner={update(){}};g.rand=()=>.45;
@@ -34,14 +34,14 @@ try{
      tick(g,1/120);const ds=fighters(g);arrived||=ds.some(e=>e.arriving);
      clear&&=ds.every(e=>e.y+e.h<=b.y);
      separate&&=ds.every((e,i)=>ds.slice(i+1).every(o=>!(e.x<o.x+o.w&&e.x+e.w>o.x&&e.y<o.y+o.h&&e.y+e.h>o.y)));
-     art&&=ds.every(e=>e.w===24&&e.h===12&&[MISSION_ART.dart.idle,MISSION_ART.dart.open].includes(picture(e)));
+     art&&=ds.every(e=>e.w===20&&e.h===10&&[MISSION_ART.dart.idle,MISSION_ART.dart.open].includes(picture(e)));
      visible&&=ds.filter(e=>!e.arriving).every(e=>e.x>=2&&e.x+e.w<=206&&e.y>=11&&e.y+e.h<=106);
     }
     const group=fighters(g),audit=g.audit.filter(e=>e.kind==='reinforcement');
-    record('phase '+phase+': actual boss launches larger detailed fighters from behind after retreat',arrived&&art&&group.length===(phase===2?3:4)&&audit.every(e=>e.x===216&&e.bossX===170)&&!b.attack);
+    record('phase '+phase+': actual boss launches compact detailed fighters from behind after retreat',arrived&&art&&group.length===(phase===2?3:4)&&audit.every(e=>e.x===216&&e.bossX===170)&&!b.attack);
     record('phase '+phase+': full group stays separated, visible and above the boss hull',clear&&separate&&visible);
     let bounded=true;for(let i=0;i<120*60;i++){b.idle=99;tick(g,1/120);bounded&&=g.enemyShots.filter(s=>s.escort).length<=2&&fighters(g).every(e=>e.x+e.w<=206&&e.y+e.h<=106);}
-    record('phase '+phase+': every enlarged fighter gets firing turns with original speed and cap',bounded&&group.every(e=>e.shots>5)&&g.audit.filter(e=>e.type==='twinDart'&&e.kind==='fire').every(e=>e.speed===(phase===2?94:104)));
+    record('phase '+phase+': every compact fighter gets firing turns with original speed and cap',bounded&&group.every(e=>e.shots>5)&&g.audit.filter(e=>e.type==='twinDart'&&e.kind==='fire').every(e=>e.speed===(phase===2?94:104)));
     g.damage(group[0],1);g.damage(group[1],2);tick(g,.02);b.attack=null;const at=g.time;beginAttack(b,g,'darts');tick(g,8);
     record('phase '+phase+': replacement fills one vacancy and retains survivor health',fighters(g).length===group.length&&fighters(g).includes(group[0])&&group[0].hp===1&&g.audit.filter(e=>e.kind==='reinforcement'&&e.time>at).length===1);
     clearThreats(g,true);const frozen=JSON.stringify(fighters(g).map(e=>[e.id,e.x,e.y,e.hp]));g.killPlayer(b);tick(g,.8);
@@ -60,7 +60,7 @@ try{
      g.update(1/120,{dx:Math.abs(p.x-tx)>1?Math.sign(tx-p.x):0,dy:Math.abs(p.y-ty)>1?Math.sign(ty-p.y):0,fire:false});
      if(!b.attack){ended??=g.time;b.idle=99;}if(ended!==null&&g.time>ended+2)break;
     }
-    record(r.name+' x='+r.bx+' initial='+ (r.initialFighters??4)+': complete no-hit route with larger escorts and follow-up fire',g.health===5&&g.lives===3&&!b.attack&&fighters(g).length===4&&g.audit.some(e=>e.type==='twinDart'&&e.kind==='fire'),{health:g.health,lives:g.lives,attack:b.attack?.stage,fighters:fighters(g).length});
+    record(r.name+' x='+r.bx+' initial='+ (r.initialFighters??4)+': complete no-hit route with compact escorts and follow-up fire',g.health===5&&g.lives===3&&!b.attack&&fighters(g).length===4&&g.audit.some(e=>e.type==='twinDart'&&e.kind==='fire'),{health:g.health,lives:g.lives,attack:b.attack?.stage,fighters:fighters(g).length});
    }
    return checks;
   },routes);

@@ -20,16 +20,15 @@ function shot(e,g,angle,speed,kind='orb'){
  return {x:m.x,y:m.y,angle,speed:Math.hypot(s.vx,s.vy)};
 }
 export function initCombat(e,g){
- e.baseY=e.y;e.shots=0;e.volleys=0;e.drops=0;e.facingRight=false;e.baseHoldX=e.type==='twinDart'&&e.lane?177:148;e.holdX=e.baseHoldX;
+ e.baseY=e.y;e.shots=0;e.volleys=0;e.drops=0;e.facingRight=false;e.baseHoldX=e.holdX??(e.type==='twinDart'&&e.lane?177:148);e.holdX=e.baseHoldX;e.shift=0;
  mode(e,'enter');
 }
-function flySpacing(e,g,dt){
+function flySpacing(e,g){
  for(const o of g.enemies){
   if(o===e||o.dead||!o.T.flies||e.id<o.id||!rectsOverlap(e.x-2,e.y-2,e.w+4,e.h+4,o.x,o.y,o.w,o.h))continue;
-  const dy=e.baseY>=o.y?o.y+o.h+4-e.y:o.y-e.h-4-e.y;
-  const y=clamp(e.y+clamp(dy,-90*dt,90*dt),14,g.terrain.floorY-e.h-19);
-  e.baseY+=y-e.y;e.y=y;
-  if(rectsOverlap(e.x,e.y,e.w,e.h,o.x,o.y,o.w,o.h))e.x+=70*dt;
+  // Same-direction formations keep a horizontal body-length gap. Moving
+  // every follower vertically would compress the whole group into one blob.
+  e.x=Math.max(e.x,o.x+o.w+4);
  }
 }
 export function updateCombat(e,dt,g){
@@ -50,11 +49,17 @@ export function updateCombat(e,dt,g){
   // A right-edge player leaves no forward firing lane at the old hover
   // point. Make room to turn instead of hovering harmlessly over the ship.
   e.holdX=g.player.x>140?Math.min(e.baseHoldX,Math.max(100,g.player.x-e.w-8)):e.baseHoldX;
-  if(e.type==='twinDart')e.y=e.baseY+Math.sin(e.t*2)*2;
+  if(e.type==='twinDart'){
+   // Flights advance together and lean toward the player's height. The same
+   // bounded shift preserves a group's lanes rather than merging its noses.
+   if(e.flow)e.shift+=clamp(clamp(g.playerCenter().y-65,-6,6)-e.shift,-12*dt,12*dt);
+   e.y=e.baseY+e.shift+Math.sin(e.t*2)*2;
+  }
   if(e.type==='crestBomber')e.y=e.baseY+Math.sin(e.t)*1.5;
   const speed=e.type==='crestBomber'?38:e.type==='needleWing'?46:e.type==='wakeHunter'?52:48;
-  if(entering||!leaving&&e.x>e.holdX)e.x=Math.max(e.holdX,e.x-speed*dt);
-  if(leaving){
+  if(e.flow)e.x-=48*dt;
+  else if(entering||!leaving&&e.x>e.holdX)e.x=Math.max(e.holdX,e.x-speed*dt);
+  if(leaving&&!e.flow){
    const exitSpeed=e.type==='crestBomber'?52:e.type==='needleWing'?78:e.type==='wakeHunter'?80:70;
    e.x+=(e.type==='wakeHunter'&&e.facingRight?exitSpeed:-exitSpeed)*dt;
    if(e.type==='wakeHunter')e.y=Math.max(14,e.y-30*dt);
@@ -88,13 +93,16 @@ export function updateCombat(e,dt,g){
    }else if(e.type==='twinDart'||e.type==='needleWing'||e.type==='anchorGun'){
     const needle=e.type==='needleWing',anchor=e.type==='anchorGun';
     fired(e,g,shot(e,g,needle?e.angle:aim(e,g),needle?110:anchor?70:82,needle?'fast':anchor?'shell':'orb'),false);
-    e.shots++;mode(e,anchor?'vent':e.shots<(needle?2:4)?'wait':'leave',anchor?1.6:.75);
+    e.shots++;mode(e,anchor?'vent':e.shots<(needle?2:4)?'wait':'leave',anchor?1.6:e.flow?.4:.75);
    }else if(e.type==='crestBomber'){
     const x=e.x+e.w/2-4,y=e.y+e.h-3;g.spawnEnemy('coastBomb',x,y,{tx:e.tx,ty:e.ty});fired(e,g,{x,y,targetX:e.tx,targetY:e.ty});
     e.drops++;mode(e,e.drops<2?'wait':'leave',1.1);
    }else if(e.type==='snowRoller'){
     const x=e.facingRight?e.x+e.w-2:e.x-6,y=g.terrain.floorY-8;g.spawnEnemy('rollingCharge',x,y,{life:1.5,direction:e.facingRight?1:-1});fired(e,g,{x,y});e.shots++;mode(e,e.shots<2?'wait':'leave',1.2);
    }else if(e.type==='wakeHunter'){
+    // Paired hunters take turns committing their dives, like the earlier
+    // worlds' staggered gunships. Keep the full locked warning while waiting.
+    if(g.enemies.some(o=>o!==e&&!o.dead&&o.type==='wakeHunter'&&o.mode==='dash')){flySpacing(e,g);return;}
     e.vx=Math.cos(e.angle)*145;e.vy=Math.sin(e.angle)*145;mode(e,'dash',.9);
     event(g,e,'dash',{vx:e.vx,vy:e.vy,angle:e.angle});sfx.tick();
    }
@@ -106,5 +114,5 @@ export function updateCombat(e,dt,g){
  }
  if(!e.facingRight&&e.x<g.player.x+g.player.w+4&&ground&&e.mode!=='enter')mode(e,'leave');
  if(e.t>16&&e.mode!=='dash')mode(e,'leave');
- if(e.T.flies&&e.mode!=='dash')flySpacing(e,g,dt);
+ if(e.T.flies&&e.mode!=='dash')flySpacing(e,g);
 }

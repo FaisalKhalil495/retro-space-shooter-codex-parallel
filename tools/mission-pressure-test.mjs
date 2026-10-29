@@ -8,12 +8,13 @@ import {serve} from './serve.mjs';
 const {chromium}=createRequire(import.meta.url)(process.env.PLAYWRIGHT_PATH||'playwright');
 const out=process.argv[2]||'/tmp/ember-mission-pressure';await mkdir(out,{recursive:true});
 const routes=JSON.parse(await readFile(new URL('./fixtures/mission-pressure-routes.json',import.meta.url),'utf8'));
-// Pin the owner's last delivered Preview 3. Use its actual runner/behaviors,
-// sharing identical art with the candidate. No live or unrelated repository.
+// Pin Preview 3's runner/behaviors with current art to isolate tactics. The
+// formation suite independently checks delivered Preview 4 with its own art.
+// No live or unrelated repository.
 const baseline='8357620ff413a3fb5e0e3cd004aa0f897d7bb1a9';
 const source=name=>execFileSync('git',['show',baseline+':demos/glacier-level/'+name],{encoding:'utf8'});
-const oldScene=source('scene.js').replace('./art.js?mission=3','./art.js?mission=4').replace('./enemies.js?mission=3','./enemies.js?mission=baseline');
-const oldEnemies=source('enemies.js').replace('./art.js?mission=3','./art.js?mission=4');
+const oldScene=source('scene.js').replace('./art.js?mission=3','./art.js?mission=5').replace('./enemies.js?mission=3','./enemies.js?mission=baseline');
+const oldEnemies=source('enemies.js').replace('./art.js?mission=3','./art.js?mission=5');
 const {server,base}=await serve();let browser,count=0;
 try{
  browser=await chromium.launch({slowMo:0});
@@ -24,11 +25,11 @@ try{
   await page.route('**/demos/glacier-level/enemies.js?mission=baseline',r=>r.fulfill({body:oldEnemies,contentType:'text/javascript'}));
   await page.goto(base+'demos/glacier-level/'+phone.q);await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
   const result=await page.evaluate(async({routes,old})=>{
-   const current=await import('/demos/glacier-level/scene.js?mission=4'),prior=await import('/demos/glacier-level/scene.js?mission=baseline');
+   const current=await import('/demos/glacier-level/scene.js?mission=5'),prior=await import('/demos/glacier-level/scene.js?mission=baseline');
    const {MissionGame:G,ARRIVALS}=old?prior:current,{MissionGame:Before}=prior;
    const {Game}=await import('/js/game.js?v=0.29.0');
    const {sfx}=await import('/js/audio.js?v=0.29.0');
-   const {chooseMissionAttack}=await import('/demos/glacier-level/boss.js?mission=4');
+   const {chooseMissionAttack}=await import('/demos/glacier-level/boss.js?mission=5');
    const {chooseAttack,beginAttack}=await import('/demos/glacier-boss/boss.js?boss=7');
    const checks=[],record=(name,ok,detail)=>checks.push({name,ok:!!ok,detail});
    const roster=['shelfSkiff','anchorGun','twinDart','crestBomber','snowRoller','needleWing','wakeHunter'];
@@ -89,7 +90,7 @@ try{
     wave.update(1/120,{dx:0,dy:0,fire:false});const ds=wave.enemies.filter(e=>e.missionRegular&&!e.dead);
     supportedBomber||=ds.some(e=>e.type==='crestBomber'&&e.x+e.w<=208)&&ds.some(e=>e.type==='twinDart'&&e.x+e.w<=208);
     supportedHunter||=ds.some(e=>e.type==='wakeHunter'&&e.x+e.w<=208)&&ds.some(e=>['shelfSkiff','anchorGun','snowRoller'].includes(e.type)&&e.x+e.w<=208);
-    clear&&=!ds.some(e=>e.type==='wakeHunter')||ds.filter(e=>e.T.flies).length===1;
+    clear&&=!ds.some(e=>e.type==='wakeHunter'&&e.x+e.w>64)||ds.filter(e=>e.T.flies&&e.x+e.w>64).every(e=>e.type==='wakeHunter');
    }
    record('all seven types actually enter before wave second 60',roster.every(t=>wave.audit.some(e=>e.kind==='arrival'&&e.type===t&&e.at<60)));
    record('actual first-minute waves pair a bomber with a Dart and a hunter with ground support',supportedBomber&&supportedHunter&&clear,{supportedBomber,supportedHunter,clear});
@@ -135,7 +136,7 @@ try{
    // Controlled normal-health comparisons, including the previous world.
    // These are review indicators, not a substitute for the owner's phone play.
    const pressure=[];
-   for(const x of [26,188])for(const target of (x===26?[14,65,115,'patrol']:[14,65,115]))for(const [name,C]of [['preview3',Before],['preview4',G],['frostring',Game]]){
+   for(const x of [26,188])for(const target of (x===26?[14,65,115,'patrol']:[14,65,115]))for(const [name,C]of [['preview3',Before],['preview5',G],['frostring',Game]]){
     const g=C===Game?new C({level:3}):new C();let seed=28,dir=-1,first=null,shots=0;
     g.rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;};
     const hurt=g.hurtPlayer.bind(g);g.hurtPlayer=(...a)=>{const hp=g.health;hurt(...a);if(g.health<hp)first??=g.time;};
@@ -148,7 +149,7 @@ try{
    }
    const camps=[14,65,115].map(target=>pressure.filter(r=>r.target===target&&r.x===26));
    record('normal-health camping shooters face more pressure than delivered Preview 3',camps.every(rows=>rows[1].time<rows[0].time&&rows[1].firstDamage<rows[0].firstDamage),camps);
-   const edge=pressure.filter(r=>r.x===188&&r.name==='preview4');
+   const edge=pressure.filter(r=>r.x===188&&r.name==='preview5');
    record('far-right camping no longer bypasses the level unharmed',edge.every(r=>r.state==='gameover'&&r.firstDamage!==null&&r.shots>0),edge);
    return {checks,firstWarnings,pressure};
   },{routes,old:!!process.env.OLD_PRESSURE});

@@ -879,6 +879,29 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      direction locks prevent unannounced reversals. Rightward charges stop at
      the visible edge for the native fuse warning. Two additional no-hit corner
      escapes include reaction time. The cached all-turned fixture is 109 calls.
+     **Full mission preview 5 — direct feedback after phone play:** the owner
+     found Preview 4 too easy/large and requested smaller craft and aggressive
+     groups like levels 1–3. See mission-formation-review.md. Replace 80 mostly
+     individual entries with 54 formations (3–5 members), 214 craft in sections
+     of 54/72/88, eight regulars/six flyers/two ground units maximum. Modestly
+     shrink widths 17–19% while preserving detailed PNGs, masks/muzzles/turns and
+     player art. Boss Darts follow the same 20×10 scale. Group Darts advance at
+     48 px/s with a bounded height adjustment and 0.4-second rests. Keep horizontal
+     formation spacing; paired hunters stagger dives rather than crossing during
+     exit. All seven types appear early; retain full warnings, useful supplies,
+     HP/damage, boss tactics/destruction and all original systems. Compare actual
+     Preview 4 and every shipped level, normal-health moving pilots and 21 complete
+     formation dodges. The owner enabled and tested Pages from the allowed feature
+     branch; deliver there with LEVEL 4 PREVIEW 5, then await phone feedback.
+     All 1,190 checks pass, including 74 new formation checks. The actual Preview
+     4 fails the new suite; 21 complete real-formation no-hit routes, the 17 paired
+     escapes and all 29 boss routes pass at both phone sizes. Full moving/corner
+     timelines retain separate, visible craft. Select the lane before mutating
+     the queue, preserving it when a waiting hunter becomes the new first entry.
+     Both standalone layouts complete 214 entries/all phases, selection and retry
+     without requests/errors/save writes. The labeled 32-second touch clip keeps
+     normal health/lives with no ongoing player edits. Cached busy rendering is
+     108/140 calls normally/fully turned; earlier-game counts stay unchanged.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.

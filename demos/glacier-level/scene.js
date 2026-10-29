@@ -1,47 +1,37 @@
 import { BossGame, battleReady as backgroundReady } from '../glacier-boss/scene.js?boss=7';
-import { artReady, HERO } from './art.js?mission=4';
-import { TYPES, MISSION_ESCORT, RIGHT_CHARGE, spawn } from './enemies.js?mission=4';
-import { MISSION_BOSS } from './boss.js?mission=4';
+import { artReady, HERO } from './art.js?mission=5';
+import { TYPES, MISSION_ESCORT, RIGHT_CHARGE, spawn } from './enemies.js?mission=5';
+import { MISSION_BOSS } from './boss.js?mission=5';
 import { SPRITES } from '../../js/sprites.js?v=0.29.0';
 import { LEVELS } from '../../js/levels.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
 import { drawText } from '../../js/font.js?v=0.29.0';
 import { PAL } from '../../js/config.js?v=0.29.0';
 export const battleReady=Promise.all([backgroundReady,artReady]);
-export const WAVE_SECONDS=180,REGULAR_CAP=4;
+export const WAVE_SECONDS=180,REGULAR_CAP=8;
+export { ARRIVALS, FORMATIONS } from './waves.js?mission=5';
+import { ARRIVALS } from './waves.js?mission=5';
 const SCENE={number:4,name:'GLACIER COAST',floor:14,background:{sun:false,dust:false},events:[[Number.MAX_SAFE_INTEGER,'end']]};
 const ground=new Set(['shelfSkiff','anchorGun','snowRoller']);
-const sections=[
- ['shelfSkiff','anchorGun','twinDart','twinDart','shelfSkiff','crestBomber','twinDart','anchorGun','snowRoller','needleWing','shelfSkiff','twinDart','wakeHunter','anchorGun','twinDart','crestBomber','twinDart','snowRoller','needleWing','wakeHunter'],
- ['crestBomber','shelfSkiff','twinDart','twinDart','anchorGun','snowRoller','shelfSkiff','twinDart','needleWing','crestBomber','anchorGun','twinDart','snowRoller','wakeHunter','needleWing','shelfSkiff','crestBomber','twinDart','anchorGun','snowRoller','needleWing','wakeHunter','crestBomber','twinDart','needleWing','wakeHunter'],
- [...Array.from({length:4},()=>['shelfSkiff','twinDart','crestBomber','anchorGun','twinDart','needleWing','snowRoller','wakeHunter']).flat(),'crestBomber','needleWing']
-];
-export const ARRIVALS=sections.flatMap((types,section)=>types.map((type,i)=>{
- const time=section===0?(i<4?[3,7,11,11.9][i]:15+(i-4)*44/15):section*60+1+i*(section===1?56:58)/(types.length-1);
- return Object.freeze({time,type,section:section+1});
-})).sort((a,b)=>a.time-b.time);
 // Reuse the original pod contents/times without changing the campaign table.
 export const SUPPLIES=LEVELS[1].events.filter(e=>e[1]==='carrier').map(([time,,opts])=>Object.freeze({time,drop:opts.drop}));
 export const regulars=g=>g.enemies.filter(e=>e.missionRegular&&!e.dead);
-function laneFor(g,type){
- const live=regulars(g);
+function laneFor(g,event){
+ const {type,y}=event,live=regulars(g);
  if(live.length>=REGULAR_CAP)return null;
- if(ground.has(type))return live.filter(e=>ground.has(e.type)).length<2&&live.filter(e=>ground.has(e.type)).every(e=>e.x<96)?0:null;
- const flyers=live.filter(e=>e.T.flies),heavy=t=>t==='wakeHunter'||t==='crestBomber';
- // Reserve a clear sky lane for the oldest waiting heavy craft. Otherwise
- // repeated dart arrivals could starve the first hunter indefinitely.
- const reserved=g.runner.pending.find(e=>heavy(e.type));
- if(reserved&&reserved.type!==type)return null;
- if(flyers.length>=2||flyers.some(e=>e.type==='wakeHunter')||type==='wakeHunter'&&flyers.length)return null;
- // Only a single Dart may support a bomber. Keep hunters' committed dive
- // corridor clear of other flyers; ground attackers can support them.
- if(flyers.some(e=>e.type==='crestBomber')&&type!=='twinDart')return null;
- if(type==='crestBomber'&&flyers.some(e=>e.type!=='twinDart'))return null;
- const lanes=type==='crestBomber'?[32]:[32,94];
- return lanes.find(y=>flyers.every(e=>Math.abs(e.y-y)>30))??null;
+ if(ground.has(type))return live.filter(e=>ground.has(e.type)).length<2&&live.filter(e=>ground.has(e.type)).every(e=>e.x+e.w+10<213)?0:null;
+ const flyers=live.filter(e=>e.T.flies),hunters=flyers.filter(e=>e.type==='wakeHunter'&&e.x+e.w>64);
+ const waiting=g.runner.pending.find(e=>!ground.has(e.type));
+ if(waiting?.type==='wakeHunter'&&type!=='wakeHunter')return null;
+ // A paired hunter dive is a formation of its own. Other flyers finish
+ // crossing before the pair enters, then the next flight follows its tail.
+ if(flyers.length>=6||type==='wakeHunter'&&flyers.some(e=>e.type!=='wakeHunter'&&e.x+e.w>64)||type!=='wakeHunter'&&hunters.length)return null;
+ // Test the whole entry envelope, not only the exact instant of spawning.
+ // Same-row followers need a body-length gap; other rows keep their lanes.
+ return flyers.every(e=>Math.abs(e.y-y)>e.h+8||e.x+e.w+12<213)?y:null;
 }
 export class MissionRunner{
- constructor(game){this.g=game;this.t=0;this.phase='waves';this.timer=0;this.next=0;this.pod=0;this.pending=[];this.nextEntry=0;this.darts=0;}
+ constructor(game){this.g=game;this.t=0;this.phase='waves';this.timer=0;this.next=0;this.pod=0;this.pending=[];this.nextEntry=0;}
  update(dt){
   const g=this.g;if(g.state!=='playing'||g.player.entering>0)return;
   if(this.phase==='waves'){
@@ -49,12 +39,13 @@ export class MissionRunner{
    while(this.next<ARRIVALS.length&&ARRIVALS[this.next].time<=this.t)this.pending.push(ARRIVALS[this.next++]);
    this.pending=this.pending.filter(e=>{if(this.t-e.time<=((e.type==='crestBomber'||e.type==='wakeHunter')?12:8))return true;g.audit.push({kind:'waveSkipped',type:e.type,at:this.t,reason:'occupied lanes',scheduled:e.time});return false;});
    if(this.t>=this.nextEntry){
-    const index=this.pending.findIndex(e=>laneFor(g,e.type)!==null);
+    const index=this.pending.findIndex(e=>laneFor(g,e)!==null);
     if(index>=0){
-     const [event]=this.pending.splice(index,1),y=laneFor(g,event.type);
-     const e=g.spawnEnemy(event.type,213,y,{missionRegular:true,lane:event.type==='twinDart'?this.darts++%2:0});
-     g.audit.push({kind:'arrival',id:e.id,type:e.type,at:this.t,scheduled:event.time,delay:this.t-event.time,section:event.section});
-     this.nextEntry=this.t+.9;
+     const event=this.pending[index],y=laneFor(g,event);
+     this.pending.splice(index,1);
+     const e=g.spawnEnemy(event.type,213,y,{missionRegular:true,lane:event.slot,formation:event.group,flow:event.flow,holdX:event.holdX});
+     g.audit.push({kind:'arrival',id:e.id,type:e.type,at:this.t,scheduled:event.time,delay:this.t-event.time,section:event.section,group:event.group,recipe:event.recipe});
+     this.nextEntry=this.t+.28;
     }
    }
    while(this.pod<SUPPLIES.length&&SUPPLIES[this.pod].time<=this.t){

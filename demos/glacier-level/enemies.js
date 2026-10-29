@@ -1,8 +1,8 @@
 import { LOCAL_TYPES } from '../glacier-combat/enemies.js?combat=3';
 import { target } from '../glacier-combat/art.js?combat=3';
 import { ESCORT } from '../glacier-boss/escorts.js?boss=7';
-import { MISSION_ART, body, hit } from './art.js?mission=4';
-import { initCombat, updateCombat } from './combat.js?mission=4';
+import { MISSION_ART, body, hit } from './art.js?mission=5';
+import { initCombat, updateCombat } from './combat.js?mission=5';
 
 const guns={skiff:[.015,.35],anchor:[.04,.34],dart:[.04,.5],bomber:[.5,.91],roller:[.205,.07],needle:[.012,.55],hunter:[.012,.48]};
 function line(c,e,snap,locked){

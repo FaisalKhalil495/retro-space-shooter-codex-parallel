@@ -390,6 +390,37 @@ routes allow a 0.15-second reaction before ordinary-input retreat. All three
 right-edge camping positions now take damage; preserve these regression checks.
 The normal cached busy fixture is 93 draw calls/frame, fully turned 109.
 
+The owner played Preview 4 on GitHub Pages and directly requested **Preview 5**:
+slightly smaller enemies, many more waves, aggressive group attacks and a real
+comparison with all three shipped levels. This is authorized mission feedback,
+not a new campaign stage; do not re-request permission. See
+`docs/concepts/level-4-enemies/mission-formation-review.md`. This supersedes the
+old 80-craft/four-regular/two-flyer limits and exact mission dimensions. Schedule
+54 formations of 3–5 machines, 214 craft in sections of 54/72/88, cap eight
+regulars/six flyers/two ground units, preserve bounded queues and full warnings.
+Keep source artwork but shrink widths by 17–19%, including the boss's detailed
+Dart escorts; masks/muzzles/flashes follow the new geometry. Hero, bullets,
+controls, defenses, useful supplies, all HP/damage, Breakwater tactics/breakup,
+background, saving and earlier content remain unchanged. Group Darts advance
+at a shared 48 px/s with 0.4-second rests and a bounded height adjustment;
+paired hunters stagger dives with full locked warnings. Check complete crowded
+moving-player timelines, actual baseline comparisons and 21 whole-formation
+no-hit routes alongside prior routes. Look for LEVEL 4 PREVIEW 5. The owner
+enabled Pages from `codex/glacier-coast-demo` in this allowed repository and
+confirmed it works; update that existing branch after verification. No main
+merge, new Pages settings, other repository or campaign integration. Deliver
+this feedback pass and await phone review before another stage.
+Preview 5 is complete: 1,190 checks pass (74 formation, 96 pressure, 88 mission,
+67 art, 78 mission-escort, 787 preserved). Actual Preview 4 fails the new suite.
+All 21 real-formation no-hit routes pass at both phone sizes, alongside the
+17 paired/corner and 29 boss routes. Moving/right-edge full timelines check
+separation and sky bounds. Cache the admitted lane before removing its queue
+entry; a newly exposed waiting hunter must not change that selected row. Both
+standalone layouts complete 214 entries/three phases and native retry/selection
+without external requests, errors or saving. The labeled 32-second touch clip
+uses normal health/lives and no ongoing player edits. Busy cached rendering
+is 108 calls/frame (140 fully turned), with earlier-game counts unchanged.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already
