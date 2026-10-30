@@ -12,9 +12,9 @@ try{
  const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  await page.goto(base+'demos/glacier-level/');await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
  const results=await page.evaluate(async()=>{
-  const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=6');
+  const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=7');
   const {BossGame}=await import('/demos/glacier-boss/scene.js?boss=7');
-  const {MISSION_ART,HERO,picture}=await import('/demos/glacier-level/art.js?mission=6');
+  const {MISSION_ART,HERO,picture}=await import('/demos/glacier-level/art.js?mission=7');
   const {ART}=await import('/demos/glacier-combat/art.js?combat=3');
   const {LOCAL_TYPES}=await import('/demos/glacier-combat/enemies.js?combat=3');
   const {useDetail}=await import('/js/detail.js?v=0.29.0');

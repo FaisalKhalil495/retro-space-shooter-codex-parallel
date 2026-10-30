@@ -73,7 +73,7 @@ const remainingReady=new Promise((resolve,reject)=>{
   }catch(e){reject(e);}
  };
 });
-remaining.src=globalThis.__missionExtraArt||new URL('assets/anchor-darts.png?mission=6',document.baseURI).href;
+remaining.src=globalThis.__missionExtraArt||new URL('assets/anchor-darts.png?mission=7',document.baseURI).href;
 export const artReady=Promise.all([fleetReady,remainingReady]);
 export const picture=e=>MISSION_ART[e.T.art][['warn','vent','aim'].includes(e.mode)?'open':'idle'];
 export function hit(e,x,y,w,h){

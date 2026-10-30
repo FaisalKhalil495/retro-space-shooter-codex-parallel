@@ -544,13 +544,17 @@ for (const phone of PHONES) {
   await page.evaluate(() => { const g = window.__ember.game; g.startAt = 0; g.reset(); });
   // Clear level 1: level 2 is remembered.
   await page.evaluate(() => window.__ember.game.levelClear());
-  await page.waitForTimeout(3600);
+  // The cloud can render slower than real time (frame dt is capped).
+  // Wait for the actual Continue gate rather than assuming wall-clock time.
+  await page.waitForFunction(() => window.__ember.game.state === 'clear' && window.__ember.game.stateTimer > 3.05);
   await tap(104, 72);
   r.next = await st();
   r.reached = (await saved()).reached;
   // The last level: "to be continued", the name, then the table.
   await page.evaluate(() => { const g = window.__ember.game; g.levelIndex = 2; g.reset({ score: 99999, lives: 2 }); g.levelClear(); });
-  await page.waitForTimeout(3600);
+  // The cloud can render slower than real time (frame dt is capped).
+  // Wait for the actual Continue gate rather than assuming wall-clock time.
+  await page.waitForFunction(() => window.__ember.game.state === 'clear' && window.__ember.game.stateTimer > 3.05);
   await tap(104, 72);
   r.end = (await st()).screen;
   await page.waitForTimeout(2300);
@@ -565,7 +569,9 @@ for (const phone of PHONES) {
   await tap(100, 54); // level 2
   r.practice = await st();
   await page.evaluate(() => window.__ember.game.levelClear());
-  await page.waitForTimeout(3600);
+  // The cloud can render slower than real time (frame dt is capped).
+  // Wait for the actual Continue gate rather than assuming wall-clock time.
+  await page.waitForFunction(() => window.__ember.game.state === 'clear' && window.__ember.game.stateTimer > 3.05);
   await tap(104, 72);
   r.afterPractice = await st();
   r.tableAfterPractice = (await saved()).scores.length;

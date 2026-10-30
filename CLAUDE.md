@@ -925,6 +925,26 @@ this story. (Frostring's looks: the invaders moving into the ice ring.)
      selection and retry without requests/errors/saving. The labeled 32-second
      touch clip collects actual loot with normal health/lives and no ongoing edits.
      Cached busy calls remain 108/140 normally/turned; earlier-game counts match.
+     **Full mission preview 7 — direct pacing feedback, 2026-10-30:** the owner
+     requested slower approaching craft and longer bomber salvos. Scale regular
+     entry/passing/exit and hunter dives by 0.85, with group Darts at 40.8 px/s
+     throughout. Anchored guns and idle ground units retain the world scroll.
+     Bombers attempt five drops rather than two, with full warnings, a fresh
+     locked target each time and native rests; killing one cancels future drops.
+     Preserve small art, kill loot, waves/pods, HP/damage, projectiles, hero and
+     all boss/earlier systems. Measure real movement against Preview 6 and use
+     complete five-bomb dodges in 20-second fixtures. Longer no-fire survivors
+     may expire more queued craft; armed progression must still admit all 214.
+     See mission-pacing-review.md. Deliver LEVEL 4 PREVIEW 7 on the same allowed
+     Pages branch and await phone review.
+     All 1,330 checks pass, including 52 new actual-movement/bomb-sequence checks.
+     Actual Preview 6 fails the new test. Surviving bombers stay 13.8 s versus
+     7.25 s, and complete bomber escapes cover five drops at both phone sizes.
+     All prior reward, art, formation, boss and earlier-content checks pass.
+     Standalone layouts complete 214 entries/all phases plus native retry/
+     selection without requests/errors/saving. A fixed wall-time Continue wait
+     in the campaign smoke test now checks native clear readiness, retaining all
+     49 assertions. Earlier game/menu runtime is unchanged.
 5. **The Ember Mines** — underground tunnels lit by soft amber crystals;
    ceiling and floor squeeze the space. Boss: **The Drill Worm**, a mechanical
    worm bursting from walls above and below.

@@ -16,10 +16,10 @@ try{
   const page=await browser.newPage({viewport:{width:phone.width,height:phone.height},isMobile:true,hasTouch:true}),errors=[];
   page.on('pageerror',e=>errors.push(String(e)));await page.goto(base+'demos/glacier-level/'+phone.q);await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
   const results=await page.evaluate(async routes=>{
-   const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=6');
+   const {MissionGame}=await import('/demos/glacier-level/scene.js?mission=7');
    const {beginAttack,clearThreats}=await import('/demos/glacier-boss/boss.js?boss=7');
    const {FORMATION}=await import('/demos/glacier-boss/escorts.js?boss=7');
-   const {picture,MISSION_ART}=await import('/demos/glacier-level/art.js?mission=6');
+   const {picture,MISSION_ART}=await import('/demos/glacier-level/art.js?mission=7');
    const checks=[],record=(name,ok,detail)=>checks.push({name,ok:!!ok,detail});
    const make=(phase=3,bx=144)=>{
     const g=new MissionGame();g.runner={update(){}};g.rand=()=>.45;

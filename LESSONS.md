@@ -1001,6 +1001,27 @@ fewer rounds are needed.
   The labeled 32-second touch clip actually collects rapid/ammo with normal
   health/lives and no ongoing player edits. Cached busy calls stay 108/140;
   prior-game rendering counts match. Await phone review of LEVEL 4 PREVIEW 6.
+- Full mission preview 7: the owner asked for slightly slower enemy approaches
+  and longer bomber presence. Scale movement, not the fixed step: changing dt
+  would also alter warnings, fire cadence, bomb falls and damage. Use one slower
+  forward speed across a formation's modes to avoid overtaking. Keep planted
+  ground machines moving with the scrolling world. Five separately warned,
+  re-aimed bomb drops extend bomber presence without inflating health, and a
+  player kill must cancel remaining drops. Compare actual positions and releases
+  against Preview 6, not only exported constants. Complete bomber escapes must
+  cover every new drop and clear all fragments, so extend the fixture horizon
+  rather than stopping after the old two-bomb sequence. Slower survivors keep
+  lanes occupied: preserve bounded queues and armed full-arrival checks, while
+  observing no-fire density/firing separately from obsolete throughput minima.
+  Preserve current art, kill rewards, projectile speeds and earlier content.
+  All 1,330 checks pass, including 52 new pacing checks. Actual Preview 6 fails
+  the movement control. Full bomber dodges include all five drops, with all prior
+  paired/formation/boss routes retained. Both portable layouts complete all 214
+  entries/phases, selection and retry without requests/errors/save writes. The
+  campaign smoke run exposed a fixed-wall-time Continue tap: with frame dt capped,
+  3.6 real seconds need not mean three simulated seconds. Wait for the native clear
+  state/timer instead; all 49 original assertions now pass without runtime edits.
+  Bomber retirement is 7.25 → 13.8 s. Await phone review of LEVEL 4 PREVIEW 7.
 - 3C-0: Frostring's look, the **Ice Harvesters**, chosen from eight sets
   (asked for more options after the first four).
 - v0.17.0: the Frostring world: breakable drifting ice slabs (always a

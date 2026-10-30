@@ -19,13 +19,13 @@ try{
    const file=new URL(route.request().url()).pathname.split('/').pop(),body=execFileSync('git',['show',baseline+':demos/glacier-level/'+file],{encoding:'utf8'}).replaceAll('mission=5','mission=baseline5');
    return route.fulfill({body,contentType:'text/javascript'});
   });
-  if(process.env.NO_KILL_LOOT)await page.route('**/demos/glacier-level/enemies.js?mission=6',async route=>{
+  if(process.env.NO_KILL_LOOT)await page.route('**/demos/glacier-level/enemies.js?mission=7',async route=>{
    const body=(await readFile(new URL('../demos/glacier-level/enemies.js',import.meta.url),'utf8')).replace('dropChance:loot[key]','dropChance:0');
    return route.fulfill({body,contentType:'text/javascript'});
   });
   await page.goto(base+'demos/glacier-level/'+phone.q);await page.waitForFunction(()=>window.__mission?.artworkReady);await page.evaluate(()=>window.__mission.frozen=true);
   const result=await page.evaluate(async old=>{
-   const now=await import('/demos/glacier-level/scene.js?mission=6'),prior=await import('/demos/glacier-level/scene.js?mission=baseline5');await prior.battleReady;
+   const now=await import('/demos/glacier-level/scene.js?mission=7'),prior=await import('/demos/glacier-level/scene.js?mission=baseline5');await prior.battleReady;
    const {Game}=await import('/js/game.js?v=0.29.0'),{SPECIALS}=await import('/js/weapons.js?v=0.29.0');
    const G=old?prior.MissionGame:now.MissionGame,Before=prior.MissionGame,checks=[],record=(name,ok,detail)=>checks.push({name,ok:!!ok,detail});
    const spec={shelfSkiff:[18,7,.3],anchorGun:[17,10,.15],twinDart:[14,7,.2],crestBomber:[20,6,.35],snowRoller:[18,8,.35],needleWing:[20,7,.15],wakeHunter:[19,8,.1]};

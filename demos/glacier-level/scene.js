@@ -1,7 +1,7 @@
 import { BossGame, battleReady as backgroundReady } from '../glacier-boss/scene.js?boss=7';
-import { artReady, HERO } from './art.js?mission=6';
-import { TYPES, MISSION_ESCORT, RIGHT_CHARGE, spawn } from './enemies.js?mission=6';
-import { MISSION_BOSS } from './boss.js?mission=6';
+import { artReady, HERO } from './art.js?mission=7';
+import { TYPES, MISSION_ESCORT, RIGHT_CHARGE, spawn } from './enemies.js?mission=7';
+import { MISSION_BOSS } from './boss.js?mission=7';
 import { SPRITES } from '../../js/sprites.js?v=0.29.0';
 import { LEVELS } from '../../js/levels.js?v=0.29.0';
 import { sfx } from '../../js/audio.js?v=0.29.0';
@@ -9,8 +9,8 @@ import { drawText } from '../../js/font.js?v=0.29.0';
 import { PAL } from '../../js/config.js?v=0.29.0';
 export const battleReady=Promise.all([backgroundReady,artReady]);
 export const WAVE_SECONDS=180,REGULAR_CAP=8;
-export { ARRIVALS, FORMATIONS } from './waves.js?mission=6';
-import { ARRIVALS } from './waves.js?mission=6';
+export { ARRIVALS, FORMATIONS } from './waves.js?mission=7';
+import { ARRIVALS } from './waves.js?mission=7';
 const SCENE={number:4,name:'GLACIER COAST',floor:14,background:{sun:false,dust:false},events:[[Number.MAX_SAFE_INTEGER,'end']]};
 const ground=new Set(['shelfSkiff','anchorGun','snowRoller']);
 // Reuse the original pod contents/times without changing the campaign table.

@@ -1,8 +1,8 @@
 import { LOCAL_TYPES } from '../glacier-combat/enemies.js?combat=3';
 import { target } from '../glacier-combat/art.js?combat=3';
 import { ESCORT } from '../glacier-boss/escorts.js?boss=7';
-import { MISSION_ART, body, hit } from './art.js?mission=6';
-import { initCombat, updateCombat } from './combat.js?mission=6';
+import { MISSION_ART, body, hit } from './art.js?mission=7';
+import { initCombat, updateCombat } from './combat.js?mission=7';
 
 // Use the original Game.maybeDrop policy: kills roll for real power-ups/ammo,
 // with native low-health help and full-health shooting-power redistribution.

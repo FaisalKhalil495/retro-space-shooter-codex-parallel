@@ -3,6 +3,7 @@ import { sfx } from '../../js/audio.js?v=0.29.0';
 import { clamp, rectsOverlap } from '../../js/util.js?v=0.29.0';
 
 // Mission-only combat. The original two review flights retain their tuning.
+export const MOVEMENT_SCALE=.85,BOMBER_DROPS=5;
 const event=(g,e,kind,extra={})=>g.audit.push({time:g.time,id:e.id,type:e.type,kind,...extra});
 export const facing=(e,g)=>g.state==='playing'&&g.player.entering<=0&&e.x+e.w<=206&&e.x>8&&
  (e.facingRight?e.x+e.w<=g.player.x-5:e.x>=g.player.x+g.player.w+5);
@@ -44,7 +45,9 @@ export function updateCombat(e,dt,g){
  if(ground){
   e.y=g.terrain.floorY-e.h;
   const entry=e.type==='shelfSkiff'?52:e.type==='snowRoller'?42:GROUND_SPEED;
-  e.x-=(entering?entry:leaving?(e.type==='shelfSkiff'?65:45):GROUND_SPEED)*dt;
+  // Anchored guns and idle machines still follow the scrolling ground.
+  const speed=entering&&e.type!=='anchorGun'?entry*MOVEMENT_SCALE:leaving?(e.type==='shelfSkiff'?65:45)*MOVEMENT_SCALE:GROUND_SPEED;
+  e.x-=speed*dt;
  }else if(e.type!=='wakeHunter'||e.mode!=='dash'){
   // A right-edge player leaves no forward firing lane at the old hover
   // point. Make room to turn instead of hovering harmlessly over the ship.
@@ -57,12 +60,12 @@ export function updateCombat(e,dt,g){
   }
   if(e.type==='crestBomber')e.y=e.baseY+Math.sin(e.t)*1.5;
   const speed=e.type==='crestBomber'?38:e.type==='needleWing'?46:e.type==='wakeHunter'?52:48;
-  if(e.flow)e.x-=48*dt;
-  else if(entering||!leaving&&e.x>e.holdX)e.x=Math.max(e.holdX,e.x-speed*dt);
+  if(e.flow)e.x-=48*MOVEMENT_SCALE*dt;
+  else if(entering||!leaving&&e.x>e.holdX)e.x=Math.max(e.holdX,e.x-speed*MOVEMENT_SCALE*dt);
   if(leaving&&!e.flow){
    const exitSpeed=e.type==='crestBomber'?52:e.type==='needleWing'?78:e.type==='wakeHunter'?80:70;
-   e.x+=(e.type==='wakeHunter'&&e.facingRight?exitSpeed:-exitSpeed)*dt;
-   if(e.type==='wakeHunter')e.y=Math.max(14,e.y-30*dt);
+   e.x+=(e.type==='wakeHunter'&&e.facingRight?exitSpeed:-exitSpeed)*MOVEMENT_SCALE*dt;
+   if(e.type==='wakeHunter')e.y=Math.max(14,e.y-30*MOVEMENT_SCALE*dt);
   }
  }
  // Each new firing opportunity gets a full warning after respawn. Machines
@@ -96,14 +99,14 @@ export function updateCombat(e,dt,g){
     e.shots++;mode(e,anchor?'vent':e.shots<(needle?2:4)?'wait':'leave',anchor?1.6:e.flow?.4:.75);
    }else if(e.type==='crestBomber'){
     const x=e.x+e.w/2-4,y=e.y+e.h-3;g.spawnEnemy('coastBomb',x,y,{tx:e.tx,ty:e.ty});fired(e,g,{x,y,targetX:e.tx,targetY:e.ty});
-    e.drops++;mode(e,e.drops<2?'wait':'leave',1.1);
+    e.drops++;mode(e,e.drops<BOMBER_DROPS?'wait':'leave',1.1);
    }else if(e.type==='snowRoller'){
     const x=e.facingRight?e.x+e.w-2:e.x-6,y=g.terrain.floorY-8;g.spawnEnemy('rollingCharge',x,y,{life:1.5,direction:e.facingRight?1:-1});fired(e,g,{x,y});e.shots++;mode(e,e.shots<2?'wait':'leave',1.2);
    }else if(e.type==='wakeHunter'){
     // Paired hunters take turns committing their dives, like the earlier
     // worlds' staggered gunships. Keep the full locked warning while waiting.
     if(g.enemies.some(o=>o!==e&&!o.dead&&o.type==='wakeHunter'&&o.mode==='dash')){flySpacing(e,g);return;}
-    e.vx=Math.cos(e.angle)*145;e.vy=Math.sin(e.angle)*145;mode(e,'dash',.9);
+    e.vx=Math.cos(e.angle)*145*MOVEMENT_SCALE;e.vy=Math.sin(e.angle)*145*MOVEMENT_SCALE;mode(e,'dash',.9);
     event(g,e,'dash',{vx:e.vx,vy:e.vy,angle:e.angle});sfx.tick();
    }
   }

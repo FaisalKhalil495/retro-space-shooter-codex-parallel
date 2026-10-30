@@ -449,6 +449,30 @@ calls, errors or saving. The labeled 32-second touch clip shows actual rapid/
 ammo collection with normal health/lives and no ongoing player edits. Cached
 busy drawing stays 108/140 calls normal/turned; earlier-game counts unchanged.
 
+On 2026-10-30 the owner directly requested **Preview 7**: regular enemies move
+too quickly toward the hero; slow them a little and let bombers stay longer for
+more drops. This is authorized feedback, not a new approval gate. See
+`docs/concepts/level-4-enemies/mission-pacing-review.md`. Scale their own entry,
+passing/departure and hunter dive motion by 0.85. Group Darts use 40.8 px/s in
+all modes; anchored guns/idle ground units retain the world's 20 px/s scroll.
+Do not scale dt or projectile speed. Surviving bombers attempt five drops rather
+than two, each with the full 0.8-second locked warning, new aim and 1.1-second
+rest; destroying one cancels remaining drops. Preserve small art, all HP/damage,
+kill rewards, group/wave/supply data, player/controls, boss, audio/saving and
+earlier content. Compare actual Preview 6 movement and drops, extend full no-hit
+fixtures to 20 seconds and require all five bombs in complete bomber routes.
+Keep caps/queue limits; longer uncleared survivors can expire more no-fire slots,
+but armed progression must still admit all 214. Use LEVEL 4 PREVIEW 7 on the
+same authorized Pages branch, then await phone review.
+Preview 7 is complete: 1,330 checks pass, including 52 new pacing checks.
+Actual Preview 6 fails the movement regression check. All complete bomber routes
+cover five drops; paired/formation/boss escapes retain normal health and exact
+attack counts. Both portable layouts complete 214 entries/all phases, selection
+and retry without external calls/errors/save writes. The campaign smoke test
+waits for native clear readiness instead of a fragile wall-clock delay at its
+three Continue taps; all 49 assertions remain and pass. Earlier runtime stays
+unchanged. Standalone bombers stay about 13.8 s versus 7.25 s before.
+
 Before implementing a new stage, present a small, concrete plan for the user's
 review and wait for approval. Separate proposals from approved decisions. Read
 and investigate freely within the requested scope, and complete already

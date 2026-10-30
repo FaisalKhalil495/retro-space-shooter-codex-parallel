@@ -1,19 +1,22 @@
-# Glacier Coast — full mission preview 6
+# Glacier Coast — full mission preview 7
 
-The owner requested further size reduction and more kill-earned ammo, spread
-and other power-ups after playing Preview 5. Look for **LEVEL 4 PREVIEW 6**.
-[Reward and size review](../../docs/concepts/level-4-enemies/mission-rewards-review.md).
+The owner requested slightly slower enemies and bombers staying longer for
+additional bombing runs after playing Preview 6. Look for **LEVEL 4 PREVIEW 7**.
+[Pacing review](../../docs/concepts/level-4-enemies/mission-pacing-review.md).
+The small artwork and earned loot from Preview 6 remain.
 The three-level campaign and earlier previews remain intact.
 
 ## Phone review
 
 Open:
-https://faisalkhalil495.github.io/retro-space-shooter-codex-parallel/demos/glacier-level/index.html?preview=6
+https://faisalkhalil495.github.io/retro-space-shooter-codex-parallel/demos/glacier-level/index.html?preview=7
 
 Turn sideways and tap **Start full mission**. The original pad, Fire and Special
 remain. Groups of 3–5 attack together through a three-minute approach, followed
-by Breakwater. All seven types appear early. Small fighters are now narrower
-than your ship; heavy machines are also roughly 30% narrower than Preview 5.
+by Breakwater. All seven types appear early. Regular approaches and passing
+movement are now 15% slower. Surviving bombers
+make five warned drops instead of two. Small fighters remain narrower than your
+ship; heavy machines keep the Preview 6 reduction.
 
 Kills now have a chance to drop ammo, spread, rapid fire, shields, repairs and
 wingmen, using the original game's loot system. Pick items up by flying into
@@ -30,7 +33,7 @@ The checkpoint is only in memory; scores/progress/options are never written.
 
 ## Sizes and rewards
 
-| Enemy | Current size | Previous size | Base kill-drop chance |
+| Enemy | Current size | Preview 5 size | Base kill-drop chance |
 | --- | --- | --- | --- |
 | Shelf Skiff | 18×7 | 25×9 | 30% |
 | Anchor Gun | 17×10 | 23×13 | 15% |
@@ -63,9 +66,13 @@ eight regulars/six flyers/two ground units, 0.42-second member scheduling and
 at least 0.28-second admissions. Occupied lanes defer entries; slots still
 expire after 8 seconds, or 12 for bombers/hunters, without late catch-up dumps.
 
-Group Darts advance at 48 px/s and rest 0.4 seconds between up to four warned
+Group Darts advance at 40.8 px/s and rest 0.4 seconds between up to four warned
 shots, with their bounded height adjustment. Other regular tactics, HP, score
-and damage remain. Horizontal spacing, staggered hunter dives and full warning
+and damage remain. Entry, passing and hunter dive movement are 15% slower;
+stationary ground machines still follow the 20 px/s scrolling land. Bombers
+make up to five drops with the original 0.8-second warnings and 1.1-second rests.
+Each re-aims before locking its target; shooting the bomber stops future drops.
+Horizontal spacing, staggered hunter dives and full warning
 locks remain; warning starts stay 0.28 seconds apart and salvos 0.18 seconds
 apart. Ordinary shot boosts remain 20/25/30% by minute, never applied to the boss.
 Passed machines still turn visibly; exit directions stay locked; rightward
@@ -83,30 +90,27 @@ quiet phase rewards are unchanged. The new help is earned through kills.
 
 ## Verification
 
-All **1,278 checks pass**: 88 rewards, 74 formation, 96 pressure, 88 mission,
-67 art, 78 mission-escort and 787 preserved boss/background/earlier-content
-checks. With kill loot deliberately disabled, the reward suite fails on the
-zero-drop regression, as expected. This expected-failure control is not counted
-as a passing check. Both portable layouts complete all 214 entries/three phases
-and native retry/selection without external requests, errors or save writes.
+All **1,330 checks pass**: 52 pacing, 88 reward, 74 formation, 96 pressure,
+88 mission, 67 art, 78 escort and 787 earlier-content checks. Actual Preview 6
+fails the new slower-movement test, as expected. Both standalone phone layouts
+complete all 214 entries/three phases and verify retry/selection without errors,
+external requests or save writes. Surviving standalone bombers retire at 13.8 s
+instead of 7.25 s, with five full warned/re-aimed drops rather than two.
 
-A seeded 40-Dart kill sample produced eight items; 200 kills produced 37.
-Real normal-gun encounters independently earned and collected ammo, spread and
-rapid through ordinary movement, retaining five health/three lives. Smaller
-ground targets died in 0.83–1.08 seconds from a legal low flight path.
+Complete no-fire progression admits 161 slots and expires 53, with at most
+eight regulars/ten actors including hazards/17 rounds, no overlap and a safe
+boss arrival at 200.22 s without fallback. The padded-column minimum is 18.94
+pixels. Armed invulnerable progression admits all 214 with no skips, reaches
+the boss at 184.24 s and clears at 274.87 s. These are progression/crowding
+fixtures; phone play remains the final feel check.
 
-No-fire progression admits 198 craft/16 expired slots, at most eight regulars,
-ten actors with hazards and 15 rounds, with no overlap or stuck-threat fallback.
-The padded-column minimum is 21.16 pixels. All 214 enter during armed invulnerable
-progression; boss arrival is 184.67 s and victory 269.54 s. These are functional
-fixtures, not human difficulty claims. First-180-second no-fire pressure remains
-192 craft/614 rounds, close to Frostring's 193/620 in the same comparison.
-
-The labeled 32-second native-touch clip selects final waves with normal starting
-health/lives, no ongoing player edits, and records actual collected rapid/ammo.
-Cached rendering uses 108 calls/frame normally or 140 fully turned in the
-8-regular/1-charge/24-round fixture; older-game counts stay unchanged. Cloud
-measurements do not establish physical-phone performance.
+The pacing suite pins actual Preview 6 and measures each movement phase,
+observes five separately warned drops, locks/reacquires targets, checks longer
+residence and verifies that killing the bomber cancels remaining drops. Wave
+and pod data plus ordinary/boss projectile speeds remain exact. The full armed
+progression check still requires all 214 entries; no-fire crowding may expire
+more slots because slow surviving machines occupy lanes longer. Keep bounded
+queues, caps and a safe boss handoff rather than catching up in a burst.
 
 The reward suite compares actual Preview 5 and exercises real kills, drop
 weights, native health adaptation, more kills/more items, ammo preservation,
@@ -116,13 +120,15 @@ Smaller ground targets must remain killable from legal flight height.
 
 Retain all 21 whole-formation no-hit routes, 17 paired/corner routes and 29 boss
 routes at both phone sizes, including actual expected attacks and complete
-threat clearance. Updated muzzle geometry uses newly verified routes. Moving
+threat clearance. Longer sequences use 20-second fixtures and newly verified
+complete routes, including all five drops in each full bomber escape. Moving
 pilots still face damage, but earned help may extend survival; old fixed death
 deadlines are historical evidence rather than a reason to remove the requested
 rewards. No-fire runs independently check sustained group pressure.
 
 ```sh
 source /workspace/.cloud-onboarding/ember-drift/environment.sh
+node tools/mission-pacing-test.mjs /tmp/ember-mission-pacing
 node tools/mission-rewards-test.mjs /tmp/ember-mission-rewards
 node tools/mission-formation-test.mjs /tmp/ember-mission-formations
 node tools/mission-pressure-test.mjs /tmp/ember-mission-pressure
@@ -130,7 +136,7 @@ node tools/mission-demo-test.mjs /tmp/ember-mission
 node tools/mission-art-test.mjs /tmp/ember-mission-art
 node tools/mission-escort-test.mjs /tmp/ember-mission-escorts
 node tools/mission-benchmark.mjs /tmp/ember-mission-benchmark
-node tools/export-mission-demo.mjs /workspace/artifacts/glacier-coast-mission-v6.html
+node tools/export-mission-demo.mjs /workspace/artifacts/glacier-coast-mission-v7.html
 ```
 
 Run boss/reinforcement/difficulty/background/combat/smoke/seed-28 level/coast

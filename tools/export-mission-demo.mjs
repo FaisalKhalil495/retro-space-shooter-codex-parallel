@@ -59,7 +59,7 @@ html = html.replace('<a class="back" href="../../">Back to Ember Drift</a>', '')
 html = html.replace(/\s*<script>globalThis\.__battleEmbeddedArt \|\|=.*?<\/script>/, '');
 html = html.replace(/\s*<script>globalThis\.__missionEmbeddedArt \|\|=.*?<\/script>/, '');
 html = html.replace(/\s*<script>globalThis\.__missionExtraArt \|\|=.*?<\/script>/, '');
-html = html.replace('<script type="module" src="main.js?mission=6"></script>', bootstrap);
+html = html.replace('<script type="module" src="main.js?mission=7"></script>', bootstrap);
 await mkdir(dirname(resolve(output)), { recursive: true });
 await writeFile(output, html);
 console.log(`Exported ${Object.keys(sources).length} modules in one HTML file: ${resolve(output)}`);
